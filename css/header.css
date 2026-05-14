@@ -1,0 +1,422 @@
+/* =========================================================
+   HEADER
+========================================================= */
+
+header{
+    width: 100%;
+    background-color: var(--header-background);
+}
+
+/* =========================================================
+   CONTAINERS
+========================================================= */
+
+.linha1,
+.linha2,
+.linha3{
+    width: 100%;
+    max-width: var(--container-width);
+
+    
+    padding-inline: 2rem;
+}
+
+/* =========================================================
+   LINHA 1
+========================================================= */
+.linha1{
+    background-color: var(--black);
+
+    padding-block: 0.5rem;
+
+    overflow: hidden;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.bannerFrete{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    animation: bannerFade 3.5s linear infinite;
+}
+
+@keyframes bannerFade{
+
+    0%{
+        opacity: 0;
+        transform: translateX(0);
+    }
+
+    20%{
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    80%{
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    100%{
+        opacity: 0;
+        transform: translateX(0);
+    }
+}
+
+
+.bannerFrete p{
+    color: var(--white);
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.bannerFrete img{
+    width: 16px;
+}
+
+/* ANIMAÇÃO */
+
+@keyframes bannerSlide{
+
+    from{
+        transform: translateX(-10px);
+    }
+
+    to{
+        transform: translateX(10px);
+    }
+}
+/* =========================================================
+   ITEM
+========================================================= */
+
+.bannerItem{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    white-space: nowrap;
+}
+
+.bannerItem p{
+    color: white;
+    font-size: 0.9rem;
+}
+
+.bannerItem img{
+    width: 16px;
+}
+
+/* =========================================================
+   ANIMAÇÃO
+========================================================= */
+
+@keyframes deslizarBanner{
+
+    from{
+        transform: translateX(0);
+    }
+
+    to{
+        transform: translateX(-50%);
+    }
+}
+/* =========================================================
+   LINHA 2
+========================================================= */
+
+.linha2{
+    background-color: var(--black);
+
+    padding-block: 0.4rem;
+
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+/* =========================================================
+   LINHA 3
+========================================================= */
+
+.linha3{
+    padding-block: 0.8rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--espacoGrande);
+}
+
+/* =========================================================
+   LOGO
+========================================================= */
+
+.logo{
+    display: flex;
+    align-items: center;
+}
+
+.logo img{
+    width: 50px;
+    display: block;
+}
+
+/* =========================================================
+   NAV LINKS
+========================================================= */
+
+.navLinks{
+    display: flex;
+    align-items: center;
+    gap: var(--espacoGrande);
+
+    list-style: none;
+}
+
+.navLinks li{
+    transition: transform var(--transition-fast);
+}
+
+.navLinks li:hover{
+    transform: scale(1.03);
+}
+
+.navLinks a{
+    text-decoration: none;
+    color: var(--white);
+
+    transition: color var(--transition-fast);
+}
+
+.navLinks a:hover{
+    color: var(--hover-color);
+}
+
+/* LINKS SUPERIORES */
+
+.navLinksDesktop1 a{
+    font-size: 0.85rem;
+}
+
+/* LINKS PRINCIPAIS */
+
+.navLinksDesktop2 a{
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+/* =========================================================
+   MENUS MOBILE
+========================================================= */
+
+.navLinksMobile1,
+.navLinksMobile2{
+    display: none;
+}
+
+/* =========================================================
+   MENU HAMBURGER
+========================================================= */
+
+.menuHamburger{
+    display: none;
+
+    background: none;
+    border: none;
+
+    cursor: pointer;
+}
+
+/* =========================================================
+   BARRA DE PESQUISA
+========================================================= */
+
+.barraPesquisaDesktop{
+    position: relative;
+
+    width: 100%;
+    max-width: 250px;
+
+    display: flex;
+    align-items: center;
+}
+
+.barraPesquisaDesktop input{
+    width: 100%;
+
+    padding: 0.7rem 1rem 0.7rem 2.7rem;
+
+    background-color: transparent;
+
+    border: 1px solid var(--white);
+    border-radius: var(--radius-sm);
+
+    color: var(--white);
+
+    outline: none;
+
+    font-family: "Rubik", sans-serif;
+}
+
+.barraPesquisaDesktop input::placeholder{
+    color: var(--white);
+}
+
+.barraPesquisaDesktop img{
+    position: absolute;
+
+    left: 1rem;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    width: 15px;
+}
+
+/* =========================================================
+   ÍCONES HEADER
+========================================================= */
+
+.iconesHeader{
+    display: flex;
+    align-items: center;
+    gap: var(--espacoMedio);
+}
+
+.iconesHeaderMobile{
+    display: none;
+}
+
+.iconesHeader a{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    transition: transform var(--transition-fast);
+}
+
+.iconesHeader a:hover{
+    transform: scale(1.08);
+}
+
+.iconesHeader img{
+    width: 25px;
+    display: block;
+}
+
+/* =========================================================
+   TABLETS
+========================================================= */
+
+@media (max-width: 1024px){
+
+    .navLinksDesktop1,
+    .navLinksDesktop2,
+    .barraPesquisaDesktop,
+    .linha2{
+        display: none;
+    }
+
+    .iconesHeaderMobile{
+        display: flex;
+        align-items: center;
+
+        gap: var(--espacoMedio);
+    }
+
+    .iconesHeader{
+        gap: var(--espacoPequeno);
+    }
+
+    .menuHamburger{
+        display: flex;
+    }
+
+    .menuHamburger:hover{
+        transform: scale(1.08);
+    }
+
+    .menuHamburger img{
+        width: 22px;
+    }
+
+    .linha2{
+        display: none;
+    }
+
+    .linha3{
+        gap: var(--espacoMedio);
+    }
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 768px){
+
+    .linha2,
+    .linha3{
+        padding-inline: 1rem;
+    }
+
+    .linha2{
+        justify-content: center;
+    }
+
+    .linha3{
+        flex-wrap: nowrap;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .bannerFrete{
+        flex-wrap: wrap;
+    }
+
+    .bannerFrete p{
+        font-size: 0.8rem;
+    }
+
+    .iconesHeader{
+        gap: var(--espacoPequeno);
+    }
+
+    .iconesHeader img{
+        width: 22px;
+    }
+
+    .logo img{
+        width: 42px;
+    }
+}
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 480px){
+
+    .linha1,
+    .linha2,
+    .linha3{
+        padding-inline: 0.8rem;
+    }
+
+    .bannerFrete p{
+        font-size: 0.75rem;
+    }
+
+    .menuHamburger{
+        font-size: 1.6rem;
+    }
+
+    .iconesHeader{
+        gap: 0.8rem;
+    }
+}

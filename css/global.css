@@ -1,0 +1,73 @@
+/* =========================================================
+   RESET
+========================================================= */
+
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* =========================================================
+   ROOT
+========================================================= */
+
+:root{
+
+    /* CORES */
+    --header-background: #1E1E1E;
+    --black: #000000;
+    --white: #FFFFFF;
+    --hover-color: #FFD600;
+
+    /* ESPAÇO */
+    --espacoMuitoPequeno: 0.5rem;
+    --espacoPequeno: 1rem;
+    --espacoMedio: 1.5rem;
+    --espacoGrande: 2rem;
+
+    /* CONTAINER */
+    --container-width: 1920px;
+
+    /* BORDER */
+    --radius-sm: 6px;
+
+    /* TRANSITIONS */
+    --transition-fast: 0.2s ease;
+}
+
+/* =========================================================
+   GLOBAL
+========================================================= */
+
+html{
+    scroll-behavior: smooth;
+}
+
+body{
+    overflow-x: hidden;
+    font-family: Rubik, sans-serif;
+    background-color: var(--white);
+}
+
+/* =========================================================
+   ACCESSIBILITY
+========================================================= */
+
+.sr-only{
+    position: absolute;
+    width: 1px;
+    height: 1px;
+
+    padding: 0;
+    margin: -1px;
+
+    overflow: hidden;
+
+    clip: rect(0, 0, 0, 0);
+
+    white-space: nowrap;
+    border: 0;
+}
+
