@@ -12,8 +12,7 @@ header{
 ========================================================= */
 
 .linha1,
-.linha2,
-.linha3{
+.linha2{
     width: 100%;
     max-width: var(--container-width);
 
@@ -104,11 +103,16 @@ header{
 
 .bannerItem p{
     color: white;
-    font-size: 0.9rem;
+    font-size: .8rem;
+    font-weight: 500;
 }
 
 .bannerItem img{
-    width: 16px;
+    width: 15px;
+}
+
+span{
+    color: var(--hover-color);
 }
 
 /* =========================================================
@@ -125,25 +129,13 @@ header{
         transform: translateX(-50%);
     }
 }
-/* =========================================================
-   LINHA 2
-========================================================= */
 
-.linha2{
-    background-color: var(--black);
-
-    padding-block: 0.4rem;
-
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-}
 
 /* =========================================================
    LINHA 3
 ========================================================= */
 
-.linha3{
+.linha2{
     padding-block: 0.8rem;
 
     display: flex;
@@ -162,7 +154,7 @@ header{
 }
 
 .logo img{
-    width: 50px;
+    width: 30px;
     display: block;
 }
 
@@ -176,15 +168,14 @@ header{
     gap: var(--espacoGrande);
 
     list-style: none;
+    
 }
 
 .navLinks li{
     transition: transform var(--transition-fast);
 }
 
-.navLinks li:hover{
-    transform: scale(1.03);
-}
+
 
 .navLinks a{
     text-decoration: none;
@@ -197,17 +188,17 @@ header{
     color: var(--hover-color);
 }
 
-/* LINKS SUPERIORES */
 
-.navLinksDesktop1 a{
-    font-size: 0.85rem;
-}
 
 /* LINKS PRINCIPAIS */
+.navLinksDesktop{
+    margin: 0;
+}
 
-.navLinksDesktop2 a{
-    font-size: 0.95rem;
+.navLinksDesktop a{
+    font-size: 0.8rem;
     font-weight: 500;
+    
 }
 
 /* =========================================================
@@ -238,7 +229,7 @@ header{
 
 .barraPesquisaDesktop{
     position: relative;
-
+    margin-left: 100px;
     width: 100%;
     max-width: 250px;
 
@@ -249,12 +240,11 @@ header{
 .barraPesquisaDesktop input{
     width: 100%;
 
-    padding: 0.7rem 1rem 0.7rem 2.7rem;
+    padding: 0.6rem 1rem 0.6rem 2.7rem;
 
     background-color: transparent;
 
     border: 1px solid var(--white);
-    border-radius: var(--radius-sm);
 
     color: var(--white);
 
@@ -265,6 +255,7 @@ header{
 
 .barraPesquisaDesktop input::placeholder{
     color: var(--white);
+    font-size: 0.75rem;
 }
 
 .barraPesquisaDesktop img{
@@ -305,7 +296,7 @@ header{
 }
 
 .iconesHeader img{
-    width: 25px;
+    width: 20px;
     display: block;
 }
 

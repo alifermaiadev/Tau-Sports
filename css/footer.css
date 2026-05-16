@@ -14,12 +14,30 @@
     width: 100%;
     background-color: var(--pretoFooter);
     color: var(--brancoSuave);
-    padding: 1.5rem 0;
+    padding: 2rem 0;
 }
 
-/* =========================================================
-   BENEFÍCIOS
-========================================================= */
+.footer a {
+    color: var(--brancoSuave);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.2s ease;
+}
+
+.footer a:hover {
+    color: var(--amareloPadrao);
+}
+
+.footer ul {
+    margin: 1rem 0 0;
+    padding: 0;
+}
+
+.footer li {
+    list-style: none;
+}
+
+/* BENEFÍCIOS */
 
 .footer__beneficios {
     width: 100%;
@@ -39,17 +57,16 @@
     min-width: 0;
 }
 
-#f1{
+.footer__beneficio:nth-child(1) {
     justify-self: start;
 }
 
-#f2,
-#f3{
+.footer__beneficio:nth-child(2),
+.footer__beneficio:nth-child(3) {
     justify-self: center;
 }
 
-
-#f4{
+.footer__beneficio:nth-child(4) {
     justify-self: end;
 }
 
@@ -60,81 +77,168 @@
     flex-shrink: 0;
 }
 
-.footer__texto {
-    min-width: 0;
-}
-
-.footer__texto h4 {
+.footer__texto h4,
+.footer__coluna h4 {
     color: var(--amareloPadrao);
     font-size: 1rem;
     font-weight: 700;
     line-height: 1.2;
-    margin: 0 0 0.25rem;
+    margin: 0;
 }
 
 .footer__texto p {
     color: var(--cinzaTexto);
     font-size: 0.875rem;
     line-height: 1.3;
-    margin: 0;
+    margin: 0.25rem 0 0;
+}
+
+/* LINKS */
+
+.footer__links {
+    width: 100%;
+    max-width: var(--container-width);
+    margin: 5rem auto 3rem;
+    padding: 0 2rem 0 2rem ;
+
+    display: grid;
+    grid-template-columns: 1.4fr repeat(4, 1fr);
+    
+    gap: 2rem;
+}
+
+
+.footer__coluna li {
+    line-height: 1.8;
+}
+
+.footer__icones {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.footer__icones img {
+    max-width: 2rem;
+    max-height: 2rem;
+    object-fit: contain;
+}
+
+/* LOJAS */
+
+.footer__lojas {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 2rem;
+}
+
+.footer__lojas span {
+    color: var(--cinzaTexto);
+}
+
+/* DESCRIÇÃO */
+
+.footer__descricao {
+    width: 100%;
+    max-width: var(--container-width);
+    margin: 2rem auto 0;
+    padding: 0 2rem;
+}
+
+.footer__descricao p {
+    max-width: 1200px;
+    margin: 0 auto;
+    color: var(--cinzaTexto);
+    font-size: 0.75rem;
+    line-height: 1.6;
+    text-align: center;
 }
 
 /* =========================================================
    RESPONSIVIDADE
 ========================================================= */
 
+@media (max-width: 1024px) {
+    .footer__links {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
 @media (max-width: 900px) {
     .footer__beneficios {
         grid-template-columns: repeat(2, 1fr);
+        
     }
 
-    .footer__beneficio{
-        display: flex;
+    .footer__beneficio {
+        justify-self: center;
         flex-direction: column;
+        text-align: center;
+        
     }
 
-    .footer__texto{
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+    .footer__beneficio:nth-child(1),
+    .footer__beneficio:nth-child(2),
+    .footer__beneficio:nth-child(3),
+    .footer__beneficio:nth-child(4) {
+        justify-self: center;
     }
+}
 
-    #f1,
-    #f2,
-    #f3,
-    #f4{
-        justify-self: normal;
+@media (max-width: 700px) {
+    .footer__links {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem 1.5rem;
     }
-
-
 }
 
 @media (max-width: 560px) {
     .footer {
-        padding: 1.25rem 0;
+        padding: 1.5rem 0;
+        overflow: hidden;
     }
 
     .footer__beneficios {
-        grid-template-columns: 1fr;
-        gap: 1.25rem;
-        padding: 0 1.25rem;
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scroll-behavior: smooth;
+        gap: 0;
+        padding: 0;
+        scrollbar-width: none;
+    }
+
+    .footer__beneficios::-webkit-scrollbar {
+        display: none;
     }
 
     .footer__beneficio {
+        min-width: 100%;
+        scroll-snap-align: center;
+        justify-content: center;
         align-items: center;
-        
+        padding: 0 1.25rem;
+        box-sizing: border-box;
     }
 
-    .footer__icone {
-        width: 2rem;
-        height: 2rem;
+    .footer__links {
+        grid-template-columns: 1fr;
+        margin: 3rem auto 2rem;
     }
 
-    .footer__texto h4 {
-        font-size: 0.95rem;
+    .footer__coluna {
+        text-align: center;
     }
 
-    .footer__texto p {
-        font-size: 0.85rem;
+    .footer__icones {
+        justify-content: center;
+    }
+
+    .footer__descricao p {
+        font-size: 0.7rem;
+        text-align: justify;
     }
 }
