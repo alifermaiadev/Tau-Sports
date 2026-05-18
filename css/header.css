@@ -1,141 +1,128 @@
 /* =========================================================
+   RESET
+========================================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* =========================================================
+   ROOT
+========================================================= */
+
+:root {
+    --header-background: #1E1E1E;
+    --black: #000000;
+    --white: #FFFFFF;
+    --hover-color: #FFD600;
+    --imgProdutoBackground: #F0F1EC;
+    --descontoEscrito: rgb(0, 158, 0);
+
+    --espacoMuitoPequeno: 0.5rem;
+    --espacoPequeno: 1rem;
+    --espacoMedio: 1.5rem;
+    --espacoGrande: 2rem;
+
+    --container-width: 1920px;
+    --radius-sm: 6px;
+    --transition-fast: 0.2s ease;
+}
+
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+}
+
+/* =========================================================
    HEADER
 ========================================================= */
 
-header{
+header {
     width: 100%;
     background-color: var(--header-background);
 }
 
-/* =========================================================
-   CONTAINERS
-========================================================= */
-
 .linha1,
-.linha2{
+.linha2 {
     width: 100%;
     max-width: var(--container-width);
-
-    
+    margin: 0 auto;
     padding-inline: 2rem;
 }
 
-/* =========================================================
-   LINHA 1
-========================================================= */
-.linha1{
+.linha1 {
     background-color: var(--black);
-
     padding-block: 0.5rem;
-
-    overflow: hidden;
 
     display: flex;
     justify-content: center;
     align-items: center;
+
+    overflow: hidden;
 }
 
-.bannerFrete{
+.bannerFrete {
     display: flex;
     align-items: center;
-    gap: 1rem;
-
     animation: bannerFade 3.5s linear infinite;
 }
 
-@keyframes bannerFade{
-
-    0%{
-        opacity: 0;
-        transform: translateX(0);
-    }
-
-    20%{
-        opacity: 1;
-        transform: translateX(0);
-    }
-
-    80%{
-        opacity: 1;
-        transform: translateX(0);
-    }
-
-    100%{
-        opacity: 0;
-        transform: translateX(0);
-    }
-}
-
-
-.bannerFrete p{
-    color: var(--white);
-    font-size: 0.9rem;
-    white-space: nowrap;
-}
-
-.bannerFrete img{
-    width: 16px;
-}
-
-/* ANIMAÇÃO */
-
-@keyframes bannerSlide{
-
-    from{
-        transform: translateX(-10px);
-    }
-
-    to{
-        transform: translateX(10px);
-    }
-}
-/* =========================================================
-   ITEM
-========================================================= */
-
-.bannerItem{
+.bannerItem {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 1rem;
 
     white-space: nowrap;
 }
 
-.bannerItem p{
-    color: white;
-    font-size: .8rem;
+.bannerItem p {
+    color: var(--white);
+    font-size: 0.8rem;
     font-weight: 500;
 }
 
-.bannerItem img{
+.bannerItem img {
     width: 15px;
+    flex: 0 0 auto;
 }
 
-span{
+.bannerItem span {
     color: var(--hover-color);
 }
 
-/* =========================================================
-   ANIMAÇÃO
-========================================================= */
-
-@keyframes deslizarBanner{
-
-    from{
-        transform: translateX(0);
+@keyframes bannerFade {
+    0% {
+        opacity: 0;
     }
 
-    to{
-        transform: translateX(-50%);
+    20% {
+        opacity: 1;
+    }
+
+    80% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
     }
 }
 
-
-/* =========================================================
-   LINHA 3
-========================================================= */
-
-.linha2{
+.linha2 {
+    min-height: 70px;
     padding-block: 0.8rem;
 
     display: flex;
@@ -144,270 +131,254 @@ span{
     gap: var(--espacoGrande);
 }
 
-/* =========================================================
-   LOGO
-========================================================= */
-
-.logo{
+.logo {
     display: flex;
     align-items: center;
+    flex: 0 0 auto;
 }
 
-.logo img{
-    width: 30px;
-    display: block;
+.logo img {
+    width: 34px;
 }
 
-/* =========================================================
-   NAV LINKS
-========================================================= */
-
-.navLinks{
+.navLinks {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: var(--espacoGrande);
 
     list-style: none;
-    
+    flex: 1;
 }
 
-.navLinks li{
-    transition: transform var(--transition-fast);
-}
-
-
-
-.navLinks a{
+.navLinks a {
     text-decoration: none;
     color: var(--white);
+
+    font-size: 0.8rem;
+    font-weight: 500;
 
     transition: color var(--transition-fast);
 }
 
-.navLinks a:hover{
+.navLinks a:hover {
     color: var(--hover-color);
 }
 
-
-
-/* LINKS PRINCIPAIS */
-.navLinksDesktop{
-    margin: 0;
-}
-
-.navLinksDesktop a{
-    font-size: 0.8rem;
-    font-weight: 500;
-    
-}
-
-/* =========================================================
-   MENUS MOBILE
-========================================================= */
-
-.navLinksMobile1,
-.navLinksMobile2{
-    display: none;
-}
-
-/* =========================================================
-   MENU HAMBURGER
-========================================================= */
-
-.menuHamburger{
-    display: none;
-
-    background: none;
-    border: none;
-
-    cursor: pointer;
-}
-
-/* =========================================================
-   BARRA DE PESQUISA
-========================================================= */
-
-.barraPesquisaDesktop{
+.barraPesquisaDesktop {
     position: relative;
-    margin-left: 100px;
+
     width: 100%;
     max-width: 250px;
 
     display: flex;
     align-items: center;
+    flex: 0 1 250px;
 }
 
-.barraPesquisaDesktop input{
+.barraPesquisaDesktop input {
     width: 100%;
-
     padding: 0.6rem 1rem 0.6rem 2.7rem;
 
     background-color: transparent;
-
     border: 1px solid var(--white);
-
     color: var(--white);
 
     outline: none;
-
-    font-family: "Rubik", sans-serif;
+    font-family: "Rubik", Arial, sans-serif;
 }
 
-.barraPesquisaDesktop input::placeholder{
+.barraPesquisaDesktop input::placeholder {
     color: var(--white);
     font-size: 0.75rem;
 }
 
-.barraPesquisaDesktop img{
+.barraPesquisaDesktop img {
     position: absolute;
-
     left: 1rem;
     top: 50%;
 
-    transform: translateY(-50%);
-
     width: 15px;
+
+    transform: translateY(-50%);
 }
 
-/* =========================================================
-   ÍCONES HEADER
-========================================================= */
-
-.iconesHeader{
-    display: flex;
+.iconesHeader,
+.iconesHeaderMobile {
     align-items: center;
     gap: var(--espacoMedio);
+    flex: 0 0 auto;
 }
 
-.iconesHeaderMobile{
+.iconesHeader {
+    display: flex;
+}
+
+.iconesHeaderMobile {
     display: none;
 }
 
-.iconesHeader a{
+.iconesHeader a,
+.botaoHeader {
     display: flex;
     align-items: center;
     justify-content: center;
 
+    background: none;
+    border: none;
+    cursor: pointer;
+
     transition: transform var(--transition-fast);
 }
 
-.iconesHeader a:hover{
+.iconesHeader a:hover,
+.botaoHeader:hover {
     transform: scale(1.08);
 }
 
-.iconesHeader img{
+.iconesHeader img,
+.botaoHeader img {
     width: 20px;
-    display: block;
 }
 
 /* =========================================================
-   TABLETS
+   BREAKPOINT 1 - NOTEBOOKS
 ========================================================= */
 
-@media (max-width: 1024px){
-
-    .navLinksDesktop1,
-    .navLinksDesktop2,
-    .barraPesquisaDesktop,
-    .linha2{
-        display: none;
-    }
-
-    .iconesHeaderMobile{
-        display: flex;
-        align-items: center;
-
+@media (max-width: 1200px) {
+    .linha2 {
         gap: var(--espacoMedio);
     }
 
-    .iconesHeader{
-        gap: var(--espacoPequeno);
-    }
-
-    .menuHamburger{
-        display: flex;
-    }
-
-    .menuHamburger:hover{
-        transform: scale(1.08);
-    }
-
-    .menuHamburger img{
-        width: 22px;
-    }
-
-    .linha2{
-        display: none;
-    }
-
-    .linha3{
+    .navLinks {
         gap: var(--espacoMedio);
     }
-}
 
-/* =========================================================
-   MOBILE
-========================================================= */
-
-@media (max-width: 768px){
-
-    .linha2,
-    .linha3{
-        padding-inline: 1rem;
-    }
-
-    .linha2{
-        justify-content: center;
-    }
-
-    .linha3{
-        flex-wrap: nowrap;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .bannerFrete{
-        flex-wrap: wrap;
-    }
-
-    .bannerFrete p{
-        font-size: 0.8rem;
-    }
-
-    .iconesHeader{
-        gap: var(--espacoPequeno);
-    }
-
-    .iconesHeader img{
-        width: 22px;
-    }
-
-    .logo img{
-        width: 42px;
+    .barraPesquisaDesktop {
+        max-width: 220px;
     }
 }
 
 /* =========================================================
-   SMALL MOBILE
+   BREAKPOINT 2 - TABLETS HORIZONTAIS
 ========================================================= */
 
-@media (max-width: 480px){
-
-    .linha1,
-    .linha2,
-    .linha3{
-        padding-inline: 0.8rem;
+@media (max-width: 1024px) {
+    .navLinks {
+        gap: 1rem;
     }
 
-    .bannerFrete p{
+    .navLinks a {
         font-size: 0.75rem;
     }
 
-    .menuHamburger{
-        font-size: 1.6rem;
+    .barraPesquisaDesktop {
+        max-width: 190px;
     }
 
-    .iconesHeader{
-        gap: 0.8rem;
+    .iconesHeader {
+        gap: 1rem;
+    }
+}
+
+/* =========================================================
+   HEADER RESPONSIVO
+========================================================= */
+
+@media (max-width: 900px) {
+    .linha2 {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .navLinks,
+    .barraPesquisaDesktop {
+        display: none;
+    }
+
+    .iconesHeaderMobile {
+        display: flex;
+        justify-content: flex-start;
+    }
+
+    .logo {
+        justify-self: center;
+    }
+
+    .iconesHeader {
+        justify-content: flex-end;
+    }
+}
+
+/* =========================================================
+   BREAKPOINT 4 - CELULARES GRANDES
+========================================================= */
+
+@media (max-width: 576px) {
+    .linha1,
+    .linha2 {
+        padding-inline: 1rem;
+    }
+
+    .bannerItem {
+        gap: 0.6rem;
+    }
+
+    .bannerItem p {
+        font-size: 0.72rem;
+    }
+
+    .separadorBanner,
+    .textoPromocao {
+        display: none;
+    }
+
+    .iconesHeader,
+    .iconesHeaderMobile {
+        gap: 0.9rem;
+    }
+
+    .iconesHeader img,
+    .botaoHeader img {
+        width: 21px;
+    }
+
+    .logo img {
+        width: 38px;
+    }
+}
+
+/* =========================================================
+   BREAKPOINT 5 - CELULARES PEQUENOS
+========================================================= */
+
+@media (max-width: 360px) {
+    .linha1,
+    .linha2 {
+        padding-inline: 0.75rem;
+    }
+
+    .bannerItem p {
+        font-size: 0.68rem;
+    }
+
+    .bannerItem img {
+        width: 13px;
+    }
+
+    .iconesHeaderMobile,
+    .iconesHeader {
+        gap: 0.65rem;
+    }
+
+    .iconesHeader img,
+    .botaoHeader img {
+        width: 19px;
+    }
+
+    .logo img {
+        width: 34px;
     }
 }
