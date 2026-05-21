@@ -1,0 +1,163 @@
+
+
+/* =========================================================
+   BOTÃO COMPRAR
+========================================================= */
+
+.botaoComprar {
+    min-width: 220px;
+    padding: 0.8rem 1.2rem;
+
+    font-family: "Rubik", Arial, sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+
+    background-color: var(--white);
+    color: var(--black);
+
+    text-decoration: none;
+    border: 1px solid var(--black);
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+
+    cursor: pointer;
+
+    transition:
+        background-color var(--transition-fast),
+        color var(--transition-fast),
+        transform var(--transition-fast);
+}
+
+/* TEXTO DO BOTÃO */
+.botaoComprar span {
+    color: inherit;
+}
+
+/* ÍCONE */
+.botaoComprar .iconeSacola {
+    width: 1rem;
+    transition: transform var(--transition-fast);
+}
+
+/* ÍCONE AMARELO */
+.sacolaAmarela {
+    display: none;
+}
+
+/* =========================================================
+   HOVER
+========================================================= */
+
+.botaoComprar:hover {
+    background-color: var(--black);
+    color: var(--hover-color);
+
+    transform: translateY(-2px);
+}
+
+/* TROCA DE ÍCONE */
+.botaoComprar:hover .sacolaPreta {
+    display: none;
+}
+
+.botaoComprar:hover .sacolaAmarela {
+    display: block;
+}
+
+/* ANIMAÇÃO DO ÍCONE */
+.botaoComprar:hover .iconeSacola {
+    transform: scale(1.05);
+}
+
+/* =========================================================
+   RESPONSIVIDADE
+========================================================= */
+
+/* =========================================================
+   1200px
+========================================================= */
+
+@media (max-width: 1200px) {
+
+    .botaoComprar {
+        min-width: 200px;
+    }
+
+}
+
+/* =========================================================
+   992px
+========================================================= */
+
+@media (max-width: 992px) {
+
+    .botaoComprar {
+        min-width: 190px;
+        padding: 0.75rem 1rem;
+
+        font-size: 0.95rem;
+    }
+
+    .iconeSacola {
+        width: 1.3rem;
+    }
+
+}
+
+/* =========================================================
+   768px
+========================================================= */
+
+@media (max-width: 768px) {
+
+    .botaoComprar {
+        width: 100%;
+        min-width: 100%;
+
+        padding: 0.9rem 1rem;
+
+        justify-content: center;
+    }
+
+}
+
+/* =========================================================
+   576px
+========================================================= */
+
+@media (max-width: 576px) {
+
+    .botaoComprar {
+        padding: 0.8rem;
+
+        font-size: 0.9rem;
+        gap: 0.6rem;
+    }
+
+    .iconeSacola {
+        width: 1.2rem;
+    }
+
+}
+
+/* =========================================================
+   400px
+========================================================= */
+
+@media (max-width: 400px) {
+
+    .botaoComprar {
+        padding: 0.75rem;
+
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+
+    .iconeSacola {
+        width: 1rem;
+    }
+
+}

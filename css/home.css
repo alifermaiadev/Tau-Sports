@@ -1,0 +1,422 @@
+/* =========================================================
+   MAIN
+========================================================= */
+
+main {
+    width: 100%;
+    max-width: var(--container-width);
+
+    margin: 0 auto;
+
+    overflow: hidden;
+}
+
+/* =========================================================
+   BANNER PRINCIPAL
+========================================================= */
+
+.bannerPrincipal {
+    width: 100%;
+    min-height: 80vh;
+    padding: 2rem;
+
+    background-image: url('../imagensUCE/bannerBolaCopaDoMundo.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    display: flex;
+    align-items: center;
+
+    position: relative;
+}
+
+/* OVERLAY */
+.bannerPrincipal::before {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    background: rgba(0, 0, 0, 0.35);
+}
+
+.bannerPrincipalTexto {
+    width: min(520px, 100%);
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2rem;
+
+    position: relative;
+    z-index: 1;
+}
+
+.bannerPrincipalTexto > img {
+    width: clamp(8rem, 14vw, 12rem);
+}
+
+.bannerPrincipalTexto h1 {
+    color: var(--white);
+
+    font-size: clamp(2rem, 4vw, 4rem);
+    line-height: 1.05;
+
+    max-width: 11ch;
+}
+
+/* =========================================================
+   CARROSSEL DE OFERTAS
+========================================================= */
+
+.cardsCarrossel {
+    width: 100%;
+    max-width: 100%;
+    padding: 0 2rem 2rem;
+
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    gap: 1rem;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+
+    -webkit-overflow-scrolling: touch;
+}
+
+.cardsCarrossel::-webkit-scrollbar {
+    height: 8px;
+}
+
+.cardsCarrossel::-webkit-scrollbar-track {
+    background-color: rgba(255, 255, 255, 0.35);
+}
+
+.cardsCarrossel::-webkit-scrollbar-thumb {
+    background-color: var(--black);
+    border-radius: 10px;
+}
+
+.cardsCarrossel::-webkit-scrollbar-thumb:hover {
+    background-color: #333;
+}
+
+/* =========================================================
+   CATEGORIAS E MARCAS
+========================================================= */
+
+.naTauTem,
+.marcas {
+    width: 100%;
+    padding: 0 2rem 2rem;
+}
+
+.naTauTem h2,
+.marcas h2,
+.maisVendidos h2,
+.colecoes > h2 {
+    padding: 2rem 0;
+}
+
+.maisVendidos h2,
+.colecoes > h2 {
+    padding-inline: 2rem;
+}
+
+.listaCategorias,
+.listaMarcas {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4rem;
+
+    padding-inline: 4rem;
+    padding-bottom: 0;
+
+    list-style: none;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+
+    scrollbar-width: none;
+}
+
+.listaCategorias::-webkit-scrollbar,
+.listaMarcas::-webkit-scrollbar {
+    display: none;
+}
+
+.listaCategorias li,
+.listaMarcas li {
+    flex: 0 0 auto;
+
+    text-align: center;
+    scroll-snap-align: start;
+
+    transition:
+        transform var(--transition-fast),
+        opacity var(--transition-fast);
+}
+
+.listaCategorias li:hover,
+.listaMarcas li:hover {
+    transform: scale(1.04);
+}
+
+.listaCategorias a,
+.listaMarcas a {
+    min-width: 90px;
+
+    text-decoration: none;
+    color: var(--black);
+
+    font-size: 1rem;
+    font-weight: 600;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.listaCategorias img,
+.listaMarcas img {
+    max-width: 6rem;
+
+    transition: transform var(--transition-fast);
+}
+
+.listaCategorias li:hover img,
+.listaMarcas li:hover img {
+    transform: scale(1.05);
+}
+
+.seta {
+    width: 2rem;
+}
+
+/* =========================================================
+   RESPONSIVIDADE
+========================================================= */
+
+/* =========================================================
+   1400px
+========================================================= */
+
+@media (max-width: 1400px) {
+
+    .bannerPrincipal {
+        min-height: 70vh;
+    }
+
+}
+
+/* =========================================================
+   1200px
+========================================================= */
+
+@media (max-width: 1200px) {
+
+    .bannerPrincipal {
+        min-height: 65vh;
+    }
+
+    .listaCategorias,
+    .listaMarcas {
+        gap: 3rem;
+        padding-inline: 3rem;
+    }
+
+}
+
+/* =========================================================
+   992px
+========================================================= */
+
+@media (max-width: 992px) {
+
+    .bannerPrincipal {
+        min-height: 60vh;
+        padding: 1.5rem;
+    }
+
+    .bannerPrincipalTexto {
+        gap: 1.5rem;
+    }
+
+    .bannerPrincipalTexto h1 {
+        max-width: 10ch;
+    }
+
+    .cardsCarrossel {
+        padding: 0 1.5rem 1.5rem;
+    }
+
+    .naTauTem,
+    .marcas {
+        padding: 0 1.5rem 1.5rem;
+    }
+
+    .listaCategorias,
+    .listaMarcas {
+        gap: 2rem;
+        padding-inline: 2rem;
+    }
+
+    .listaCategorias img,
+    .listaMarcas img {
+        max-width: 5rem;
+    }
+
+}
+
+/* =========================================================
+   768px
+========================================================= */
+
+@media (max-width: 768px) {
+
+    .bannerPrincipal {
+        min-height: 55vh;
+
+        justify-content: center;
+        text-align: center;
+    }
+
+    .bannerPrincipalTexto {
+        align-items: center;
+    }
+
+    .bannerPrincipalTexto h1 {
+        max-width: 14ch;
+    }
+
+    .cardsCarrossel {
+        gap: 0.75rem;
+    }
+
+    .listaCategorias,
+    .listaMarcas {
+        gap: 1.5rem;
+        padding-inline: 1rem;
+    }
+
+    .listaCategorias a,
+    .listaMarcas a {
+        font-size: 0.95rem;
+    }
+
+    .listaCategorias img,
+    .listaMarcas img {
+        max-width: 4.5rem;
+    }
+
+    .seta {
+        width: 1.7rem;
+    }
+
+}
+
+/* =========================================================
+   576px
+========================================================= */
+
+@media (max-width: 576px) {
+
+    .bannerPrincipal {
+        min-height: 50vh;
+        padding: 1rem;
+    }
+
+    .bannerPrincipalTexto {
+        gap: 1rem;
+    }
+
+    .bannerPrincipalTexto > img {
+        width: 7rem;
+    }
+
+    .bannerPrincipalTexto h1 {
+        font-size: clamp(1.8rem, 7vw, 2.8rem);
+    }
+
+    .cardsCarrossel {
+        padding: 0 1rem 1rem;
+    }
+
+    .naTauTem,
+    .marcas {
+        padding: 0 1rem 1rem;
+    }
+
+    .naTauTem h2,
+    .marcas h2,
+    .maisVendidos h2,
+    .colecoes > h2 {
+        padding: 1.5rem 0;
+    }
+
+    .maisVendidos h2,
+    .colecoes > h2 {
+        padding-inline: 1rem;
+    }
+
+    .listaCategorias,
+    .listaMarcas {
+        gap: 1rem;
+    }
+
+    .listaCategorias a,
+    .listaMarcas a {
+        font-size: 0.85rem;
+        min-width: 75px;
+    }
+
+    .listaCategorias img,
+    .listaMarcas img {
+        max-width: 4rem;
+    }
+
+    .seta {
+        width: 1.4rem;
+    }
+
+}
+
+/* =========================================================
+   400px
+========================================================= */
+
+@media (max-width: 400px) {
+
+    .bannerPrincipal {
+        min-height: 45vh;
+    }
+
+    .bannerPrincipalTexto h1 {
+        font-size: 1.6rem;
+    }
+
+    .bannerPrincipalTexto > img {
+        width: 6rem;
+    }
+
+    .listaCategorias a,
+    .listaMarcas a {
+        font-size: 0.8rem;
+    }
+
+    .listaCategorias img,
+    .listaMarcas img {
+        max-width: 3.5rem;
+    }
+
+}

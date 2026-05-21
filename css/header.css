@@ -1,51 +1,4 @@
 /* =========================================================
-   RESET
-========================================================= */
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-/* =========================================================
-   ROOT
-========================================================= */
-
-:root {
-    --header-background: #1E1E1E;
-    --black: #000000;
-    --white: #FFFFFF;
-    --hover-color: #FFD600;
-    --imgProdutoBackground: #F0F1EC;
-    --descontoEscrito: rgb(0, 158, 0);
-
-    --espacoMuitoPequeno: 0.5rem;
-    --espacoPequeno: 1rem;
-    --espacoMedio: 1.5rem;
-    --espacoGrande: 2rem;
-
-    --container-width: 1920px;
-    --radius-sm: 6px;
-    --transition-fast: 0.2s ease;
-}
-
-
-img {
-    max-width: 100%;
-    display: block;
-}
-
-.sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-}
-
-/* =========================================================
    HEADER
 ========================================================= */
 
@@ -202,6 +155,16 @@ header {
 
     transform: translateY(-50%);
 }
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+}
+
 
 .iconesHeader,
 .iconesHeaderMobile {
