@@ -1,6 +1,7 @@
 
 :root{
     --imgProdutoBackground: rgb(238, 238, 238);
+    --cardProdutoWidth: 260px;
 }
 
 /* =========================================================
@@ -24,12 +25,16 @@
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
+
+    
 }
 
 .ofertasDoDiaTexto span {
     display: flex;
     align-items: center;
     gap: 1rem;
+
+    
 }
 
 .ofertasDoDiaTexto h2 {
@@ -37,7 +42,7 @@
 }
 
 #ofertas2 {
-    color: var(--black);
+    color: white;
     font-weight: 500;
 }
 
@@ -56,16 +61,24 @@
     padding: 0 2rem 2rem;
 
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 1rem;
 }
 
+
+.cardsCarrossel .cardProduto {
+    flex: 0 0 var(--cardProdutoWidth);
+}
 .cardProduto {
     min-width: 0;
+    width: var(--cardProdutoWidth);
+    min-width: var(--cardProdutoWidth);
+    max-width: var(--cardProdutoWidth);
     padding: 0.75rem;
 
     background-color: var(--white);
-    border: 1px solid transparent;
+    border: 1px solid silver;
+    border-radius: 10px;
 
     display: flex;
     flex-direction: column;
@@ -73,12 +86,7 @@
 
     transition: border-color var(--transition-fast), transform var(--transition-fast);
 
-    flex: 0 0 260px;
-    width: 260px;
-    min-width: 260px;
-    max-width: 260px;
-
-    scroll-snap-align: start;
+    scroll-snap-align: none;
 }
 
 .cardProduto:hover {
@@ -237,10 +245,8 @@
         padding-inline: 1.5rem;
     }
 
-    .cardsCarrossel .cardProduto {
-        flex: 0 0 240px;
-        min-width: 240px;
-        max-width: 240px;
+     :root {
+        --cardProdutoWidth: 240px;
     }
 
     .ofertasDoDiaTexto h2 {
@@ -268,50 +274,22 @@
 
 @media (max-width: 768px) {
 
-    .ofertasDoDiaTexto {
-        padding: 1.5rem;
-        gap: 0.75rem;
-    }
-
-    .ofertasDoDiaTexto span {
-        flex-wrap: wrap;
-    }
-
-    .ofertasDoDiaTexto h2 {
-        font-size: 1.5rem;
-    }
-
     .cardsContainer {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
         padding-inline: 1.5rem;
         gap: 0.75rem;
-    }
-
-    .cardsCarrossel {
-        padding: 0 1.5rem 1.5rem;
-        gap: 0.75rem;
-    }
-
-    .cardsCarrossel .cardProduto {
-        flex: 0 0 220px;
-        min-width: 220px;
-        max-width: 220px;
     }
 
     .imgProduto {
-        min-height: 160px;
+        min-height: 150px;
     }
 
-    .valorProduto {
-        font-size: 1.2rem;
+    .cardProduto img {
+        width: min(8.5rem, 100%);
     }
 
-    .colecoesContainer {
-        grid-template-columns: 1fr;
-        padding-inline: 1.5rem;
-    }
-
-    .cardsColecoes {
-        min-height: 30vh;
+    :root {
+        --cardProdutoWidth: 220px;
     }
 
 }
@@ -322,65 +300,36 @@
 
 @media (max-width: 576px) {
 
-    .ofertasDoDiaTexto {
-        padding: 1rem;
-    }
-
-    .ofertasDoDiaTexto h2 {
-        font-size: 1.3rem;
-    }
-
-    #ofertas2 {
-        font-size: 0.85rem;
-    }
-
-    #ofertas2 strong {
-        font-size: 1.1rem;
-    }
-
     .cardsContainer {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         padding: 0 1rem 1rem;
-    }
-
-    .cardsCarrossel {
-        padding: 0 1rem 1rem;
-    }
-
-    .cardsCarrossel .cardProduto {
-        flex: 0 0 200px;
-        min-width: 200px;
-        max-width: 200px;
+        gap: 0.75rem;
     }
 
     .cardProduto {
         padding: 0.65rem;
+        gap: 0.75rem;
     }
 
     .imgProduto {
-        min-height: 140px;
+        min-height: 130px;
         padding: 0.75rem;
     }
 
     .nomeProduto {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
     }
 
     .valorProduto {
-        font-size: 1.1rem;
+        font-size: 1.05rem;
     }
 
     .parcelaProduto {
-        font-size: 0.75rem;
+        font-size: 0.72rem;
     }
 
-    .cardsColecoes {
-        min-height: 26vh;
-        padding: 1rem;
-    }
-
-    .cardsColecoes h2 {
-        font-size: 1.3rem;
+    :root {
+        --cardProdutoWidth: 200px;
     }
 
 }
@@ -391,34 +340,20 @@
 
 @media (max-width: 400px) {
 
-    .ofertasDoDiaTexto h2 {
-        font-size: 1.1rem;
-    }
-
-    #ofertas2 {
-        font-size: 0.75rem;
-    }
-
-    .cardsCarrossel .cardProduto {
-        flex: 0 0 180px;
-        min-width: 180px;
-        max-width: 180px;
+    .cardsContainer {
+        grid-template-columns: 1fr;
     }
 
     .imgProduto {
-        min-height: 120px;
+        min-height: 140px;
     }
 
     .cardProduto img {
         width: min(8rem, 100%);
     }
 
-    .cardsColecoes {
-        min-height: 22vh;
-    }
-
-    .cardsColecoes h2 {
-        font-size: 1.1rem;
+    :root {
+        --cardProdutoWidth: 180px;
     }
 
 }
