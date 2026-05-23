@@ -83,28 +83,14 @@ main {
     overflow-x: auto;
     overflow-y: hidden;
 
-    scroll-snap-type: x mandatory;
+        scroll-snap-type: start;
     scroll-behavior: smooth;
+
+    scrollbar-width: none;
 
     -webkit-overflow-scrolling: touch;
 }
 
-.cardsCarrossel::-webkit-scrollbar {
-    height: 8px;
-}
-
-.cardsCarrossel::-webkit-scrollbar-track {
-    background-color: rgba(255, 255, 255, 0.35);
-}
-
-.cardsCarrossel::-webkit-scrollbar-thumb {
-    background-color: var(--black);
-    border-radius: 10px;
-}
-
-.cardsCarrossel::-webkit-scrollbar-thumb:hover {
-    background-color: #333;
-}
 
 /* =========================================================
    CATEGORIAS E MARCAS
@@ -136,17 +122,19 @@ main {
     gap: 4rem;
 
     padding-inline: 4rem;
-    padding-bottom: 0;
+    padding-block: 1rem;
 
     list-style: none;
 
     overflow-x: auto;
     overflow-y: hidden;
 
-    scroll-snap-type: x mandatory;
+    scroll-snap-type: start;
     scroll-behavior: smooth;
 
     scrollbar-width: none;
+
+  
 }
 
 .listaCategorias::-webkit-scrollbar,
@@ -330,6 +318,8 @@ main {
 ========================================================= */
 
 @media (max-width: 576px) {
+
+    
 
     .bannerPrincipal {
         min-height: 50vh;
