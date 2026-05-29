@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taú Sports | Minha Conta</title>
+
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/header.css">
+    <link rel="stylesheet" href="../css/footer.css">
+    <link rel="stylesheet" href="../css/pedidos.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/cards.css">
+    <link rel="stylesheet" href="../css/seusdados.css">
+    <link rel="stylesheet" href="../css/endereco.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300..900&display=swap" rel="stylesheet">
+</head>
+
+<body>
+<header>
+
+    <!-- BANNER ALTERNANTE -->
+    <div class="linha1">
+        <div class="bannerFrete">
+            <div class="bannerItem">
+                <img src="../imagensUCE/raioPromocaoAmarelo.png" alt="">
+
+                <p><span>FRETE GRÁTIS</span> nas compras acima de <span>R$299,99</span></p>
+
+                <p class="separadorBanner">|</p>
+
+                <p class="textoPromocao">ATÉ <span>60% OFF</span> em produtos selecionados</p>
+
+                <img src="../imagensUCE/raioPromocaoAmarelo.png" alt="">
+            </div>
+        </div>
+    </div>
+
+    <!-- NAVEGAÇÃO PRINCIPAL -->
+    <nav class="linha2" aria-label="Navegação principal">
+
+        <!-- ICONES MOBILE -->
+        <div class="iconesHeaderMobile">
+            <button class="botaoHeader menuHamburger" type="button" aria-label="Abrir menu">
+                <img src="../imagensUCE/menuBranco.png" alt="">
+            </button>
+
+            <button class="botaoHeader" type="button" aria-label="Pesquisar">
+                <img src="../imagensUCE/lupaPesquisa.png" alt="">
+            </button>
+        </div>
+
+        <!-- LOGO -->
+        <a class="logo" href="index.html" aria-label="Página inicial Taú Sports">
+            <img src="../imagensUCE/logoTauSportsRecortada.png" alt="Logo Taú Sports">
+        </a>
+
+        <!-- LINKS DE NAVEGAÇÃO -->
+        <ul class="navLinks">
+            <li><a href="#">CALÇADOS</a></li>
+            <li><a href="#">MASCULINO</a></li>
+            <li><a href="#">FEMININO</a></li>
+            <li><a href="#">INFANTIL</a></li>
+            <li><a href="#">ESPORTES</a></li>
+            <li><a href="#">STREETWEAR</a></li>
+            <li><a href="#">OUTLET</a></li>
+        </ul>
+
+        <!-- BARRA DE PESQUISA -->
+        <form class="barraPesquisaDesktop" action="#" role="search">
+            <label for="pesquisa" class="sr-only">Pesquisar produtos</label>
+            <img src="../imagensUCE/lupaPesquisa.png" alt="">
+            <input type="text" id="pesquisa" name="pesquisa" placeholder="Pesquisar...">
+        </form>
+
+        <!-- ICONES DIREITA -->
+        <div class="iconesHeader">
+            <a href="login.html" aria-label="Perfil">
+                <img src="../imagensUCE/perfilBranco.png" alt="">
+            </a>
+
+            <a href="#" aria-label="Favoritos">
+                <img src="../imagensUCE/favoritosBranco.png" alt="">
+            </a>
+
+            <a href="#" aria-label="Carrinho">
+                <img src="../imagensUCE/sacolaBranca.png" alt="">
+            </a>
+        </div>
+
+    </nav>
+</header>
+
+<main class="paginaUsuario">
+    <aside class="perfilSelecao" aria-label="Menu da conta">
+        <ul>
+            <li >
+                <a href="../html/pedidos.html">
+                    <img class="imagemPreto" src="../imagensUCE/pedidoPreto.png" alt="">
+                    <img class="imagemAmarelo" src="../imagensUCE/pedidoAmarelo.png" alt="">
+                    <span>Pedidos</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="../html/trocas.html">
+                    <img class="imagemPreto" src="../imagensUCE/trocaPreto.png" alt="">
+                    <img class="imagemAmarelo" src="../imagensUCE/trocaAmarelo.png" alt="">
+                    <span>Trocas e Devoluções</span>
+                </a>
+            </li>
+
+            <li >
+                <a href="../html/seusdados.html">
+                    <img class="imagemPreto" src="../imagensUCE/perfil.png" alt="">
+                    <img class="imagemAmarelo" src="../imagensUCE/perfil.png" alt="">
+                    <span>Seus Dados</span>
+                </a>
+            </li>
+
+            <li class="ativo">
+                <a href="#">
+                    <img class="imagemPreto" src="../imagensUCE/enderecoPreto.png" alt="">
+                    <img class="imagemAmarelo" src="../imagensUCE/enderecoAmarelo.png" alt="">
+                    <span>Endereços</span>
+                </a>
+            </li>
+
+            <li >
+                <a href="#">
+                    <img class="imagemPreto" src="../imagensUCE/cartaoDeCreditoPreto.png" alt="">
+                    <img class="imagemAmarelo" src="../imagensUCE/cartaoDeCreditoAmarelo.png" alt="">
+                    <span>Cartões Salvos</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    <img class="imagemPreto" src="../imagensUCE/excluirPreto.png" alt="">
+                    <img class="imagemAmarelo" src="../imagensUCE/excluirVermelho.png" alt="">
+                    <span>Sair</span>
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+<section class="perfilInformacao perfilEndereco" aria-labelledby="tituloSeusDados">
+    
+
+    <article class="cardFormulario">
+    <div class="cardFormularioCabecalho">
+        <h2>Endereço principal</h2>
+        <p>Cadastre ou atualize o endereço usado nas suas entregas.</p>
+    </div>
+
+    <form class="formUsuario" action="#" method="post">
+        <div class="campoFormulario">
+            <label for="cep">CEP</label>
+            <input
+                type="text"
+                id="cep"
+                name="cep"
+                placeholder="00000-000"
+                autocomplete="postal-code"
+                inputmode="numeric"
+            >
+        </div>
+
+        <div class="campoFormulario" id="select">
+            <label for="estado">Estado</label>
+            <select id="estado" name="estado" autocomplete="address-level1">
+                <option value="">Selecione</option>
+                <option value="SP">São Paulo</option>
+                <option value="RJ">Rio de Janeiro</option>
+                <option value="MG">Minas Gerais</option>
+                <option value="PR">Paraná</option>
+            </select>
+        </div>
+
+        <div class="campoFormulario campoGrande">
+            <label for="endereco">Endereço</label>
+            <input
+                type="text"
+                id="endereco"
+                name="endereco"
+                placeholder="Rua, avenida ou travessa"
+                autocomplete="address-line1"
+            >
+        </div>
+
+        <div class="campoFormulario">
+            <label for="numero">Número</label>
+            <input
+                type="text"
+                id="numero"
+                name="numero"
+                placeholder="123"
+                autocomplete="address-line2"
+            >
+        </div>
+
+        <div class="campoFormulario">
+            <label for="bairro">Bairro</label>
+            <input
+                type="text"
+                id="bairro"
+                name="bairro"
+                placeholder="Centro"
+                autocomplete="address-level3"
+            >
+        </div>
+
+        <div class="campoFormulario">
+            <label for="cidade">Cidade</label>
+            <input
+                type="text"
+                id="cidade"
+                name="cidade"
+                placeholder="Campinas"
+                autocomplete="address-level2"
+            >
+        </div>
+
+        <div class="campoFormulario">
+            <label for="complemento">Complemento</label>
+            <input
+                type="text"
+                id="complemento"
+                name="complemento"
+                placeholder="Apartamento, bloco, casa..."
+                autocomplete="address-line2"
+            >
+        </div>
+
+        <div class="acoesFormulario campoGrande">
+            <button type="submit">Salvar endereço</button>
+        </div>
+    </form>
+</article>
+
+<article class="cardFormulario">
+    <div class="cardFormularioCabecalho">
+        <h2>Informações de entrega</h2>
+        <p>Adicione referências para facilitar a entrega dos seus pedidos.</p>
+    </div>
+
+    <form class="formUsuario" action="#" method="post">
+        <div class="campoFormulario campoGrande">
+            <label for="nomeEndereco">Nome do endereço</label>
+            <input
+                type="text"
+                id="nomeEndereco"
+                name="nomeEndereco"
+                placeholder="Casa, trabalho, faculdade..."
+            >
+        </div>
+
+        <div class="campoFormulario campoGrande">
+            <label for="referencia">Ponto de referência</label>
+            <input
+                type="text"
+                id="referencia"
+                name="referencia"
+                placeholder="Próximo ao mercado, portão azul..."
+            >
+        </div>
+
+        <fieldset class="campoFormulario campoGrande grupoOpcoes">
+            <legend>Tipo de endereço</legend>
+
+            <label class="opcaoRadio" for="enderecoResidencial">
+                <input
+                    type="radio"
+                    id="enderecoResidencial"
+                    name="tipoEndereco"
+                    value="residencial"
+                >
+                <span>Residencial</span>
+            </label>
+
+            <label class="opcaoRadio" for="enderecoComercial">
+                <input
+                    type="radio"
+                    id="enderecoComercial"
+                    name="tipoEndereco"
+                    value="comercial"
+                >
+                <span>Comercial</span>
+            </label>
+        </fieldset>
+
+        <fieldset class="campoFormulario campoGrande grupoOpcoes">
+            <legend>Preferências</legend>
+
+            <label class="opcaoCheckbox" for="enderecoPadrao">
+                <input
+                    type="checkbox"
+                    id="enderecoPadrao"
+                    name="enderecoPadrao"
+                    value="sim"
+                >
+                <span>Usar este endereço como padrão para entregas</span>
+            </label>
+        </fieldset>
+
+        <div class="acoesFormulario campoGrande">
+            <button type="submit">Salvar informações</button>
+        </div>
+    </form>
+</article>
+</section>
+</main>
+</body>
+</html>

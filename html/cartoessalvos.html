@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taú Sports | Minha Conta</title>
+
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/header.css">
+    <link rel="stylesheet" href="../css/footer.css">
+    <link rel="stylesheet" href="../css/pedidos.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/cards.css">
+    <link rel="stylesheet" href="../css/cartoessalvos.css">
+    <link rel="stylesheet" href="../css/seusdados.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300..900&display=swap" rel="stylesheet">
+</head>
+
+<body>
+<header>
+
+    <!-- BANNER ALTERNANTE -->
+    <div class="linha1">
+        <div class="bannerFrete">
+            <div class="bannerItem">
+                <img src="../imagensUCE/raioPromocaoAmarelo.png" alt="">
+
+                <p><span>FRETE GRÁTIS</span> nas compras acima de <span>R$299,99</span></p>
+
+                <p class="separadorBanner">|</p>
+
+                <p class="textoPromocao">ATÉ <span>60% OFF</span> em produtos selecionados</p>
+
+                <img src="../imagensUCE/raioPromocaoAmarelo.png" alt="">
+            </div>
+        </div>
+    </div>
+
+    <!-- NAVEGAÇÃO PRINCIPAL -->
+    <nav class="linha2" aria-label="Navegação principal">
+
+        <!-- ICONES MOBILE -->
+        <div class="iconesHeaderMobile">
+            <button class="botaoHeader menuHamburger" type="button" aria-label="Abrir menu">
+                <img src="../imagensUCE/menuBranco.png" alt="">
+            </button>
+
+            <button class="botaoHeader" type="button" aria-label="Pesquisar">
+                <img src="../imagensUCE/lupaPesquisa.png" alt="">
+            </button>
+        </div>
+
+        <!-- LOGO -->
+        <a class="logo" href="index.html" aria-label="Página inicial Taú Sports">
+            <img src="../imagensUCE/logoTauSportsRecortada.png" alt="Logo Taú Sports">
+        </a>
+
+        <!-- LINKS DE NAVEGAÇÃO -->
+        <ul class="navLinks">
+            <li><a href="#">CALÇADOS</a></li>
+            <li><a href="#">MASCULINO</a></li>
+            <li><a href="#">FEMININO</a></li>
+            <li><a href="#">INFANTIL</a></li>
+            <li><a href="#">ESPORTES</a></li>
+            <li><a href="#">STREETWEAR</a></li>
+            <li><a href="#">OUTLET</a></li>
+        </ul>
+
+        <!-- BARRA DE PESQUISA -->
+        <form class="barraPesquisaDesktop" action="#" role="search">
+            <label for="pesquisa" class="sr-only">Pesquisar produtos</label>
+            <img src="../imagensUCE/lupaPesquisa.png" alt="">
+            <input type="text" id="pesquisa" name="pesquisa" placeholder="Pesquisar...">
+        </form>
+
+        <!-- ICONES DIREITA -->
+        <div class="iconesHeader">
+            <a href="login.html" aria-label="Perfil">
+                <img src="../imagensUCE/perfilBranco.png" alt="">
+            </a>
+
+            <a href="#" aria-label="Favoritos">
+                <img src="../imagensUCE/favoritosBranco.png" alt="">
+            </a>
+
+            <a href="#" aria-label="Carrinho">
+                <img src="../imagensUCE/sacolaBranca.png" alt="">
+            </a>
+        </div>
+
+    </nav>
+</header>
+
+<main class="paginaUsuario">
+    <aside class="perfilSelecao" aria-label="Menu da conta">
+        <ul>
+            <li >
+                <a href="../html/pedidos.html">
+                    <img class="imagemPreto" src="../imagensUCE/pedidoPreto.png" alt="">
+                    <img class="imagemAmarelo" src="../imagensUCE/pedidoAmarelo.png" alt="">
+                    <span>Pedidos</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="../html/trocas.html">
+                    <img class="imagemPreto" src="../imagensUCE/trocaPreto.png" alt="">
+                    <img class="imagemAmarelo" src="../imagensUCE/trocaAmarelo.png" alt="">
+                    <span>Trocas e Devoluções</span>
+                </a>
+            </li>
+
+            <li >
+                <a href="../html/seusdados.html">
+                    <img class="imagemPreto" src="../imagensUCE/perfil.png" alt="">
+                    <img class="imagemAmarelo" src="../imagensUCE/perfil.png" alt="">
+                    <span>Seus Dados</span>
+                </a>
+            </li>
+
+            <li class="ativo">
+                <a href="#">
+                    <img class="imagemPreto" src="../imagensUCE/enderecoPreto.png" alt="">
+                    <img class="imagemAmarelo" src="../imagensUCE/enderecoAmarelo.png" alt="">
+                    <span>Endereços</span>
+                </a>
+            </li>
+
+            <li >
+                <a href="#">
+                    <img class="imagemPreto" src="../imagensUCE/cartaoDeCreditoPreto.png" alt="">
+                    <img class="imagemAmarelo" src="../imagensUCE/cartaoDeCreditoAmarelo.png" alt="">
+                    <span>Cartões Salvos</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    <img class="imagemPreto" src="../imagensUCE/excluirPreto.png" alt="">
+                    <img class="imagemAmarelo" src="../imagensUCE/excluirVermelho.png" alt="">
+                    <span>Sair</span>
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+<section class="perfilInformacao perfilEndereco" aria-labelledby="tituloSeusDados">
+    
+
+    
+
+<article class="cardFormulario">
+    <div class="cardFormularioCabecalho">
+        <h2>Cartões salvos</h2>
+        <p>Gerencie os cartões cadastrados na sua conta.</p>
+    </div>
+
+    <div class="listaCartoes">
+        <div class="cartaoSalvo">
+            <div class="cartaoVisual">
+                <div class="cartaoBandeira"> <img src="../imagensUCE/visa.svg" alt=""></div>
+                <strong>•••• •••• •••• 4582</strong>
+                <small>Vence em 08/29</small>
+            </div>
+
+            <div class="cartaoInformacoes">
+                <h3>Alifer Henrique da Silva Maia</h3>
+                <p>Cartão de crédito</p>
+                <span class="seloPadrao">Padrão</span>
+            </div>
+
+            <div class="cartaoAcoes">
+                <button type="button" class="botaoSecundario">Editar</button>
+                <button type="button" class="botaoRemover">Remover</button>
+            </div>
+        </div>
+
+        <div class="cartaoSalvo">
+            <div class="cartaoVisual">
+                <span class="cartaoBandeira"><img src="../imagensUCE/mastercard.svg" alt=""></span>
+                <strong>•••• •••• •••• 9021</strong>
+                <small>Vence em 11/28</small>
+            </div>
+
+            <div class="cartaoInformacoes">
+                <h3>Alifer Henrique da Silva Maia</h3>
+                <p>Cartão de débito</p>
+            </div>
+
+            <div class="cartaoAcoes">
+                <button type="button" class="botaoSecundario">Editar</button>
+                <button type="button" class="botaoRemover">Remover</button>
+            </div>
+        </div>
+    </div>
+</article>
+</section>
+</main>
+</body>
+</html>

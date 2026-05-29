@@ -1,4 +1,6 @@
-
+:root{
+    --hover-color: yellow;
+}
 
 /* =========================================================
    BOTÃO COMPRAR
@@ -36,6 +38,11 @@
     color: inherit;
 }
 
+.botaoComprar a{
+    text-decoration: none;
+    color: black;
+}
+
 /* ÍCONE */
 .botaoComprar .iconeSacola {
     width: 1rem;
@@ -56,6 +63,14 @@
     color: var(--hover-color);
 
     transform: translateY(-2px);
+
+    .botaoComprar a{
+        color: var(--hover-color);
+    }
+}
+
+.botaoComprar a:hover{
+    color: var(--hover-color);
 }
 
 /* TROCA DE ÍCONE */

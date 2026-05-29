@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taú Sports | Minha Conta</title>
+
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/header.css">
+    <link rel="stylesheet" href="../css/footer.css">
+    <link rel="stylesheet" href="../css/pedidos.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/cards.css">
+    <link rel="stylesheet" href="../css/seusdados.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300..900&display=swap" rel="stylesheet">
+</head>
+
+<body>
+<header>
+
+    <!-- BANNER ALTERNANTE -->
+    <div class="linha1">
+        <div class="bannerFrete">
+            <div class="bannerItem">
+                <img src="../imagensUCE/raioPromocaoAmarelo.png" alt="">
+
+                <p><span>FRETE GRÁTIS</span> nas compras acima de <span>R$299,99</span></p>
+
+                <p class="separadorBanner">|</p>
+
+                <p class="textoPromocao">ATÉ <span>60% OFF</span> em produtos selecionados</p>
+
+                <img src="../imagensUCE/raioPromocaoAmarelo.png" alt="">
+            </div>
+        </div>
+    </div>
+
+    <!-- NAVEGAÇÃO PRINCIPAL -->
+    <nav class="linha2" aria-label="Navegação principal">
+
+        <!-- ICONES MOBILE -->
+        <div class="iconesHeaderMobile">
+            <button class="botaoHeader menuHamburger" type="button" aria-label="Abrir menu">
+                <img src="../imagensUCE/menuBranco.png" alt="">
+            </button>
+
+            <button class="botaoHeader" type="button" aria-label="Pesquisar">
+                <img src="../imagensUCE/lupaPesquisa.png" alt="">
+            </button>
+        </div>
+
+        <!-- LOGO -->
+        <a class="logo" href="index.html" aria-label="Página inicial Taú Sports">
+            <img src="../imagensUCE/logoTauSportsRecortada.png" alt="Logo Taú Sports">
+        </a>
+
+        <!-- LINKS DE NAVEGAÇÃO -->
+        <ul class="navLinks">
+            <li><a href="#">CALÇADOS</a></li>
+            <li><a href="#">MASCULINO</a></li>
+            <li><a href="#">FEMININO</a></li>
+            <li><a href="#">INFANTIL</a></li>
+            <li><a href="#">ESPORTES</a></li>
+            <li><a href="#">STREETWEAR</a></li>
+            <li><a href="#">OUTLET</a></li>
+        </ul>
+
+        <!-- BARRA DE PESQUISA -->
+        <form class="barraPesquisaDesktop" action="#" role="search">
+            <label for="pesquisa" class="sr-only">Pesquisar produtos</label>
+            <img src="../imagensUCE/lupaPesquisa.png" alt="">
+            <input type="text" id="pesquisa" name="pesquisa" placeholder="Pesquisar...">
+        </form>
+
+        <!-- ICONES DIREITA -->
+        <div class="iconesHeader">
+            <a href="login.html" aria-label="Perfil">
+                <img src="../imagensUCE/perfilBranco.png" alt="">
+            </a>
+
+            <a href="#" aria-label="Favoritos">
+                <img src="../imagensUCE/favoritosBranco.png" alt="">
+            </a>
+
+            <a href="#" aria-label="Carrinho">
+                <img src="../imagensUCE/sacolaBranca.png" alt="">
+            </a>
+        </div>
+
+    </nav>
+</header>
+
+<main class="paginaUsuario">
+    <aside class="perfilSelecao" aria-label="Menu da conta">
+        <ul>
+            <li >
+                <a href="../html/pedidos.html">
+                    <img class="imagemPreto" src="../imagensUCE/pedidoPreto.png" alt="">
+                    <img class="imagemAmarelo" src="../imagensUCE/pedidoAmarelo.png" alt="">
+                    <span>Pedidos</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="../html/trocas.html">
+                    <img class="imagemPreto" src="../imagensUCE/trocaPreto.png" alt="">
+                    <img class="imagemAmarelo" src="../imagensUCE/trocaAmarelo.png" alt="">
+                    <span>Trocas e Devoluções</span>
+                </a>
+            </li>
+
+            <li class="ativo">
+                <a href="../html/seusdados.html">
+                    <img class="imagemPreto" src="../imagensUCE/perfil.png" alt="">
+                    <img class="imagemAmarelo" src="../imagensUCE/perfil.png" alt="">
+                    <span>Seus Dados</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="../html/endereco.html">
+                    <img class="imagemPreto" src="../imagensUCE/enderecoPreto.png" alt="">
+                    <img class="imagemAmarelo" src="../imagensUCE/enderecoAmarelo.png" alt="">
+                    <span>Endereços</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    <img class="imagemPreto" src="../imagensUCE/cartaoDeCreditoPreto.png" alt="">
+                    <img class="imagemAmarelo" src="../imagensUCE/cartaoDeCreditoAmarelo.png" alt="">
+                    <span>Cartões Salvos</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    <img class="imagemPreto" src="../imagensUCE/excluirPreto.png" alt="">
+                    <img class="imagemAmarelo" src="../imagensUCE/excluirVermelho.png" alt="">
+                    <span>Sair</span>
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+<section class="perfilInformacao" aria-labelledby="tituloSeusDados">
+    
+
+    <article class="cardFormulario">
+        <div class="cardFormularioCabecalho">
+            <h2>Dados pessoais</h2>
+            <p>Atualize suas informações de cadastro.</p>
+        </div>
+
+        <form class="formUsuario" action="#" method="post">
+            <div class="campoFormulario campoGrande">
+                <label for="nomeCompleto">Nome completo</label>
+                <input
+                    type="text"
+                    id="nomeCompleto"
+                    name="nomeCompleto"
+                    placeholder="Alifer Henrique da Silva Maia"
+                    autocomplete="name"
+                >
+            </div>
+
+            <div class="campoFormulario">
+                <label for="dataNascimento">Data de nascimento</label>
+                <input
+                    type="date"
+                    id="dataNascimento"
+                    name="dataNascimento"
+                >
+            </div>
+
+            <div class="campoFormulario">
+                <label for="telefone">Telefone</label>
+                <input
+                    type="tel"
+                    id="telefone"
+                    name="telefone"
+                    placeholder="(19) 99999-9999"
+                    autocomplete="tel"
+                >
+            </div>
+
+            <fieldset class="campoFormulario campoGrande grupoOpcoes">
+                <legend>Gênero</legend>
+
+                <label class="opcaoRadio" for="generoMasculino">
+                    <input
+                        type="radio"
+                        id="generoMasculino"
+                        name="genero"
+                        value="masculino"
+                    >
+                    <span>Masculino</span>
+                </label>
+
+                <label class="opcaoRadio" for="generoFeminino">
+                    <input
+                        type="radio"
+                        id="generoFeminino"
+                        name="genero"
+                        value="feminino"
+                    >
+                    <span>Feminino</span>
+                </label>
+            </fieldset>
+
+            <div class="acoesFormulario campoGrande">
+                <button type="submit">Salvar dados pessoais</button>
+            </div>
+        </form>
+    </article>
+
+    <article class="cardFormulario">
+        <div class="cardFormularioCabecalho">
+            <h2>Dados de acesso</h2>
+            <p>Altere seu e-mail, senha e preferências de comunicação.</p>
+        </div>
+
+        <form class="formUsuario" action="#" method="post">
+            <div class="campoFormulario campoGrande">
+                <label for="emailUsuario">E-mail</label>
+                <input
+                    type="email"
+                    id="emailUsuario"
+                    name="emailUsuario"
+                    placeholder="alifer.maia@sou.fae.br"
+                    autocomplete="email"
+                >
+            </div>
+
+            <div class="acoesFormulario campoGrande acoesAcesso">
+                <button type="button">Alterar e-mail</button>
+                <button type="button" class="botaoSecundario">Alterar senha</button>
+            </div>
+
+            <fieldset class="campoFormulario campoGrande grupoOpcoes">
+                <legend>Preferências</legend>
+
+                <label class="opcaoCheckbox" for="receberEmail">
+                    <input
+                        type="checkbox"
+                        id="receberEmail"
+                        name="preferencias"
+                        value="email"
+                    >
+                    <span>Quero receber ofertas e novidades da Taú Sports por e-mail</span>
+                </label>
+
+                <label class="opcaoCheckbox" for="receberWhatsapp">
+                    <input
+                        type="checkbox"
+                        id="receberWhatsapp"
+                        name="preferencias"
+                        value="whatsapp"
+                    >
+                    <span>Quero receber ofertas e novidades por WhatsApp</span>
+                </label>
+
+                <label class="opcaoCheckbox" for="notificacoesPedidos">
+                    <input
+                        type="checkbox"
+                        id="notificacoesPedidos"
+                        name="preferencias"
+                        value="pedidos-whatsapp"
+                    >
+                    <span>Quero receber notificações dos meus pedidos por WhatsApp</span>
+                </label>
+            </fieldset>
+
+            <div class="acoesFormulario campoGrande">
+                <button type="submit">Salvar dados de acesso</button>
+            </div>
+        </form>
+    </article>
+</section>
+</main>
+</body>
+</html>
