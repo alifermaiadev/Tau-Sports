@@ -93,7 +93,7 @@ module.exports = function criarApp({ banco, segredo }) {
     }
     try {
       // O formulário público nunca pode definir o perfil do usuário.
-      const id = await usuarios.cadastrar({ nome, email, senhaHash: await gerarHash(req.body.senha), perfil: 'CLIENTE' });
+      const id = await usuarios.cadastrar({ nome, email, senhaHash: await gerarHash(req.body.senha), ies_admin: 'N' });
       await sessao.entrar(req, res, id);
       res.redirect(303, '/seusdados.html');
     } catch (erro) {
