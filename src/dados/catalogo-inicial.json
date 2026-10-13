@@ -1,0 +1,258 @@
+[
+  {
+    "id": "camisa-alemanha-2026",
+    "nome": "Camisa Alemanha Home 2026 Jogador Masculino",
+    "marca": "Adidas",
+    "categoria": "camiseta",
+    "genero": "masculino",
+    "tags": [
+      "esporte",
+      "oferta",
+      "vendido"
+    ],
+    "preco": 249.99,
+    "precoDe": null,
+    "descontoPix": 24,
+    "parcelas": 4,
+    "imagens": [
+      "/imagensUCE/camisaAlemanha.png"
+    ],
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "cores": [
+      {
+        "nome": "Amarelo",
+        "imagem": "/imagensUCE/camisaAlemanha.png"
+      }
+    ],
+    "descricao": "Camisa oficial da seleção da Alemanha para a Copa do Mundo 2026, com tecido leve e respirável.",
+    "detalhes": [
+      "Material: Poliéster reciclado",
+      "Modelagem: Jogador",
+      "Gola: Redonda",
+      "Referência: ALE-H26"
+    ]
+  },
+  {
+    "id": "adidas-campus-00s",
+    "nome": "Adidas Campus 00s",
+    "marca": "Adidas",
+    "categoria": "tenis",
+    "genero": "masculino",
+    "tags": [
+      "streetwear",
+      "oferta",
+      "vendido"
+    ],
+    "preco": 499.99,
+    "precoDe": 699.99,
+    "descontoPix": 0,
+    "parcelas": 4,
+    "imagens": [
+      "/imagensUCE/TenisAdidas 01.avif",
+      "/imagensUCE/TenisAdidas 02.avif",
+      "/imagensUCE/TenisAdidas 03.avif",
+      "/imagensUCE/TenisAdidas 04.avif"
+    ],
+    "tamanhos": [
+      "38",
+      "39",
+      "40",
+      "41",
+      "42",
+      "43",
+      "44"
+    ],
+    "cores": [
+      {
+        "nome": "Preto",
+        "imagem": "/imagensUCE/TenisAdidas 01.avif"
+      },
+      {
+        "nome": "Cinza",
+        "imagem": "/imagensUCE/TenisAdidas 02.avif"
+      },
+      {
+        "nome": "Branco",
+        "imagem": "/imagensUCE/TenisAdidas 03.avif"
+      },
+      {
+        "nome": "Vermelho",
+        "imagem": "/imagensUCE/TenisAdidas 04.avif"
+      },
+      {
+        "nome": "Azul",
+        "imagem": "/imagensUCE/TenisAdidas 01.avif"
+      },
+      {
+        "nome": "Verde",
+        "imagem": "/imagensUCE/TenisAdidas 02.avif"
+      },
+      {
+        "nome": "Marrom",
+        "imagem": "/imagensUCE/TenisAdidas 03.avif"
+      },
+      {
+        "nome": "Laranja",
+        "imagem": "/imagensUCE/TenisAdidas 04.avif"
+      }
+    ],
+    "descricao": "O Adidas Campus 00s é um tênis icônico que une estilo retrô e conforto moderno. Com cabedal em couro e entressola de borracha, é perfeito para o dia a dia.",
+    "detalhes": [
+      "Cabedal: Couro legítimo",
+      "Entressola: Borracha",
+      "Palmilha: EVA removível",
+      "Fechamento: Cadarço",
+      "Referência: GW9895"
+    ]
+  },
+  {
+    "id": "shorts-nike-dri-fit",
+    "nome": "Shorts Nike Dri-FIT Masculino",
+    "marca": "Nike",
+    "categoria": "shorts",
+    "genero": "masculino",
+    "tags": [
+      "esporte",
+      "oferta",
+      "vendido"
+    ],
+    "preco": 129.99,
+    "precoDe": 159.99,
+    "descontoPix": 10,
+    "parcelas": 4,
+    "imagens": [
+      "/imagensUCE/shortsNike.png"
+    ],
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "cores": [
+      {
+        "nome": "Preto",
+        "imagem": "/imagensUCE/shortsNike.png"
+      }
+    ],
+    "descricao": "Shorts leve com tecnologia Dri-FIT que afasta o suor da pele para você treinar seco e confortável.",
+    "detalhes": [
+      "Material: Poliéster",
+      "Cós: Elástico com cordão",
+      "Bolsos laterais",
+      "Referência: NK-DF01"
+    ]
+  },
+  {
+    "id": "bola-trionda-pro",
+    "nome": "Bola Adidas Trionda Pro Copa do Mundo FIFA 26™",
+    "marca": "Adidas",
+    "categoria": "acessorio",
+    "genero": "unissex",
+    "tags": [
+      "esporte",
+      "oferta",
+      "vendido"
+    ],
+    "preco": 349.99,
+    "precoDe": null,
+    "descontoPix": 10,
+    "parcelas": 4,
+    "imagens": [
+      "/imagensUCE/bannerBolaCopaDoMundo.jpg"
+    ],
+    "tamanhos": [
+      "Único"
+    ],
+    "cores": [
+      {
+        "nome": "Branco",
+        "imagem": "/imagensUCE/bannerBolaCopaDoMundo.jpg"
+      }
+    ],
+    "descricao": "A bola oficial da Copa do Mundo da FIFA 26™, criada para campeões.",
+    "detalhes": [
+      "Tamanho: 5",
+      "Construção: Termocolada",
+      "Referência: TRI-PRO26"
+    ]
+  },
+  {
+    "id": "camisa-alemanha-treino",
+    "nome": "Camisa Alemanha Treino 2026 Masculino",
+    "marca": "Adidas",
+    "categoria": "camiseta",
+    "genero": "masculino",
+    "tags": [
+      "esporte",
+      "oferta",
+      "vendido"
+    ],
+    "preco": 199.9,
+    "precoDe": 249.9,
+    "descontoPix": 15,
+    "parcelas": 4,
+    "imagens": [
+      "/imagensUCE/camisaAlemanha.png"
+    ],
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "cores": [
+      {
+        "nome": "Amarelo",
+        "imagem": "/imagensUCE/camisaAlemanha.png"
+      }
+    ],
+    "descricao": "Camisa de treino da seleção da Alemanha, ideal para o dia a dia.",
+    "detalhes": [
+      "Material: Poliéster",
+      "Modelagem: Regular",
+      "Referência: ALE-T26"
+    ]
+  },
+  {
+    "id": "shorts-nike-treino",
+    "nome": "Shorts Nike Treino Masculino",
+    "marca": "Nike",
+    "categoria": "shorts",
+    "genero": "masculino",
+    "tags": [
+      "esporte",
+      "oferta",
+      "vendido"
+    ],
+    "preco": 99.9,
+    "precoDe": 129.9,
+    "descontoPix": 10,
+    "parcelas": 3,
+    "imagens": [
+      "/imagensUCE/shortsNike.png"
+    ],
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "cores": [
+      {
+        "nome": "Preto",
+        "imagem": "/imagensUCE/shortsNike.png"
+      }
+    ],
+    "descricao": "Shorts de treino leve e resistente.",
+    "detalhes": [
+      "Material: Poliéster",
+      "Referência: NK-TR02"
+    ]
+  }
+]

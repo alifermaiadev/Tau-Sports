@@ -24,72 +24,10 @@
     FRETEGRATIS: { tipo: 'frete',            texto: 'Frete grátis' }
   };
 
-  /* ---------- CATÁLOGO  ---------- */
-  const CALCADO = ['38', '39', '40', '41', '42', '43', '44'];
-  const ROUPA = ['P', 'M', 'G', 'GG'];
-  const tenis = n => IMG + 'TenisAdidas 0' + n + '.avif';
-
-  T.PRODUTOS = [
-    {
-      id: 'camisa-alemanha-2026', nome: 'Camisa Alemanha Home 2026 Jogador Masculino',
-      marca: 'Adidas', categoria: 'camiseta', genero: 'masculino', tags: ['esporte', 'oferta', 'vendido'],
-      preco: 249.99, precoDe: null, descontoPix: 24, parcelas: 4,
-      imagens: [IMG + 'camisaAlemanha.png'], tamanhos: ROUPA,
-      cores: [{ nome: 'Amarelo', imagem: IMG + 'camisaAlemanha.png' }],
-      descricao: 'Camisa oficial da seleção da Alemanha para a Copa do Mundo 2026, com tecido leve e respirável.',
-      detalhes: ['Material: Poliéster reciclado', 'Modelagem: Jogador', 'Gola: Redonda', 'Referência: ALE-H26']
-    },
-    {
-      id: 'adidas-campus-00s', nome: 'Adidas Campus 00s',
-      marca: 'Adidas', categoria: 'tenis', genero: 'masculino', tags: ['streetwear', 'oferta', 'vendido'],
-      preco: 499.99, precoDe: 699.99, descontoPix: 0, parcelas: 4,
-      imagens: [tenis(1), tenis(2), tenis(3), tenis(4)], tamanhos: CALCADO,
-      cores: [
-        { nome: 'Preto', imagem: tenis(1) }, { nome: 'Cinza', imagem: tenis(2) },
-        { nome: 'Branco', imagem: tenis(3) }, { nome: 'Vermelho', imagem: tenis(4) },
-        { nome: 'Azul', imagem: tenis(1) }, { nome: 'Verde', imagem: tenis(2) },
-        { nome: 'Marrom', imagem: tenis(3) }, { nome: 'Laranja', imagem: tenis(4) }
-      ],
-      descricao: 'O Adidas Campus 00s é um tênis icônico que une estilo retrô e conforto moderno. Com cabedal em couro e entressola de borracha, é perfeito para o dia a dia.',
-      detalhes: ['Cabedal: Couro legítimo', 'Entressola: Borracha', 'Palmilha: EVA removível', 'Fechamento: Cadarço', 'Referência: GW9895']
-    },
-    {
-      id: 'shorts-nike-dri-fit', nome: 'Shorts Nike Dri-FIT Masculino',
-      marca: 'Nike', categoria: 'shorts', genero: 'masculino', tags: ['esporte', 'oferta', 'vendido'],
-      preco: 129.99, precoDe: 159.99, descontoPix: 10, parcelas: 4,
-      imagens: [IMG + 'shortsNike.png'], tamanhos: ROUPA,
-      cores: [{ nome: 'Preto', imagem: IMG + 'shortsNike.png' }],
-      descricao: 'Shorts leve com tecnologia Dri-FIT que afasta o suor da pele para você treinar seco e confortável.',
-      detalhes: ['Material: Poliéster', 'Cós: Elástico com cordão', 'Bolsos laterais', 'Referência: NK-DF01']
-    },
-    {
-      id: 'bola-trionda-pro', nome: 'Bola Adidas Trionda Pro Copa do Mundo FIFA 26™',
-      marca: 'Adidas', categoria: 'acessorio', genero: 'unissex', tags: ['esporte', 'oferta', 'vendido'],
-      preco: 349.99, precoDe: null, descontoPix: 10, parcelas: 4,
-      imagens: [IMG + 'bannerBolaCopaDoMundo.jpg'], tamanhos: ['Único'],
-      cores: [{ nome: 'Branco', imagem: IMG + 'bannerBolaCopaDoMundo.jpg' }],
-      descricao: 'A bola oficial da Copa do Mundo da FIFA 26™, criada para campeões.',
-      detalhes: ['Tamanho: 5', 'Construção: Termocolada', 'Referência: TRI-PRO26']
-    },
-    {
-      id: 'camisa-alemanha-treino', nome: 'Camisa Alemanha Treino 2026 Masculino',
-      marca: 'Adidas', categoria: 'camiseta', genero: 'masculino', tags: ['esporte', 'oferta', 'vendido'],
-      preco: 199.9, precoDe: 249.9, descontoPix: 15, parcelas: 4,
-      imagens: [IMG + 'camisaAlemanha.png'], tamanhos: ROUPA,
-      cores: [{ nome: 'Amarelo', imagem: IMG + 'camisaAlemanha.png' }],
-      descricao: 'Camisa de treino da seleção da Alemanha, ideal para o dia a dia.',
-      detalhes: ['Material: Poliéster', 'Modelagem: Regular', 'Referência: ALE-T26']
-    },
-    {
-      id: 'shorts-nike-treino', nome: 'Shorts Nike Treino Masculino',
-      marca: 'Nike', categoria: 'shorts', genero: 'masculino', tags: ['esporte', 'oferta', 'vendido'],
-      preco: 99.9, precoDe: 129.9, descontoPix: 10, parcelas: 3,
-      imagens: [IMG + 'shortsNike.png'], tamanhos: ROUPA,
-      cores: [{ nome: 'Preto', imagem: IMG + 'shortsNike.png' }],
-      descricao: 'Shorts de treino leve e resistente.',
-      detalhes: ['Material: Poliéster', 'Referência: NK-TR02']
-    }
-  ];
+  /* ---------- DADOS RENDERIZADOS PELO SERVIDOR ---------- */
+  const contexto = JSON.parse(document.getElementById('tau-contexto').textContent);
+  T.PRODUTOS = contexto.produtos;
+  T.csrfToken = contexto.csrfToken;
 
   T.produto = id => T.PRODUTOS.find(p => p.id === id) || null;
 
@@ -104,13 +42,15 @@
   T.validaEmail = e => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e);
   T.pagina = () => location.pathname.split('/').pop().replace('.html', '') || 'index';
 
+  const chaveLocal = k => ['perfil', 'endereco', 'cartoes', 'pedidos'].includes(k)
+    ? 'tau:usuario:' + (contexto.usuario ? contexto.usuario.id : 'visitante') + ':' + k : 'tau:' + k;
   T.store = {
     get(k, fb) {
-      try { const v = localStorage.getItem('tau:' + k); return v === null ? fb : JSON.parse(v); }
+      try { const v = localStorage.getItem(chaveLocal(k)); return v === null ? fb : JSON.parse(v); }
       catch (e) { return fb; }
     },
-    set(k, v) { try { localStorage.setItem('tau:' + k, JSON.stringify(v)); return true; } catch (e) { return false; } },
-    del(k) { try { localStorage.removeItem('tau:' + k); } catch (e) {} }
+    set(k, v) { try { localStorage.setItem(chaveLocal(k), JSON.stringify(v)); return true; } catch (e) { return false; } },
+    del(k) { try { localStorage.removeItem(chaveLocal(k)); } catch (e) {} }
   };
 
   T.mask = {
@@ -172,22 +112,19 @@
     toastTimer = setTimeout(() => el.classList.remove('on'), 2800);
   };
 
-  /* ---------- SESSÃO (DEMO NO NAVEGADOR) ---------- */
+  /* ---------- SESSÃO VALIDADA NO SERVIDOR ---------- */
   T.auth = {
-    usuario() { return T.store.get('sessao', null); },
-    entrar(email) {
-      const perfil = T.store.get('perfil', {});
-      const s = { email, nome: perfil.nome || email.split('@')[0] };
-      T.store.set('sessao', s);
-      return s;
-    },
-    sair() { T.store.del('sessao'); },
+    usuario() { return contexto.usuario; },
     exigir() {
-      if (this.usuario()) return true;
-      location.href = 'login.html?next=' + encodeURIComponent(T.pagina() + '.html');
+      if (this.usuario()) {
+        return true;
+      }
+      location.href = '/login.html?next=' + encodeURIComponent(T.pagina() + '.html');
       return false;
     }
   };
+  // Remove a antiga sessão de demonstração: ela não autentica mais ninguém.
+  T.store.del('sessao');
 
   /* ---------- CARTÕES (guarda só bandeira + 4 últimos dígitos, NUNCA número/CVV) ---------- */
   const CARTOES_INICIAIS = [

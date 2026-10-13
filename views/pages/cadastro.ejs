@@ -1,0 +1,24 @@
+<%- include('../partials/head', { titulo: 'Criar conta | Tau Sports', css: ['global', 'components', 'login', 'header', 'footer'] }) %>
+<body>
+<%- include('../partials/header-login') %>
+<main class="login-page">
+    <section class="login-container">
+        <div class="login-banner"><div class="overlay"></div></div>
+        <div class="login-box">
+            <div class="login-header"><h1>Crie sua conta</h1><p>Cadastre-se para acessar a Taú Sports.</p></div>
+            <% if (erro) { %><p class="mensagemFormulario mensagemErro" role="alert"><%= erro %></p><% } %>
+            <form class="login-form" action="/cadastro" method="post">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <div class="input-group"><label for="nome">Nome completo</label><input class="input" type="text" id="nome" name="nome" value="<%= valores.nome || '' %>" autocomplete="name" minlength="3" maxlength="120" required></div>
+                <div class="input-group"><label for="email">E-mail</label><input class="input" type="email" id="email" name="email" value="<%= valores.email || '' %>" autocomplete="username" maxlength="254" required></div>
+                <div class="input-group"><label for="senha">Senha</label><input class="input" type="password" id="senha" name="senha" autocomplete="new-password" minlength="8" maxlength="128" required><small>Use pelo menos 8 caracteres.</small></div>
+                <div class="input-group"><label for="confirmarSenha">Confirme a senha</label><input class="input" type="password" id="confirmarSenha" name="confirmarSenha" autocomplete="new-password" minlength="8" maxlength="128" required></div>
+                <button type="submit" class="btn btn-primary login-btn">Criar conta</button>
+            </form>
+            <div class="login-footer"><p>Já possui uma conta? <a href="/login.html">Entrar</a></p></div>
+        </div>
+    </section>
+</main>
+<%- include('../partials/scripts', { scripts: ['core'] }) %>
+</body>
+</html>

@@ -15,18 +15,10 @@
     if (!form) return;
     if (T.auth.usuario()) { location.replace('pedidos.html'); return; }
 
-    // O botão original tem um <a> dentro; garantimos que o submit passe pela validação.
-    const link = $('.login-btn a', form);
-    if (link) link.addEventListener('click', e => { e.preventDefault(); form.requestSubmit(); });
-
-    form.addEventListener('submit', e => {
+    // O formulário envia e-mail e senha diretamente ao servidor.
+    $('.esqueceuASenha').addEventListener('click', e => {
       e.preventDefault();
-      const email = $('#email').value.trim(), senha = $('#senha').value;
-      if (!T.validaEmail(email)) return T.toast('Digite um e-mail válido.');
-      if (senha.length < 6) return T.toast('A senha deve ter pelo menos 6 caracteres.');
-      T.auth.entrar(email);
-      const next = new URLSearchParams(location.search).get('next');
-      location.href = /^[a-z]+\.html$/.test(next || '') ? next : 'pedidos.html';
+      T.toast('Recuperação de senha ainda não disponível. Contate o administrador.');
     });
 
     $$('.social-btn').forEach(b => b.addEventListener('click', e => {
@@ -36,12 +28,12 @@
 
   /* ================= MENU DA CONTA ================= */
   function menuConta() {
-    const rotas = { 'Pedidos': 'pedidos', 'Trocas e Devoluções': 'trocas', 'Seus Dados': 'seusdados', 'Endereços': 'endereco', 'Cartões Salvos': 'cartoessalvos' };
+    const rotas = { 'Pedidos': 'pedidos', 'Trocas e Devoluções': 'trocas', 'Seus Dados': 'seusdados', 'Endereços': 'endereco', 'Cartões Salvos': 'cartoessalvos', 'Cadastrar Produto': 'cadastrarproduto' };
     $$('.perfilSelecao li').forEach(li => {
-      const a = $('a', li), nome = $('span', li).textContent.trim();
-      if (nome === 'Sair') {
-        a.addEventListener('click', e => { e.preventDefault(); T.auth.sair(); location.href = 'index.html'; });
-      } else if (rotas[nome]) {
+      const a = $('a', li);
+      if (!a) { return; }
+      const nome = $('span', li).textContent.trim();
+      if (rotas[nome]) {
         a.href = rotas[nome] + '.html';
         li.classList.toggle('ativo', rotas[nome] === pagina);
       }
@@ -129,7 +121,7 @@
     const sessao = T.auth.usuario();
     const [formDados, formAcesso] = $$('.formUsuario');
 
-    nome.value = perfil.nome || '';
+    nome.value = perfil.nome || (sessao && sessao.nome) || '';
     $('#dataNascimento').value = perfil.nascimento || '';
     $('#telefone').value = perfil.telefone || '';
     if (perfil.genero) { const r = $(`input[name=genero][value="${perfil.genero}"]`); if (r) r.checked = true; }
@@ -152,7 +144,7 @@
       if (tel && (tel.length < 10)) return T.toast('Telefone inválido.');
       const g = $('input[name=genero]:checked');
       salvar({ nome: n, nascimento: $('#dataNascimento').value, telefone: $('#telefone').value, genero: g ? g.value : '' });
-      if (sessao) T.store.set('sessao', { ...sessao, nome: n });
+
       T.toast('Dados pessoais salvos.');
     });
 
@@ -166,9 +158,8 @@
     btnEmail.addEventListener('click', () => {
       const novo = email.value.trim();
       if (!T.validaEmail(novo)) { email.focus(); return T.toast('Digite um e-mail válido.'); }
-      salvar({ email: novo });
-      if (sessao) T.store.set('sessao', { ...sessao, email: novo });
-      T.toast('E-mail atualizado.');
+      email.value = sessao.email;
+      T.toast('A alteração do e-mail de acesso ainda não está disponível.');
     });
     btnSenha.addEventListener('click', () => T.toast('A troca de senha precisa do back-end da loja.'));
   }

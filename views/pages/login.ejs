@@ -35,7 +35,12 @@
                 </div>
 
                 <!-- FORM -->
-                <form class="login-form">
+                <% if (erro) { %>
+                    <p class="mensagemFormulario mensagemErro" role="alert"><%= erro %></p>
+                <% } %>
+                <form class="login-form" action="/login" method="post">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <input type="hidden" name="next" value="<%= proximo %>">
 
                     <div class="input-group">
 
@@ -46,6 +51,10 @@
                         <input
                             type="email"
                             id="email"
+                            name="email"
+                            value="<%= valores.email || '' %>"
+                            autocomplete="username"
+                            maxlength="254"
                             class="input"
                             placeholder="Digite seu e-mail"
                             required
@@ -62,6 +71,9 @@
                         <input
                             type="password"
                             id="senha"
+                            name="senha"
+                            autocomplete="current-password"
+                            maxlength="128"
                             class="input"
                             placeholder="Digite sua senha"
                             required
@@ -82,9 +94,8 @@
                     <button 
                         type="submit"
                         class="btn btn-primary login-btn"
-                    ><a href="/pedidos.html">
+                    >
                         Entrar
-                        </a>
                     </button>
 
                 </form>
@@ -130,7 +141,7 @@
 
                     <p>
                         Ainda não possui conta?
-                        <a href="#">
+                        <a href="/cadastro.html">
                         Criar conta Tau Sports
                     </a>
                     </p>

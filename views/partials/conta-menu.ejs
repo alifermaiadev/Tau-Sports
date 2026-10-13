@@ -4,9 +4,11 @@
         { slug: 'trocas',        rotulo: 'Trocas e Devoluções', href: '/trocas.html',        preto: 'trocaPreto.png',          amarelo: 'trocaAmarelo.png' },
         { slug: 'seusdados',     rotulo: 'Seus Dados',          href: '/seusdados.html',     preto: 'perfil.png',              amarelo: 'seusDadosAmarelo.svg' },
         { slug: 'endereco',      rotulo: 'Endereços',           href: '/endereco.html',      preto: 'enderecoPreto.png',       amarelo: 'enderecoAmarelo.png' },
-        { slug: 'cartoessalvos', rotulo: 'Cartões Salvos',      href: '/cartoessalvos.html', preto: 'cartaoDeCreditoPreto.png', amarelo: 'cartaoDeCreditoAmarelo.png' },
-        { slug: 'sair',          rotulo: 'Sair',                href: '#',                   preto: 'excluirPreto.png',        amarelo: 'excluirVermelho.png' }
+        { slug: 'cartoessalvos', rotulo: 'Cartões Salvos',      href: '/cartoessalvos.html', preto: 'cartaoDeCreditoPreto.png', amarelo: 'cartaoDeCreditoAmarelo.png' }
     ];
+    if (usuario && usuario.perfil === 'ADMIN') {
+        itens.push({ slug: 'cadastrarproduto', rotulo: 'Cadastrar Produto', href: '/cadastrarproduto.html', preto: 'adicionar.png', amarelo: 'adicionar.png' });
+    }
 -%>
     <aside class="perfilSelecao" aria-label="Menu da conta">
         <ul>
@@ -19,5 +21,14 @@
                 </a>
             </li>
 <% }) -%>
+            <li>
+                <form action="/logout" method="post">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <button class="botaoSair" type="submit">
+                        <img src="/imagensUCE/excluirPreto.png" alt="">
+                        <span>Sair</span>
+                    </button>
+                </form>
+            </li>
         </ul>
     </aside>

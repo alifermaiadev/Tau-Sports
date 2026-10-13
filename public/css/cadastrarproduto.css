@@ -1,0 +1,13 @@
+.perfilInformacao.cadastroProduto { flex-direction: column; gap: 1.5rem; }
+.perfilAdmin { display: inline-block; padding: .3rem .65rem; margin-bottom: .6rem; background: #ffdf00; color: #111; font-size: .75rem; font-weight: 700; }
+.cadastroProduto select, .cadastroProduto input[type="number"], .cadastroProduto textarea { width: 100%; min-height: 44px; padding: .7rem .9rem; border: 1px solid #cfcfcf; background: #fff; color: #111; font: inherit; }
+.cadastroProduto textarea { resize: vertical; }
+.cadastroProduto input:focus, .cadastroProduto textarea:focus, .cadastroProduto select:focus { outline: 2px solid #111; outline-offset: 2px; }
+.cadastroProduto small { color: #666; line-height: 1.5; }
+.mensagemFormulario { padding: 1rem; line-height: 1.5; margin-bottom: 1rem; }
+.mensagemErro { border: 1px solid #b3261e; background: #fff3f2; color: #8c1d18; }
+.mensagemErro ul { padding-left: 1.5rem; }
+.mensagemSucesso { border: 1px solid #28723e; background: #effaf2; color: #205b31; }
+.mensagemSucesso a { font-weight: 600; text-decoration: underline; }
+.cancelarCadastro { padding: .75rem 1rem; color: #111; }
+@media (max-width: 768px) { .cadastroProduto .cardFormulario { padding: 1rem; } }

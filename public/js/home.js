@@ -47,13 +47,19 @@
   if (!filtrando) {
     const ofertas = $('#carrosselOfertas .cardsCarrossel');
     const vendidos = $('#carrosselVendidos .cardsCarrossel');
+    const novidades = $('#carrosselNovidades .cardsCarrossel');
+    const novos = T.PRODUTOS.filter(p => p.tags.includes('novidade'));
+    if (novidades && novos.length) {
+      novidades.innerHTML = novos.map(T.cardHTML).join('');
+      $('.novidades').hidden = false;
+    }
     if (ofertas) ofertas.innerHTML = T.PRODUTOS.filter(p => p.tags.includes('oferta')).map(T.cardHTML).join('');
     if (vendidos) vendidos.innerHTML = T.PRODUTOS.filter(p => p.tags.includes('vendido')).map(T.cardHTML).join('');
     return;
   }
 
   // Modo resultados: esconde vitrines e mostra a lista filtrada
-  ['.bannerPrincipal', '.ofertasDoDia', '.maisVendidos', '.colecoes'].forEach(s => {
+  ['.bannerPrincipal', '.ofertasDoDia', '.maisVendidos', '.novidades', '.colecoes'].forEach(s => {
     const el = $(s); if (el) el.remove();
   });
   const rotulo = filtros.busca ? 'RESULTADOS PARA "' + filtros.busca + '"'

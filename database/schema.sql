@@ -1,0 +1,38 @@
+-- Execute dentro do banco configurado em DB_NAME. Não remove dados existentes.
+CREATE TABLE IF NOT EXISTS usuarios (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  nome VARCHAR(120) NOT NULL,
+  email VARCHAR(254) NOT NULL UNIQUE,
+  senha_hash VARCHAR(200) NOT NULL,
+  perfil ENUM('CLIENTE', 'ADMIN') NOT NULL DEFAULT 'CLIENTE',
+  criado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS sessoes (
+  token_hash CHAR(64) NOT NULL PRIMARY KEY,
+  usuario_id INT UNSIGNED NOT NULL,
+  expira_em DATETIME NOT NULL,
+  INDEX idx_sessoes_expiracao (expira_em),
+  CONSTRAINT fk_sessoes_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS produtos (
+  id VARCHAR(100) NOT NULL PRIMARY KEY,
+  nome VARCHAR(160) NOT NULL,
+  marca VARCHAR(80) NOT NULL,
+  categoria VARCHAR(30) NOT NULL,
+  genero VARCHAR(20) NOT NULL,
+  preco DECIMAL(10,2) NOT NULL,
+  preco_de DECIMAL(10,2) NULL,
+  desconto_pix TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  parcelas TINYINT UNSIGNED NOT NULL DEFAULT 1,
+  descricao TEXT NOT NULL,
+  imagens JSON NOT NULL,
+  tamanhos JSON NOT NULL,
+  cores JSON NOT NULL,
+  tags JSON NOT NULL,
+  detalhes JSON NOT NULL,
+  criado_por INT UNSIGNED NULL,
+  criado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_produtos_usuario FOREIGN KEY (criado_por) REFERENCES usuarios(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

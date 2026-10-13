@@ -1,48 +1,33 @@
 'use strict';
 
-const path = require('path');
-const express = require('express');
+const ambiente = require('./src/config/ambiente');
+const banco = require('./src/config/banco');
+const criarApp = require('./src/app');
 
-const app = express();
-const PORT = process.env.PORT || 3000;
-
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
-app.disable('x-powered-by');
-
-/* Arquivos estáticos: /css, /js e /imagensUCE */
-app.use(express.static(path.join(__dirname, 'public'), {
-  setHeaders(res, arquivo) {
-    if (arquivo.endsWith('.avif')) res.type('image/avif');
+async function iniciar() {
+  const app = criarApp({ banco, segredo: ambiente.segredo });
+  // Verifica conexão e tabelas antes de aceitar requisições.
+  await banco.execute('SELECT id FROM usuarios LIMIT 1');
+  await banco.execute('SELECT id FROM produtos LIMIT 1');
+  await banco.execute('SELECT token_hash FROM sessoes LIMIT 1');
+  const servidor = app.listen(ambiente.porta, () => {
+    console.log('Taú Sports rodando em http://localhost:' + ambiente.porta);
+  });
+  for (const sinal of ['SIGINT', 'SIGTERM']) {
+    process.on(sinal, () => servidor.close(async () => {
+      await banco.end();
+      process.exit(0);
+    }));
   }
-}));
+}
 
-/* Páginas disponíveis (views/pages/<nome>.ejs) */
-const PAGINAS = [
-  'index', 'produto', 'login', 'finalizarcompra',
-  'pedidos', 'trocas', 'seusdados', 'endereco', 'cartoessalvos'
-];
+if (require.main === module) {
+  iniciar().catch(async erro => {
+    console.error('Não foi possível iniciar:', erro.message);
+    console.error('Confira o .env e execute npm run banco:preparar.');
+    await banco.end();
+    process.exitCode = 1;
+  });
+}
 
-/* "/" é a home */
-app.get('/', (req, res) => res.render('pages/index'));
-
-/* "/<pagina>.html" mantém as URLs do projeto original (os scripts usam esses links) */
-app.get('/:pagina.html', (req, res, next) => {
-  if (!PAGINAS.includes(req.params.pagina)) return next();
-  res.render('pages/' + req.params.pagina);
-});
-
-/* Atalho sem extensão: "/produto" -> "/produto.html" (mantendo a query string) */
-app.get('/:pagina', (req, res, next) => {
-  if (!PAGINAS.includes(req.params.pagina)) return next();
-  const qs = req.originalUrl.includes('?') ? req.originalUrl.slice(req.originalUrl.indexOf('?')) : '';
-  res.redirect(301, '/' + req.params.pagina + '.html' + qs);
-});
-
-app.use((req, res) => {
-  res.status(404).send('Página não encontrada.');
-});
-
-app.listen(PORT, () => {
-  console.log('Taú Sports rodando em http://localhost:' + PORT);
-});
+module.exports = { iniciar };
