@@ -1,0 +1,24 @@
+{
+  "name": "tau-sports",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Taú Sports — loja front-end servida com Express + EJS",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^4.22.3",
+    "mysql2": "^3.24.5",
+    "nodemon": "^3.1.14"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}

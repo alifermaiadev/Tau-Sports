@@ -1,0 +1,23 @@
+<%
+    const itens = [
+        { slug: 'pedidos',       rotulo: 'Pedidos',             href: '/pedidos.html',       preto: 'pedidoPreto.png',         amarelo: 'pedidoAmarelo.png' },
+        { slug: 'trocas',        rotulo: 'Trocas e Devoluções', href: '/trocas.html',        preto: 'trocaPreto.png',          amarelo: 'trocaAmarelo.png' },
+        { slug: 'seusdados',     rotulo: 'Seus Dados',          href: '/seusdados.html',     preto: 'perfil.png',              amarelo: 'seusDadosAmarelo.svg' },
+        { slug: 'endereco',      rotulo: 'Endereços',           href: '/endereco.html',      preto: 'enderecoPreto.png',       amarelo: 'enderecoAmarelo.png' },
+        { slug: 'cartoessalvos', rotulo: 'Cartões Salvos',      href: '/cartoessalvos.html', preto: 'cartaoDeCreditoPreto.png', amarelo: 'cartaoDeCreditoAmarelo.png' },
+        { slug: 'sair',          rotulo: 'Sair',                href: '#',                   preto: 'excluirPreto.png',        amarelo: 'excluirVermelho.png' }
+    ];
+-%>
+    <aside class="perfilSelecao" aria-label="Menu da conta">
+        <ul>
+<% itens.forEach(function (item) { -%>
+            <li<%- item.slug === ativo ? ' class="ativo"' : '' %>>
+                <a href="<%= item.href %>">
+                    <img class="imagemPreto" src="/imagensUCE/<%= item.preto %>" alt="">
+                    <img class="imagemAmarelo" src="/imagensUCE/<%= item.amarelo %>" alt="">
+                    <span><%= item.rotulo %></span>
+                </a>
+            </li>
+<% }) -%>
+        </ul>
+    </aside>

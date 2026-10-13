@@ -1,0 +1,67 @@
+<%- include('../partials/head', {
+    titulo: 'Taú Sports | Minha Conta',
+    css: ['global', 'header', 'footer', 'pedidos', 'components', 'cards', 'cartoessalvos', 'seusdados']
+}) %>
+<body>
+
+<%- include('../partials/header') %>
+
+<main class="paginaUsuario">
+    <%- include('../partials/conta-menu', { ativo: 'cartoessalvos' }) %>
+
+<section class="perfilInformacao perfilEndereco" aria-labelledby="tituloSeusDados">
+    
+
+    
+
+<article class="cardFormulario">
+    <div class="cardFormularioCabecalho">
+        <h2>Cartões salvos</h2>
+        <p>Gerencie os cartões cadastrados na sua conta.</p>
+    </div>
+
+    <div class="listaCartoes">
+        <div class="cartaoSalvo">
+            <div class="cartaoVisual">
+                <div class="cartaoBandeira"> <img src="/imagensUCE/visa.svg" alt=""></div>
+                <strong>•••• •••• •••• 4582</strong>
+                <small>Vence em 08/29</small>
+            </div>
+
+            <div class="cartaoInformacoes">
+                <h3>Alifer Henrique da Silva Maia</h3>
+                <p>Cartão de crédito</p>
+                <span class="seloPadrao">Padrão</span>
+            </div>
+
+            <div class="cartaoAcoes">
+                <button type="button" class="botaoSecundario">Editar</button>
+                <button type="button" class="botaoRemover">Remover</button>
+            </div>
+        </div>
+
+        <div class="cartaoSalvo">
+            <div class="cartaoVisual">
+                <span class="cartaoBandeira"><img src="/imagensUCE/mastercard.svg" alt=""></span>
+                <strong>•••• •••• •••• 9021</strong>
+                <small>Vence em 11/28</small>
+            </div>
+
+            <div class="cartaoInformacoes">
+                <h3>Alifer Henrique da Silva Maia</h3>
+                <p>Cartão de débito</p>
+            </div>
+
+            <div class="cartaoAcoes">
+                <button type="button" class="botaoSecundario">Editar</button>
+                <button type="button" class="botaoRemover">Remover</button>
+            </div>
+        </div>
+    </div>
+</article>
+</section>
+</main>
+
+<%- include('../partials/scripts', { scripts: ['core', 'conta'] }) %>
+</body>
+</html>

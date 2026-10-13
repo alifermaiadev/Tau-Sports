@@ -1,0 +1,153 @@
+<%- include('../partials/head', {
+    titulo: 'Taú Sports | Minha Conta',
+    css: ['global', 'header', 'footer', 'pedidos', 'components', 'cards', 'finalizarcompra']
+}) %>
+<body>
+
+<%- include('../partials/header') %>
+
+<main class="checkout">
+    <section class="itensCompra" aria-labelledby="tituloItens">
+        <h1 id="tituloItens">Itens da compra</h1>
+
+        <article class="itemCarrinho">
+            <img src="/imagensUCE/camisaAlemanha.png" alt="Camisa Alemanha Home 2026">
+
+            <div class="itemInfo">
+                <h2>Camisa Alemanha Home 2026 Jogador Masculino</h2>
+                <p>Tamanho: <strong>G</strong></p>
+                <p>Cor: <strong>Amarelo</strong></p>
+            </div>
+
+            <button class="botaoExcluir" type="button">Excluir</button>
+
+            <div class="itemRodape">
+                <div class="quantidade">
+                    <span>Quantidade:</span>
+                    <button type="button">−</button>
+                    <strong>1</strong>
+                    <button type="button">+</button>
+                </div>
+
+                <div class="precoItem">
+                    <strong>R$ 199,90</strong>
+                    <small>ou em até 4x de 59,90</small>
+                </div>
+            </div>
+
+            <a href="#" class="linkPequeno">Explorar mais produtos da loja</a>
+        </article>
+
+        <article class="itemCarrinho">
+            <img src="/imagensUCE/camisaAlemanha.png" alt="Camisa Alemanha Home 2026">
+
+            <div class="itemInfo">
+                <h2>Camisa Alemanha Home 2026 Jogador Masculino</h2>
+                <p>Tamanho: <strong>G</strong></p>
+                <p>Cor: <strong>Amarelo</strong></p>
+            </div>
+
+            <button class="botaoExcluir" type="button">Excluir</button>
+
+            <div class="itemRodape">
+                <div class="quantidade">
+                    <span>Quantidade:</span>
+                    <button type="button">−</button>
+                    <strong>1</strong>
+                    <button type="button">+</button>
+                </div>
+
+                <div class="precoItem">
+                    <strong>R$ 199,90</strong>
+                    <small>ou em até 4x de 59,90</small>
+                </div>
+            </div>
+
+            <a href="#" class="linkPequeno">Explorar mais produtos da loja</a>
+        </article>
+    </section>
+
+    <aside class="colunaCheckout">
+        <section class="cardCheckout" aria-labelledby="tituloResumo">
+            <h2 id="tituloResumo">Resumo da compra</h2>
+
+            <div class="linhaResumo">
+                <span>Subtotal (2 itens)</span>
+                <strong>R$ 399,80</strong>
+            </div>
+
+            <div class="linhaResumo">
+                <span>Valor do frete</span>
+                <strong class="freteGratis">Frete Grátis</strong>
+            </div>
+
+            <div class="linhaResumo">
+                <span>Cupom de desconto</span>
+                <a href="#">Adicionar</a>
+            </div>
+
+            <div class="linhaResumo total">
+                <span>Valor Total</span>
+                <div>
+                    <strong>R$ 399,80</strong>
+                    <small>ou em até 8x de 59,90</small>
+                </div>
+            </div>
+
+            <p class="economia">Você está economizando R$49,90</p>
+
+            <button class="botaoPagamento" type="button">Realizar Pagamento</button>
+        </section>
+
+        <section class="cardCheckout" aria-labelledby="tituloPagamento">
+            <h2 id="tituloPagamento">Escolher método de pagamento</h2>
+
+            <div class="metodoPagamento ativo">
+                <label>
+                    <input type="radio" name="pagamento" checked>
+                    <span>Cartão de Crédito</span>
+                </label>
+
+                <div class="cartaoResumo">
+                    <span class="iconeCartao"><img src="/imagensUCE/mastercard.svg" alt=""></span>
+                    <strong>Mastercard</strong>
+                    <small>•••• •••• •••• 7425</small>
+                </div>
+
+                <div class="acoesPagamento">
+                    <a href="#">Alterar Cartão</a>
+                    <a href="#">Pagar com 2 cartões</a>
+                </div>
+            </div>
+
+            <div class="metodoPagamento">
+                <label>
+                    <input type="radio" name="pagamento">
+                    <span>PIX</span>
+                </label>
+                <strong class="iconePix">◆</strong>
+            </div>
+
+            <div class="metodoPagamento">
+                <label>
+                    <input type="radio" name="pagamento">
+                    <span>Boleto Bancário</span>
+                </label>
+                <span class="boleto">Boleto</span>
+            </div>
+
+            <div class="enderecoEntrega">
+                <h3>Endereço de entrega</h3>
+                <p><strong>Largo Engenheiro Paulo de Almeida Sandeville, 204</strong></p>
+                <p>UNIFAE - São João da Boa Vista - SP</p>
+                <a href="#">Alterar Endereço</a>
+            </div>
+        </section>
+    </aside>
+</main>
+
+<%- include('../partials/footer-checkout') %>
+
+<%- include('../partials/scripts', { scripts: ['core', 'checkout'] }) %>
+</body>
+</html>

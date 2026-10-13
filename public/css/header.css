@@ -1,0 +1,347 @@
+/* =========================================================
+   HEADER
+========================================================= */
+
+header {
+    width: 100%;
+    background-color: var(--header-background);
+}
+
+.linha1,
+.linha2 {
+    width: 100%;
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding-inline: 2rem;
+}
+
+.linha1 {
+    background-color: var(--black);
+    padding-block: 0.5rem;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    overflow: hidden;
+}
+
+.bannerFrete {
+    display: flex;
+    align-items: center;
+    animation: bannerFade 3.5s linear infinite;
+}
+
+.bannerItem {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+
+    white-space: nowrap;
+}
+
+.bannerItem p {
+    color: var(--white);
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.bannerItem img {
+    width: 15px;
+    flex: 0 0 auto;
+}
+
+.bannerItem span {
+    color: var(--hover-color);
+}
+
+@keyframes bannerFade {
+    0% {
+        opacity: 0;
+    }
+
+    20% {
+        opacity: 1;
+    }
+
+    80% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+.linha2 {
+    min-height: 70px;
+    padding-block: 0.8rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--espacoGrande);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+}
+
+.logo img {
+    width: 34px;
+}
+
+.navLinks {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--espacoGrande);
+
+    list-style: none;
+    flex: 1;
+}
+
+.navLinks a {
+    text-decoration: none;
+    color: var(--white);
+
+    font-size: 1rem;
+    font-weight: 500;
+
+    transition: color var(--transition-fast);
+}
+
+.navLinks a:hover {
+    color: var(--hover-color);
+}
+
+.barraPesquisaDesktop {
+    position: relative;
+
+    width: 100%;
+    max-width: 250px;
+
+    display: flex;
+    align-items: center;
+    flex: 0 1 250px;
+}
+
+.barraPesquisaDesktop input {
+    width: 100%;
+    padding: 0.6rem 1rem 0.6rem 2.7rem;
+
+    background-color: transparent;
+    border: 1px solid var(--white);
+    color: var(--white);
+
+    outline: none;
+    font-family: "Rubik", Arial, sans-serif;
+}
+
+.barraPesquisaDesktop input::placeholder {
+    color: var(--white);
+    font-size: 0.75rem;
+}
+
+.barraPesquisaDesktop img {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+
+    width: 15px;
+
+    transform: translateY(-50%);
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+}
+
+
+.iconesHeader,
+.iconesHeaderMobile {
+    align-items: center;
+    gap: var(--espacoMedio);
+    flex: 0 0 auto;
+}
+
+.iconesHeader {
+    display: flex;
+}
+
+.iconesHeaderMobile {
+    display: none;
+}
+
+.iconesHeader a,
+.botaoHeader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: none;
+    border: none;
+    cursor: pointer;
+
+    transition: transform var(--transition-fast);
+}
+
+.iconesHeader a:hover,
+.botaoHeader:hover {
+    transform: scale(1.08);
+}
+
+.iconesHeader img,
+.botaoHeader img {
+    width: 20px;
+}
+
+/* =========================================================
+   BREAKPOINT 1 - NOTEBOOKS
+========================================================= */
+
+@media (max-width: 1200px) {
+    .linha2 {
+        gap: var(--espacoMedio);
+    }
+
+    .navLinks {
+        gap: var(--espacoMedio);
+    }
+
+    .barraPesquisaDesktop {
+        max-width: 220px;
+    }
+}
+
+/* =========================================================
+   BREAKPOINT 2 - TABLETS HORIZONTAIS
+========================================================= */
+
+@media (max-width: 1024px) {
+    .navLinks {
+        gap: 1rem;
+    }
+
+    .navLinks a {
+        font-size: 0.75rem;
+    }
+
+    .barraPesquisaDesktop {
+        max-width: 190px;
+    }
+
+    .iconesHeader {
+        gap: 1rem;
+    }
+}
+
+/* =========================================================
+   HEADER RESPONSIVO
+========================================================= */
+
+@media (max-width: 900px) {
+    .linha2 {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .navLinks,
+    .barraPesquisaDesktop {
+        display: none;
+    }
+
+    .iconesHeaderMobile {
+        display: flex;
+        justify-content: flex-start;
+    }
+
+    .logo {
+        justify-self: center;
+    }
+
+    .iconesHeader {
+        justify-content: flex-end;
+    }
+}
+
+/* =========================================================
+   BREAKPOINT 4 - CELULARES GRANDES
+========================================================= */
+
+@media (max-width: 576px) {
+    .linha1,
+    .linha2 {
+        padding-inline: 1rem;
+    }
+
+    .bannerItem {
+        gap: 0.6rem;
+    }
+
+    .bannerItem p {
+        font-size: 0.72rem;
+    }
+
+    .separadorBanner,
+    .textoPromocao {
+        display: none;
+    }
+
+    .iconesHeader,
+    .iconesHeaderMobile {
+        gap: 0.9rem;
+    }
+
+    .iconesHeader img,
+    .botaoHeader img {
+        width: 21px;
+    }
+
+    .logo img {
+        width: 38px;
+    }
+}
+
+/* =========================================================
+   BREAKPOINT 5 - CELULARES PEQUENOS
+========================================================= */
+
+@media (max-width: 360px) {
+    .linha1,
+    .linha2 {
+        padding-inline: 0.75rem;
+    }
+
+    .bannerItem p {
+        font-size: 0.68rem;
+    }
+
+    .bannerItem img {
+        width: 13px;
+    }
+
+    .iconesHeaderMobile,
+    .iconesHeader {
+        gap: 0.65rem;
+    }
+
+    .iconesHeader img,
+    .botaoHeader img {
+        width: 19px;
+    }
+
+    .logo img {
+        width: 34px;
+    }
+}

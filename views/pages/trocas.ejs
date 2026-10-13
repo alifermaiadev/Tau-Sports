@@ -1,0 +1,52 @@
+<%- include('../partials/head', {
+    titulo: 'Taú Sports | Minha Conta',
+    css: ['global', 'header', 'footer', 'pedidos', 'components', 'cards']
+}) %>
+<body>
+
+<%- include('../partials/header') %>
+
+<main class="paginaUsuario">
+    <%- include('../partials/conta-menu', { ativo: 'trocas' }) %>
+
+    <section class="perfilInformacao" aria-labelledby="tituloPedidos">
+        <div class="cabecalhoPerfil">
+            <h1 id="tituloPedidos">Trocas e devoluções</h1>
+            <p>Qual produto deseja trocar?</p>
+        </div>
+
+        <article class="pedido">
+            <img src="/imagensUCE/camisaAlemanha.png" alt="Camisa Alemanha Home 2026">
+
+            <div class="pedidoDetalhes">
+                <h2>Camisa Alemanha Home 2026</h2>
+                <p>Tamanho: <strong>G</strong></p>
+                <p>Quantidade: <strong>2</strong></p>
+                <p>Valor total: <strong>R$ 199,90</strong></p>
+            </div>
+
+            <div class="pedidoAcoes">
+                <a class="botaoComprar" href="/usuario.html">Solicitar troca</a>
+            </div>
+        </article>
+
+        <article class="pedido">
+            <img src="/imagensUCE/camisaAlemanha.png" alt="Camisa Alemanha Home 2026">
+
+            <div class="pedidoDetalhes">
+                <h2>Camisa Alemanha Home 2026</h2>
+                <p>Tamanho: <strong>G</strong></p>
+                <p>Quantidade: <strong>2</strong></p>
+                <p>Valor total: <strong>199,90</strong></p>
+            </div>
+
+            <div class="pedidoAcoes">
+                <a class="botaoComprar" href="/usuario.html">Solicitar Troca</a>
+            </div>
+        </article>
+    </section>
+</main>
+
+<%- include('../partials/scripts', { scripts: ['core', 'conta'] }) %>
+</body>
+</html>

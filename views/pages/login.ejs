@@ -1,0 +1,150 @@
+<%- include('../partials/head', {
+    titulo: 'Login | Tau Sports',
+    css: ['global', 'components', 'login', 'header', 'footer']
+}) %>
+<body>
+
+<%- include('../partials/header-login') %>
+
+<main class="login-page">
+
+        <section class="login-container">
+
+            <!-- LADO ESQUERDO -->
+            <div class="login-banner">
+
+                <div class="overlay"></div>
+
+                
+
+            </div>
+
+            <!-- LADO DIREITO -->
+            <div class="login-box">
+
+                <div class="login-header">
+
+                    <h1>
+                        Bem-vindo de volta
+                    </h1>
+
+                    <p>
+                        Faça login para continuar
+                    </p>
+
+                </div>
+
+                <!-- FORM -->
+                <form class="login-form">
+
+                    <div class="input-group">
+
+                        <label for="email">
+                            E-mail
+                        </label>
+
+                        <input
+                            type="email"
+                            id="email"
+                            class="input"
+                            placeholder="Digite seu e-mail"
+                            required
+                        >
+
+                    </div>
+
+                    <div class="input-group">
+
+                        <label for="senha">
+                            Senha
+                        </label>
+
+                        <input
+                            type="password"
+                            id="senha"
+                            class="input"
+                            placeholder="Digite sua senha"
+                            required
+                        >
+
+                    </div>
+
+                    <!-- OPÇÕES -->
+                    <div class="login-options">
+
+                        <a href="#" class="esqueceuASenha">
+                            Esqueceu a senha?
+                        </a>
+
+                    </div>
+
+                    <!-- BOTÃO -->
+                    <button 
+                        type="submit"
+                        class="btn btn-primary login-btn"
+                    ><a href="/pedidos.html">
+                        Entrar
+                        </a>
+                    </button>
+
+                </form>
+
+                <!-- DIVISOR -->
+                <div class="divider">
+                    <span>ou</span>
+                </div>
+
+                <!-- LOGIN SOCIAL -->
+                <div class="social-login">
+
+                    <button class="social-btn">
+
+                        <img 
+                            src="/imagensUCE/google.png" 
+                            alt="Google"
+                        >
+
+                        <span>
+                            Continuar com Google
+                        </span>
+
+                    </button>
+
+                    <button class="social-btn facebook">
+
+                        <img 
+                            src="/imagensUCE/facebookBranco.svg" 
+                            alt="Facebook"
+                        >
+
+                        <span>
+                            Continuar com Facebook
+                        </span>
+
+                    </button>
+
+                </div>
+
+                <!-- FOOTER -->
+                <div class="login-footer">
+
+                    <p>
+                        Ainda não possui conta?
+                        <a href="#">
+                        Criar conta Tau Sports
+                    </a>
+                    </p>
+
+                    
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+<%- include('../partials/scripts', { scripts: ['core', 'conta'] }) %>
+</body>
+</html>
