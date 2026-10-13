@@ -33,7 +33,7 @@ module.exports = function criarSessao(banco, segredo) {
         req.usuario = null;
         if (req.tokenSessao) {
           const [linhas] = await banco.execute(
-            `SELECT u.id, u.nome, u.email, u.perfil FROM sessoes s
+            `SELECT u.id, u.nome, u.email, u.ies_admin FROM sessoes s
              INNER JOIN usuarios u ON u.id = s.usuario_id
              WHERE s.token_hash = ? AND s.expira_em > UTC_TIMESTAMP()`, [hashToken(req.tokenSessao)]
           );

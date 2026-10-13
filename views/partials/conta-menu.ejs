@@ -6,9 +6,17 @@
         { slug: 'endereco',      rotulo: 'Endereços',           href: '/endereco.html',      preto: 'enderecoPreto.png',       amarelo: 'enderecoAmarelo.png' },
         { slug: 'cartoessalvos', rotulo: 'Cartões Salvos',      href: '/cartoessalvos.html', preto: 'cartaoDeCreditoPreto.png', amarelo: 'cartaoDeCreditoAmarelo.png' }
     ];
-    if (usuario && usuario.perfil === 'ADMIN') {
-        itens.push({ slug: 'cadastrarproduto', rotulo: 'Cadastrar Produto', href: '/cadastrarproduto.html', preto: 'adicionar.png', amarelo: 'adicionar.png' });
+    <%
+    if (usuario && usuario.ies_admin === 'S') {
+        itens.push({
+            slug: 'cadastrarproduto',
+            rotulo: 'Cadastrar Produto',
+            href: '/cadastrarproduto.html',
+            preto: 'adicionar.png',
+            amarelo: 'adicionar.png'
+        });
     }
+%>
 -%>
     <aside class="perfilSelecao" aria-label="Menu da conta">
         <ul>

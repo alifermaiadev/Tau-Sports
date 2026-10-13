@@ -45,7 +45,7 @@ module.exports = function criarApp({ banco, segredo }) {
     next();
   }
   function exigirAdmin(req, res, next) {
-    if (req.usuario.perfil !== 'ADMIN') {
+    if (req.usuario.ies_admin !== 'S') {
       return res.status(403).render('pages/erro', { titulo: 'Acesso restrito', mensagem: 'O cadastro de produtos é permitido somente para administradores.' });
     }
     next();
@@ -125,7 +125,7 @@ module.exports = function criarApp({ banco, segredo }) {
     if (CONTA.includes(pagina) && !req.usuario) {
       return res.redirect(303, '/login.html?next=' + encodeURIComponent('/' + pagina + '.html'));
     }
-    if (pagina === 'cadastrarproduto' && req.usuario.perfil !== 'ADMIN') {
+    if (pagina === 'cadastrarproduto' && req.usuario.ies_admin !== 'S') {
       return exigirAdmin(req, res, next);
     }
     if (['login', 'cadastro'].includes(pagina) && req.usuario) {
