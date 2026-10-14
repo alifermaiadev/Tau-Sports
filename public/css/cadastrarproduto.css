@@ -11,3 +11,8 @@
 .mensagemSucesso a { font-weight: 600; text-decoration: underline; }
 .cancelarCadastro { padding: .75rem 1rem; color: #111; }
 @media (max-width: 768px) { .cadastroProduto .cardFormulario { padding: 1rem; } }
+
+/* Mensagem de validação visível no campo que bloqueou o envio. */
+.cadastroProduto .alertaValidacaoProduto[hidden] { display: none; }
+.cadastroProduto [aria-invalid="true"] { border-color: #b3261e !important; outline: 2px solid #b3261e; outline-offset: 1px; }
+.cadastroProduto .erroCampoProduto { color: #a51c18; font-weight: 600; display: block; }

@@ -7,9 +7,10 @@ const criarApp = require('./src/app');
 async function iniciar() {
   const app = criarApp({ banco, segredo: ambiente.segredo });
   // Verifica conexão e tabelas antes de aceitar requisições.
-  await banco.execute('SELECT id FROM usuarios LIMIT 1');
-  await banco.execute('SELECT id FROM produtos LIMIT 1');
-  await banco.execute('SELECT token_hash FROM sessoes LIMIT 1');
+  await banco.execute('SELECT id_usuario FROM USUARIO LIMIT 1');
+  await banco.execute('SELECT token_hash FROM SESSOES LIMIT 1');
+  await banco.execute('SELECT id_produto FROM PRODUTO LIMIT 1');
+  await banco.execute('SELECT id_produto FROM PRODUTO_DETALHE LIMIT 1');
   const servidor = app.listen(ambiente.porta, () => {
     console.log('Taú Sports rodando em http://localhost:' + ambiente.porta);
   });

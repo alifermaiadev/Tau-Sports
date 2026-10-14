@@ -6,7 +6,6 @@
         { slug: 'endereco',      rotulo: 'Endereços',           href: '/endereco.html',      preto: 'enderecoPreto.png',       amarelo: 'enderecoAmarelo.png' },
         { slug: 'cartoessalvos', rotulo: 'Cartões Salvos',      href: '/cartoessalvos.html', preto: 'cartaoDeCreditoPreto.png', amarelo: 'cartaoDeCreditoAmarelo.png' }
     ];
-    <%
     if (usuario && usuario.ies_admin === 'S') {
         itens.push({
             slug: 'cadastrarproduto',
@@ -16,7 +15,6 @@
             amarelo: 'adicionar.png'
         });
     }
-%>
 -%>
     <aside class="perfilSelecao" aria-label="Menu da conta">
         <ul>

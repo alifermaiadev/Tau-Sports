@@ -42,8 +42,8 @@ function validarProduto(dados) {
     }
     return itens;
   };
-  const nome = campoTexto('nome', 'Nome', 3, 160);
-  const marca = campoTexto('marca', 'Marca', 2, 80);
+  const nome = campoTexto('nome', 'Nome', 3, 100);
+  const marca = campoTexto('marca', 'Marca', 2, 50);
   const descricao = campoTexto('descricao', 'Descrição', 10, 5000);
   const categoria = texto(dados.categoria), genero = texto(dados.genero);
   if (!Object.hasOwn(CATEGORIAS, categoria)) {
@@ -84,6 +84,9 @@ function validarProduto(dados) {
     }
   }
   const tamanhos = lista('tamanhos', /,/, 30, 20), cores = lista('cores', /,/, 20, 40);
+  if (tamanhos.length && tamanhos[0].length > 10) {
+    erros.push('O tamanho principal deve ter no máximo 10 caracteres.');
+  }
   if (!tamanhos.length || !cores.length) {
     erros.push('Informe pelo menos um tamanho e uma cor.');
   }

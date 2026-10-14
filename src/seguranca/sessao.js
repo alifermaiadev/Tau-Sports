@@ -33,9 +33,10 @@ module.exports = function criarSessao(banco, segredo) {
         req.usuario = null;
         if (req.tokenSessao) {
           const [linhas] = await banco.execute(
-            `SELECT u.id, u.nome, u.email, u.ies_admin FROM sessoes s
-             INNER JOIN usuarios u ON u.id = s.usuario_id
-             WHERE s.token_hash = ? AND s.expira_em > UTC_TIMESTAMP()`, [hashToken(req.tokenSessao)]
+            `SELECT u.id_usuario AS id, u.nome_usuario AS nome, u.email_usuario AS email,
+                    COALESCE(u.ies_admin, 'N') AS ies_admin FROM SESSOES s
+             INNER JOIN USUARIO u ON u.id_usuario = s.usuario_id
+             WHERE s.token_hash = ? AND s.expira_em > UTC_TIMESTAMP() AND u.ativo = 1`, [hashToken(req.tokenSessao)]
           );
           req.usuario = linhas[0] || null;
           if (!req.usuario) {
@@ -70,17 +71,17 @@ module.exports = function criarSessao(banco, segredo) {
     },
     async entrar(req, res, usuarioId) {
       if (req.tokenSessao) {
-        await banco.execute('DELETE FROM sessoes WHERE token_hash = ?', [hashToken(req.tokenSessao)]);
+        await banco.execute('DELETE FROM SESSOES WHERE token_hash = ?', [hashToken(req.tokenSessao)]);
       }
-      await banco.execute('DELETE FROM sessoes WHERE expira_em <= UTC_TIMESTAMP()');
+      await banco.execute('DELETE FROM SESSOES WHERE expira_em <= UTC_TIMESTAMP()');
       const token = randomBytes(32).toString('hex');
-      await banco.execute('INSERT INTO sessoes (token_hash, usuario_id, expira_em) VALUES (?, ?, ?)',
+      await banco.execute('INSERT INTO SESSOES (token_hash, usuario_id, expira_em) VALUES (?, ?, ?)',
         [hashToken(token), usuarioId, new Date(Date.now() + ambiente.duracaoSessao)]);
       res.cookie('tau_sessao', token, { ...opcoesCookie, maxAge: ambiente.duracaoSessao });
     },
     async sair(req, res) {
       if (req.tokenSessao) {
-        await banco.execute('DELETE FROM sessoes WHERE token_hash = ?', [hashToken(req.tokenSessao)]);
+        await banco.execute('DELETE FROM SESSOES WHERE token_hash = ?', [hashToken(req.tokenSessao)]);
       }
       res.clearCookie('tau_sessao', opcoesCookie);
     }

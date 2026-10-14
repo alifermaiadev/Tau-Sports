@@ -40,7 +40,7 @@ module.exports = function criarApp({ banco, segredo }) {
   app.use(sessao.carregar);
   function exigirLogin(req, res, next) {
     if (!req.usuario) {
-      return res.redirect(303, '/login.html?next=' + encodeURIComponent('/cadastrarproduto.html'));
+      return res.redirect(303, '/login.html?next=' + encodeURIComponent('/cadastrarproduto.ejs'));
     }
     next();
   }
@@ -87,18 +87,21 @@ module.exports = function criarApp({ banco, segredo }) {
     res.redirect(303, proximo);
   }));
   app.post('/cadastro', sessao.verificarCsrf, limitarTentativas, rotaAsync(async (req, res) => {
-    const nome = texto(req.body.nome), email = texto(req.body.email).toLowerCase(), valores = { nome, email };
-    if (nome.length < 3 || nome.length > 120 || !emailValido(email) || !senhaValida(req.body.senha) || req.body.senha !== req.body.confirmarSenha) {
-      return res.status(400).render('pages/cadastro', { erro: 'Informe nome, e-mail e senha de 8 a 128 caracteres. A confirmação deve ser igual à senha.', valores });
+    const nome = texto(req.body.nome), email = texto(req.body.email).toLowerCase();
+    const cpf = texto(req.body.cpf).replace(/\D/g, '');
+    const telefone = texto(req.body.telefone).replace(/\D/g, '');
+    const valores = { nome, email, cpf: texto(req.body.cpf), telefone: texto(req.body.telefone) };
+    if (nome.length < 3 || nome.length > 100 || email.length > 100 || !emailValido(email) || !/^\d{11}$/.test(cpf) || !/^\d{10,11}$/.test(telefone) || !senhaValida(req.body.senha) || req.body.senha !== req.body.confirmarSenha) {
+      return res.status(400).render('pages/cadastro', { erro: 'Informe nome, e-mail, CPF (11 dígitos), telefone (10 ou 11 dígitos) e senha de 8 a 128 caracteres. Confirme a mesma senha.', valores });
     }
     try {
-      // O formulário público nunca pode definir o perfil do usuário.
-      const id = await usuarios.cadastrar({ nome, email, senhaHash: await gerarHash(req.body.senha), ies_admin: 'N' });
+      // O formulário público nunca pode definir privilégios de administrador.
+      const id = await usuarios.cadastrar({ nome, email, senhaHash: await gerarHash(req.body.senha), cpf, telefone });
       await sessao.entrar(req, res, id);
       res.redirect(303, '/seusdados.html');
     } catch (erro) {
       if (erro.code === 'ER_DUP_ENTRY') {
-        return res.status(409).render('pages/cadastro', { erro: 'Este e-mail já está cadastrado.', valores });
+        return res.status(409).render('pages/cadastro', { erro: 'E-mail ou CPF já cadastrado.', valores });
       }
       throw erro;
     }

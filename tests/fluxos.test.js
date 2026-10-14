@@ -88,8 +88,9 @@ test('login, autorização ADMIN e cadastro de produtos pelo fluxo HTTP', async 
   const { banco, limpar } = await prepararBanco();
   const usuarios = criarUsuarios(banco), produtos = criarProdutos(banco);
   const senhaHash = await gerarHash(SENHA);
-  const adminId = await usuarios.cadastrar({ nome: 'Admin Faculdade', email: 'admin@tau.test', senhaHash, perfil: 'ADMIN' });
-  const clienteId = await usuarios.cadastrar({ nome: 'Cliente Faculdade', email: 'cliente@tau.test', senhaHash });
+  const adminId = await usuarios.cadastrar({ nome: 'Admin Faculdade', email: 'admin@tau.test', senhaHash, cpf: '12345678901', telefone: '11999999999' });
+  await usuarios.promoverAdmin(adminId);
+  const clienteId = await usuarios.cadastrar({ nome: 'Cliente Faculdade', email: 'cliente@tau.test', senhaHash, cpf: '12345678902', telefone: '11999999998' });
   for (const produto of catalogo) {
     await produtos.cadastrar(produto, null);
   }
@@ -125,7 +126,7 @@ test('login, autorização ADMIN e cadastro de produtos pelo fluxo HTTP', async 
       const res = await comprador.requisitar('/seusdados.html');
       assert.equal(res.status, 200);
       assert.doesNotMatch(res.html, /Cadastrar Produto/);
-      assert.equal(contexto(res.html).usuario.perfil, 'CLIENTE');
+      assert.equal(contexto(res.html).usuario.ies_admin, 'N');
       assert.equal(contexto(res.html).usuario.senha_hash, undefined);
     });
     await t.test('CLIENTE não acessa URL nem envia cadastro diretamente', async () => {
@@ -140,7 +141,7 @@ test('login, autorização ADMIN e cadastro de produtos pelo fluxo HTTP', async 
       assert.match(login.headers.get('set-cookie'), /SameSite=Lax/i);
       const res = await admin.requisitar('/seusdados.html');
       assert.ok(res.html.indexOf('Cadastrar Produto') < res.html.indexOf('<span>Sair</span>'));
-      assert.equal(contexto(res.html).usuario.perfil, 'ADMIN');
+      assert.equal(contexto(res.html).usuario.ies_admin, 'S');
       assert.match((await admin.requisitar('/cadastrarproduto.html')).html, /action="\/produtos" method="post"/);
     });
     await t.test('sessão e produtos continuam disponíveis ao recriar o servidor', async () => {
@@ -152,7 +153,7 @@ test('login, autorização ADMIN e cadastro de produtos pelo fluxo HTTP', async 
         reaberto.definirCookie('tau_csrf', admin.csrf());
         const pagina = await reaberto.requisitar('/cadastrarproduto.html');
         assert.equal(pagina.status, 200);
-        assert.equal(contexto(pagina.html).usuario.perfil, 'ADMIN');
+        assert.equal(contexto(pagina.html).usuario.ies_admin, 'S');
         assert.equal(contexto(pagina.html).produtos.length, 6);
       } finally {
         await new Promise(resolve => novoServidor.close(resolve));
@@ -194,10 +195,10 @@ test('login, autorização ADMIN e cadastro de produtos pelo fluxo HTTP', async 
     await t.test('cadastro público ignora perfil ADMIN e senha vai como hash', async () => {
       const novo = cliente(base);
       await novo.requisitar('/cadastro.html');
-      const res = await novo.requisitar('/cadastro', { nome: 'Novo Cliente', email: 'novo@tau.test', senha: SENHA, confirmarSenha: SENHA, perfil: 'ADMIN', _csrf: novo.csrf() });
+      const res = await novo.requisitar('/cadastro', { nome: 'Novo Cliente', email: 'novo@tau.test', senha: SENHA, confirmarSenha: SENHA, ies_admin: 'S', cpf: '12345678903', telefone: '11999999997', ies_admin: 'S', _csrf: novo.csrf() });
       assert.equal(res.status, 303);
       const salvo = await usuarios.porEmail('novo@tau.test');
-      assert.equal(salvo.perfil, 'CLIENTE');
+      assert.equal(salvo.ies_admin, 'N');
       assert.notEqual(salvo.senha_hash, SENHA);
       assert.match(salvo.senha_hash, /^scrypt\$/);
       assert.doesNotMatch((await novo.requisitar('/seusdados.html')).html, /Cadastrar Produto/);
@@ -205,7 +206,7 @@ test('login, autorização ADMIN e cadastro de produtos pelo fluxo HTTP', async 
     await t.test('cadastro duplicado não substitui senha nem perfil', async () => {
       const novo = cliente(base);
       await novo.requisitar('/cadastro.html');
-      const res = await novo.requisitar('/cadastro', { nome: 'Outro Nome', email: 'cliente@tau.test', senha: SENHA, confirmarSenha: SENHA, _csrf: novo.csrf() });
+      const res = await novo.requisitar('/cadastro', { nome: 'Outro Nome', email: 'cliente@tau.test', senha: SENHA, confirmarSenha: SENHA, cpf: '12345678904', telefone: '11999999996', _csrf: novo.csrf() });
       assert.equal(res.status, 409);
       assert.equal((await usuarios.porEmail('cliente@tau.test')).id, clienteId);
     });
@@ -215,10 +216,10 @@ test('login, autorização ADMIN e cadastro de produtos pelo fluxo HTTP', async 
       assert.equal(res.headers.get('location'), '/seusdados.html');
     });
     await t.test('revogação de ADMIN no banco vale para a sessão atual', async () => {
-      await banco.execute('UPDATE usuarios SET perfil = ? WHERE id = ?', ['CLIENTE', adminId]);
+      await banco.execute('UPDATE USUARIO SET ies_admin = ? WHERE id_usuario = ?', ['N', adminId]);
       assert.equal((await admin.requisitar('/cadastrarproduto.html')).status, 403);
       assert.equal((await admin.requisitar('/produtos', { ...camposProduto, _csrf: admin.csrf() })).status, 403);
-      await banco.execute('UPDATE usuarios SET perfil = ? WHERE id = ?', ['ADMIN', adminId]);
+      await banco.execute('UPDATE USUARIO SET ies_admin = ? WHERE id_usuario = ?', ['S', adminId]);
     });
     await t.test('logout invalida sessão inclusive se o cookie antigo for reenviado', async () => {
       const token = admin.sessao();
@@ -227,7 +228,7 @@ test('login, autorização ADMIN e cadastro de produtos pelo fluxo HTTP', async 
       assert.equal((await admin.requisitar('/seusdados.html')).status, 303);
     });
     await t.test('sessão expirada não autentica', async () => {
-      await banco.execute("UPDATE sessoes SET expira_em = '2000-01-01 00:00:00' WHERE usuario_id = ?", [clienteId]);
+      await banco.execute("UPDATE SESSOES SET expira_em = '2000-01-01 00:00:00' WHERE usuario_id = ?", [clienteId]);
       assert.equal((await comprador.requisitar('/seusdados.html')).status, 303);
     });
     await t.test('todas as páginas públicas e privadas renderizam em EJS', async () => {

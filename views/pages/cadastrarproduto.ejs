@@ -14,8 +14,8 @@
         <article class="cardFormulario">
             <form action="/produtos" method="post" class="formUsuario">
                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                <div class="campoFormulario campoGrande"><label for="nome">Nome do produto *</label><input type="text" id="nome" name="nome" value="<%= valores.nome || '' %>" minlength="3" maxlength="160" required placeholder="Ex.: Tênis Adidas Campus"></div>
-                <div class="campoFormulario"><label for="marca">Marca *</label><input type="text" id="marca" name="marca" value="<%= valores.marca || '' %>" minlength="2" maxlength="80" required placeholder="Ex.: Adidas"></div>
+                <div class="campoFormulario campoGrande"><label for="nome">Nome do produto *</label><input type="text" id="nome" name="nome" value="<%= valores.nome || '' %>" minlength="3" maxlength="100" required placeholder="Ex.: Tênis Adidas Campus"></div>
+                <div class="campoFormulario"><label for="marca">Marca *</label><input type="text" id="marca" name="marca" value="<%= valores.marca || '' %>" minlength="2" maxlength="50" required placeholder="Ex.: Adidas"></div>
                 <div class="campoFormulario"><label for="categoria">Categoria *</label><select id="categoria" name="categoria" required><option value="">Selecione</option><% Object.entries(categorias).forEach(function ([valor, rotulo]) { %><option value="<%= valor %>" <%= valores.categoria === valor ? 'selected' : '' %>><%= rotulo %></option><% }) %></select></div>
                 <div class="campoFormulario"><label for="genero">Público *</label><select id="genero" name="genero" required><option value="">Selecione</option><% Object.entries(generos).forEach(function ([valor, rotulo]) { %><option value="<%= valor %>" <%= valores.genero === valor ? 'selected' : '' %>><%= rotulo %></option><% }) %></select></div>
                 <div class="campoFormulario"><label for="preco">Preço de venda (R$) *</label><input type="number" id="preco" name="preco" value="<%= valores.preco || '' %>" min="0.01" max="99999999.99" step="0.01" required></div>
@@ -33,11 +33,12 @@
                     <label class="opcaoCheckbox"><input type="checkbox" name="tags" value="<%= valor %>" <%= selecionadas.includes(valor) ? 'checked' : '' %>><span><%= rotulo %></span></label>
                     <% }) %><small>O produto também aparecerá automaticamente em Novidades.</small>
                 </fieldset>
+                <p id="alertaValidacaoProduto" class="mensagemFormulario mensagemErro alertaValidacaoProduto campoGrande" role="alert" hidden>O produto não foi enviado. Confira os campos destacados e tente novamente.</p>
                 <div class="acoesFormulario campoGrande"><a href="/seusdados.html" class="cancelarCadastro">Cancelar</a><button type="submit">Cadastrar Produto</button></div>
             </form>
         </article>
     </section>
 </main>
-<%- include('../partials/scripts', { scripts: ['core', 'conta'] }) %>
+<%- include('../partials/scripts', { scripts: ['core', 'conta', 'cadastrarproduto'] }) %>
 </body>
 </html>
