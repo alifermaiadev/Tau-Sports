@@ -1,0 +1,464 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "Rubik", Arial, sans-serif;
+    background-color: #f3f3f3;
+    color: #111;
+}
+
+a {
+    color: inherit;
+}
+
+.checkout{
+    width: 1920px;
+   
+}
+
+.cabecalho {
+    background-color: #151515;
+    color: #fff;
+}
+
+.topoPromocional {
+    background-color: #000;
+    color: #fff200;
+    text-align: center;
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 0.35rem 1rem;
+}
+
+.topoPromocional p {
+    margin: 0;
+}
+
+.menuPrincipal {
+    max-width: 1280px;
+    margin: 0 auto;
+    min-height: 54px;
+    padding: 0 3rem;
+
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.logo img {
+    width: 42px;
+    display: block;
+}
+
+.linksMenu {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.linksMenu a,
+.linksUsuario a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.75rem;
+    font-weight: 400;
+    text-transform: uppercase;
+}
+
+.pesquisa {
+    margin-left: auto;
+}
+
+.pesquisa input {
+    width: 150px;
+    height: 24px;
+    padding: 0 0.5rem;
+
+    border: 1px solid #aaa;
+    background-color: transparent;
+    color: #fff;
+}
+
+.linksUsuario {
+    display: flex;
+    gap: 1rem;
+}
+
+.linksUsuario a {
+    font-size: 0.7rem;
+    font-weight: 400;
+    text-transform: none;
+}
+
+.checkout {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 2.4rem 2rem;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+}
+
+.itensCompra,
+.cardCheckout {
+    border: 1px solid #777;
+    background-color: #fff;
+}
+
+.itensCompra {
+    padding: 1.5rem;
+}
+
+.itensCompra h1,
+.cardCheckout h2 {
+    margin: 0 0 1.5rem;
+    font-size: 1.45rem;
+}
+
+.itemCarrinho {
+    position: relative;
+
+    display: grid;
+    grid-template-columns: 105px 1fr auto;
+    gap: 1rem;
+
+    padding: 1rem;
+    border: 1px solid #aaa;
+}
+
+.itemCarrinho + .itemCarrinho {
+    margin-top: 1.5rem;
+}
+
+.itemCarrinho img {
+    width: 95px;
+    height: 110px;
+    object-fit: cover;
+}
+
+.itemInfo h2 {
+    margin: 0 0 0.75rem;
+    font-size: 1rem;
+}
+
+.itemInfo p {
+    margin: 0.35rem 0;
+    font-size: 0.85rem;
+}
+
+.botaoExcluir {
+    align-self: center;
+
+    border: none;
+    background: none;
+    color: #f22424;
+
+    font: inherit;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+.itemRodape {
+    grid-column: 1 / -1;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding-top: 0.8rem;
+    border-top: 1px solid #aaa;
+}
+
+.quantidade {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+}
+
+.quantidade button {
+    width: 18px;
+    height: 18px;
+
+    border: 1px solid #111;
+    border-radius: 50%;
+    background-color: #fff;
+
+    line-height: 1;
+    cursor: pointer;
+}
+
+.precoItem {
+    text-align: right;
+}
+
+.precoItem strong {
+    display: block;
+    font-size: 1rem;
+}
+
+.precoItem small,
+.linhaResumo small {
+    font-size: 0.75rem;
+}
+
+.linkPequeno {
+    grid-column: 1 / -1;
+    font-size: 0.7rem;
+    color: #333;
+}
+
+.colunaCheckout {
+    display: flex;
+    flex-direction: column;
+    gap: 1.8rem;
+}
+
+.cardCheckout {
+    padding: 2rem;
+}
+
+.linhaResumo {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+
+    margin-bottom: 1.25rem;
+    font-weight: 400;
+}
+
+.linhaResumo a {
+    color: #333;
+}
+
+.freteGratis {
+    padding: 0.35rem 0.8rem;
+    background-color: #6dff6d;
+    font-size: 0.85rem;
+}
+
+.total {
+    align-items: flex-start;
+    margin-top: 2rem;
+}
+
+.total div {
+    text-align: right;
+}
+
+.total strong,
+.total small {
+    display: block;
+}
+
+.economia {
+    margin: 1.5rem 0;
+    padding: 0.7rem;
+    background-color: #6dff6d;
+    text-align: center;
+}
+
+.botaoPagamento {
+    display: block;
+    min-width: 230px;
+    min-height: 48px;
+    margin: 0 auto;
+
+    border: none;
+    background-color: #000;
+    color: #fff200;
+
+
+    font: inherit;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.metodoPagamento {
+    margin-bottom: 1.4rem;
+}
+
+.metodoPagamento label {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+
+    font-weight: 700;
+}
+
+.cartaoResumo {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+
+    margin: 0.8rem 0 0.6rem 1.6rem;
+}
+
+.iconeCartao {
+    color: #ff5b2e;
+    letter-spacing: -6px;
+}
+
+.iconePix {
+    display: block;
+    margin: 0.7rem 0 0 2rem;
+    color: #00b7a8;
+    font-size: 2rem;
+}
+
+.boleto {
+    display: inline-block;
+    margin: 0.7rem 0 0 2rem;
+    padding: 0.2rem 0.4rem;
+
+    border: 1px solid #ccc;
+    background-color: #f2f2f2;
+    font-size: 0.75rem;
+}
+
+.acoesPagamento {
+    display: flex;
+    gap: 1.5rem;
+    margin-left: 1.6rem;
+}
+
+.acoesPagamento a,
+.enderecoEntrega a {
+    font-size: 0.8rem;
+    color: #333;
+}
+
+.enderecoEntrega {
+    margin-top: 3rem;
+}
+
+.enderecoEntrega h3 {
+    margin: 0 0 1rem;
+    font-size: 1.4rem;
+}
+
+.enderecoEntrega p {
+    margin: 0.5rem 0;
+    font-size: 0.85rem;
+}
+
+.rodape {
+    padding: 2rem;
+    background-color: #000;
+    color: #fff;
+    text-align: center;
+}
+
+.rodape p {
+    margin: 0 0 1rem;
+    font-size: 0.75rem;
+}
+
+.rodape small {
+    display: block;
+    max-width: 1180px;
+    margin: 0 auto;
+    font-size: 0.65rem;
+    line-height: 1.4;
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+    .menuPrincipal {
+        padding: 0 1.5rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .linksUsuario {
+        display: none;
+    }
+
+    .checkout {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+}
+
+/* Celular */
+@media (max-width: 640px) {
+    .topoPromocional {
+        font-size: 0.7rem;
+    }
+
+    .menuPrincipal {
+        justify-content: center;
+        padding: 1rem;
+    }
+
+    .linksMenu {
+        width: 100%;
+        overflow-x: auto;
+        gap: 1rem;
+        padding-bottom: 0.4rem;
+    }
+
+    .pesquisa {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .pesquisa input {
+        width: 100%;
+        height: 36px;
+    }
+
+    .checkout {
+        padding: 1rem;
+    }
+
+    .itensCompra,
+    .cardCheckout {
+        padding: 1rem;
+    }
+
+    .itemCarrinho {
+        grid-template-columns: 80px 1fr;
+    }
+
+    .itemCarrinho img {
+        width: 75px;
+        height: 90px;
+    }
+
+    .botaoExcluir {
+        grid-column: 1 / -1;
+        justify-self: flex-start;
+    }
+
+    .itemRodape {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+
+    .precoItem {
+        text-align: left;
+    }
+
+    .linhaResumo {
+        align-items: flex-start;
+    }
+
+    .botaoPagamento {
+        width: 100%;
+    }
+
+    .acoesPagamento {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}

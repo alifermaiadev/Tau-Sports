@@ -1,0 +1,44 @@
+<%- include('../partials/head', { titulo: 'Cadastrar Produto | Taú Sports', css: ['global', 'header', 'footer', 'pedidos', 'components', 'seusdados', 'cadastrarproduto'] }) %>
+<body>
+<%- include('../partials/header') %>
+<main class="paginaUsuario">
+    <%- include('../partials/conta-menu', { ativo: 'cadastrarproduto' }) %>
+    <section class="perfilInformacao cadastroProduto" aria-labelledby="tituloCadastro">
+        <div class="cabecalhoPerfil"><span class="perfilAdmin">ADMIN</span><h1 id="tituloCadastro">Cadastrar Produto</h1><p>Adicione um produto ao catálogo da Taú Sports.</p></div>
+        <% if (sucesso) { %>
+            <div class="mensagemFormulario mensagemSucesso" role="status">Produto cadastrado com sucesso. <a href="/produto.html?id=<%= produtoCadastrado.id %>">Ver produto na loja</a></div>
+        <% } %>
+        <% if (erros.length) { %>
+            <div class="mensagemFormulario mensagemErro" role="alert"><strong>Revise os campos abaixo:</strong><ul><% erros.forEach(function (mensagem) { %><li><%= mensagem %></li><% }) %></ul></div>
+        <% } %>
+        <article class="cardFormulario">
+            <form action="/produtos" method="post" class="formUsuario">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <div class="campoFormulario campoGrande"><label for="nome">Nome do produto *</label><input type="text" id="nome" name="nome" value="<%= valores.nome || '' %>" minlength="3" maxlength="100" required placeholder="Ex.: Tênis Adidas Campus"></div>
+                <div class="campoFormulario"><label for="marca">Marca *</label><input type="text" id="marca" name="marca" value="<%= valores.marca || '' %>" minlength="2" maxlength="50" required placeholder="Ex.: Adidas"></div>
+                <div class="campoFormulario"><label for="categoria">Categoria *</label><select id="categoria" name="categoria" required><option value="">Selecione</option><% Object.entries(categorias).forEach(function ([valor, rotulo]) { %><option value="<%= valor %>" <%= valores.categoria === valor ? 'selected' : '' %>><%= rotulo %></option><% }) %></select></div>
+                <div class="campoFormulario"><label for="genero">Público *</label><select id="genero" name="genero" required><option value="">Selecione</option><% Object.entries(generos).forEach(function ([valor, rotulo]) { %><option value="<%= valor %>" <%= valores.genero === valor ? 'selected' : '' %>><%= rotulo %></option><% }) %></select></div>
+                <div class="campoFormulario"><label for="preco">Preço de venda (R$) *</label><input type="number" id="preco" name="preco" value="<%= valores.preco || '' %>" min="0.01" max="99999999.99" step="0.01" required></div>
+                <div class="campoFormulario"><label for="precoDe">Preço anterior (R$)</label><input type="number" id="precoDe" name="precoDe" value="<%= valores.precoDe || '' %>" min="0.01" max="99999999.99" step="0.01"><small>Opcional. Deve ser maior que o preço de venda.</small></div>
+                <div class="campoFormulario"><label for="descontoPix">Desconto no PIX (%)</label><input type="number" id="descontoPix" name="descontoPix" value="<%= valores.descontoPix || '0' %>" min="0" max="99" step="1"></div>
+                <div class="campoFormulario"><label for="parcelas">Quantidade de parcelas</label><input type="number" id="parcelas" name="parcelas" value="<%= valores.parcelas || '1' %>" min="1" max="10" step="1"></div>
+                <div class="campoFormulario"><label for="tamanhos">Tamanhos *</label><input type="text" id="tamanhos" name="tamanhos" value="<%= valores.tamanhos || '' %>" maxlength="629" required placeholder="Ex.: P, M, G ou 38, 39, 40"><small>Separe por vírgula. Para acessórios, use Único.</small></div>
+                <div class="campoFormulario campoGrande"><label for="cores">Cores *</label><input type="text" id="cores" name="cores" value="<%= valores.cores || '' %>" maxlength="819" required placeholder="Ex.: Preto, Branco"><small>Separe por vírgula.</small></div>
+                <div class="campoFormulario campoGrande"><label for="imagens">Imagens *</label><textarea id="imagens" name="imagens" rows="3" maxlength="20500" required placeholder="/imagensUCE/camisaAlemanha.png"><%= valores.imagens || '' %></textarea><small>Uma URL HTTP/HTTPS ou caminho existente em /imagensUCE/ por linha, até 10 imagens. A primeira é a imagem principal.</small></div>
+                <div class="campoFormulario campoGrande"><label for="descricao">Descrição *</label><textarea id="descricao" name="descricao" rows="4" minlength="10" maxlength="5000" required><%= valores.descricao || '' %></textarea></div>
+                <div class="campoFormulario campoGrande"><label for="detalhes">Detalhes técnicos</label><textarea id="detalhes" name="detalhes" rows="3" maxlength="5020" placeholder="Material: Poliéster&#10;Modelagem: Regular"><%= valores.detalhes || '' %></textarea><small>Um detalhe por linha, até 20 itens.</small></div>
+                <fieldset class="campoFormulario campoGrande grupoOpcoes"><legend>Exibição na loja</legend>
+                    <% const selecionadas = Array.isArray(valores.tags) ? valores.tags : [valores.tags]; %>
+                    <% [['oferta', 'Ofertas do dia'], ['esporte', 'Esportes'], ['streetwear', 'Streetwear']].forEach(function ([valor, rotulo]) { %>
+                    <label class="opcaoCheckbox"><input type="checkbox" name="tags" value="<%= valor %>" <%= selecionadas.includes(valor) ? 'checked' : '' %>><span><%= rotulo %></span></label>
+                    <% }) %><small>O produto também aparecerá automaticamente em Novidades.</small>
+                </fieldset>
+                <p id="alertaValidacaoProduto" class="mensagemFormulario mensagemErro alertaValidacaoProduto campoGrande" role="alert" hidden>O produto não foi enviado. Confira os campos destacados e tente novamente.</p>
+                <div class="acoesFormulario campoGrande"><a href="/seusdados.html" class="cancelarCadastro">Cancelar</a><button type="submit">Cadastrar Produto</button></div>
+            </form>
+        </article>
+    </section>
+</main>
+<%- include('../partials/scripts', { scripts: ['core', 'conta', 'cadastrarproduto'] }) %>
+</body>
+</html>

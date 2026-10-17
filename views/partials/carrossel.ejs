@@ -1,0 +1,12 @@
+<%# Parâmetros: id (string), rotulo (texto acessível), classe (opcional) -%>
+<div class="carrossel<%= typeof classe !== 'undefined' ? ' ' + classe : '' %>" id="<%= id %>" data-carrossel>
+    <button type="button" class="carrossel__botao carrossel__botao--anterior" aria-label="Ver produtos anteriores" hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+
+    <div class="cardsCarrossel" role="region" aria-label="<%= rotulo %>" tabindex="0"></div>
+
+    <button type="button" class="carrossel__botao carrossel__botao--proximo" aria-label="Ver próximos produtos" hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+</div>

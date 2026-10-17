@@ -1,0 +1,676 @@
+:root {
+    --imgProdutoBackground: rgb(238, 238, 238);
+    --cardProdutoWidth: 260px;
+    --sectionPadding: 2rem;
+}
+
+/* =========================================================
+   OFERTAS DO DIA
+========================================================= */
+
+.ofertasDoDia {
+    width: 100%;
+
+    background: #00030f;
+    background: linear-gradient(180deg, rgba(0, 3, 15, 1) 0%, rgba(252, 191, 70, 1) 100%);
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+}
+
+.ofertasDoDiaTexto {
+    width: 100%;
+    padding: 2rem var(--sectionPadding);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.ofertasDoDiaTexto span {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.ofertasDoDiaTexto h2 {
+    color: var(--white);
+}
+
+#ofertas2 {
+    color: var(--white);
+    font-weight: 500;
+}
+
+#ofertas2 strong {
+    font-size: 1.5rem;
+}
+
+/* =========================================================
+   TÍTULOS DAS SEÇÕES
+========================================================= */
+
+.maisVendidos h2,
+.colecoes > h2 {
+    padding: 2rem var(--sectionPadding);
+}
+
+/* =========================================================
+   CARDS DE PRODUTO
+========================================================= */
+
+.cardsContainer {
+    width: 100%;
+    padding: 0 var(--sectionPadding) 2rem;
+
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 1rem;
+}
+
+.cardsContainer .cardProduto {
+    flex: 1 1 var(--cardProdutoWidth);
+    max-width: calc((100% - 4rem) / 5);
+}
+
+/* =========================================================
+   CARROSSEL (partials/carrossel.ejs + js/carrossel.js)
+========================================================= */
+
+.carrossel {
+    --carrosselBotao: 2.75rem;
+    --carrosselBotaoOffset: max(0.25rem, calc(var(--sectionPadding) - (var(--carrosselBotao) / 2)));
+
+    position: relative;
+    width: 100%;
+}
+
+.cardsCarrossel {
+    width: 100%;
+    max-width: 100%;
+    /* o topo tem folga para o card "subir" no hover sem ser cortado */
+    padding: 0.375rem var(--sectionPadding) 2rem;
+
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    gap: 1rem;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+
+    scroll-snap-type: x proximity;
+    scroll-padding-inline: var(--sectionPadding);
+    scroll-behavior: smooth;
+
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+}
+
+.cardsCarrossel::-webkit-scrollbar {
+    display: none;
+}
+
+.cardsCarrossel:focus-visible {
+    outline: 2px solid var(--black);
+    outline-offset: -2px;
+}
+
+.cardsCarrossel .cardProduto {
+    flex: 0 0 var(--cardProdutoWidth);
+    scroll-snap-align: start;
+}
+
+.carrossel__botao {
+    position: absolute;
+    /* centro da faixa de cards (desconta o respiro de baixo do carrossel) */
+    top: calc((100% - 2rem) / 2);
+    transform: translateY(-50%);
+    z-index: 2;
+
+    width: var(--carrosselBotao);
+    height: var(--carrosselBotao);
+    padding: 0;
+
+    display: grid;
+    place-items: center;
+
+    background-color: var(--white);
+    color: var(--black);
+    border: 1px solid var(--black);
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+
+    cursor: pointer;
+
+    transition:
+        opacity var(--transition-fast),
+        background-color var(--transition-fast),
+        transform var(--transition-fast);
+}
+
+.carrossel__botao[hidden] {
+    display: none;
+}
+
+.carrossel__botao svg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.carrossel__botao:hover {
+    background-color: var(--black);
+    color: var(--white);
+}
+
+.carrossel__botao:focus-visible {
+    outline: 2px solid var(--black);
+    outline-offset: 2px;
+}
+
+.carrossel__botao:disabled {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.carrossel__botao--anterior {
+    left: var(--carrosselBotaoOffset);
+}
+
+.carrossel__botao--proximo {
+    right: var(--carrosselBotaoOffset);
+}
+
+/* No celular o usuário arrasta com o dedo; os botões saem do caminho */
+@media (max-width: 576px) {
+    .carrossel__botao {
+        display: none;
+    }
+}
+
+/*
+  Estrutura do card (grid com linhas fixas):
+  1. imagem      -> altura fixa, foto sempre contida (object-fit)
+  2. nome        -> sempre reserva 2 linhas
+  3. selo %OFF   -> linha reservada, mesmo sem desconto
+  4. preço       -> preço + parcela + linha de frete grátis (reservada)
+  Assim, os elementos ficam alinhados entre cards mesmo quando
+  algum deles não tem desconto ou frete grátis.
+*/
+.cardProduto {
+    --fonteInfo: 0.8rem;
+    --alturaSelo: 1.75rem;
+
+    min-width: 220px;
+    padding: 0.75rem;
+
+    background-color: var(--white);
+    border: 1px solid silver;
+    border-radius: 10px;
+
+    color: black;
+    text-decoration: none;
+
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto var(--alturaSelo) 1fr;
+    row-gap: 1rem;
+
+    transition:
+        border-color var(--transition-fast),
+        transform var(--transition-fast);
+
+    scroll-snap-align: none;
+}
+
+.cardProduto:hover {
+    border-color: var(--black);
+    transform: translateY(-3px);
+}
+
+/* Posição fixa de cada bloco, independente de existir ou não */
+.cardProduto .imgProduto     { grid-row: 1; }
+.cardProduto .nomeProduto    { grid-row: 2; }
+.cardProduto .descontoProduto{ grid-row: 3; }
+.cardProduto .precoProduto   { grid-row: 4; }
+
+.imgProduto {
+    height: 190px;
+    padding: 1rem;
+
+    background-color: var(--imgProdutoBackground);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    overflow: hidden;
+}
+
+/* A foto ocupa sempre o mesmo espaço, qualquer que seja a proporção */
+.cardProduto img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+}
+
+.nomeProduto {
+    font-size: 0.95rem;
+    line-height: 1.35;
+    font-weight: 500;
+
+    /* reserva 2 linhas e corta o excesso com "..." */
+    min-height: calc(1.35em * 2);
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+}
+
+.descontoProduto {
+    width: fit-content;
+    height: var(--alturaSelo);
+    padding: 0 0.5rem;
+    align-self: start;
+
+    color: var(--descontoEscrito);
+    background-color: rgb(0, 255, 0);
+
+    display: inline-flex;
+    align-items: center;
+
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.precoProduto {
+    align-self: end;
+
+    display: grid;
+    /* 3ª linha (frete) sempre reservada, mesmo quando não existe */
+    grid-template-rows: auto auto calc(var(--fonteInfo) * 1.4);
+    row-gap: 0.2rem;
+}
+
+.valorProduto {
+    font-weight: 700;
+    font-size: 1.4rem;
+    line-height: 1.2;
+}
+
+.parcelaProduto {
+    font-size: var(--fonteInfo);
+    line-height: 1.4;
+    color: #333;
+}
+
+.freteProduto {
+    font-size: var(--fonteInfo);
+    line-height: 1.4;
+    font-weight: 600;
+    color: #008a2e;
+    white-space: nowrap;
+}
+
+/* =========================================================
+   COLEÇÕES
+========================================================= */
+
+.colecoesContainer {
+    width: 100%;
+    padding: 0 var(--sectionPadding) 2rem;
+
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.cardsColecoes {
+    flex: 1 1 300px;
+    min-height: 50vh;
+    padding: 2rem;
+
+    display: flex;
+    align-items: flex-end;
+
+    text-decoration: none;
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    transition: transform var(--transition-fast);
+}
+
+.cardsColecoes:hover {
+    transform: scale(1.03);
+}
+
+.cardsColecoes h2 {
+    color: var(--white);
+    padding: 0;
+}
+
+.colecao1 {
+    background-image:
+        linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+        url('../imagensUCE/colecaoBasquete.jpeg');
+}
+
+.colecao2 {
+    background-image:
+        linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+        url('../imagensUCE/colecaoVolei.jpeg');
+}
+
+.colecao3 {
+    background-image:
+        linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+        url('../imagensUCE/colecaoCorrida.jpg');
+}
+
+/* =========================================================
+   RESPONSIVIDADE DESKTOP / NOTEBOOK
+========================================================= */
+
+/* Desktop menor / notebook grande */
+@media (max-width: 1300px) {
+
+    :root {
+        --cardProdutoWidth: 240px;
+    }
+
+    .cardsContainer .cardProduto {
+        max-width: calc((100% - 3rem) / 4);
+    }
+
+    .imgProduto {
+        height: 180px;
+    }
+
+}
+
+/* iPad Pro / Surface Pro 7 / notebook intermediário */
+@media (max-width: 1100px) {
+
+    :root {
+        --cardProdutoWidth: 230px;
+        --sectionPadding: 1.5rem;
+    }
+
+    .cardsContainer,
+    .cardsCarrossel,
+    .colecoesContainer {
+        gap: 0.875rem;
+    }
+
+    .cardsContainer .cardProduto {
+        max-width: calc((100% - 1.75rem) / 3);
+    }
+
+    .imgProduto {
+        height: 170px;
+    }
+
+
+}
+
+@media (max-width: 992px) {
+
+    :root {
+        --cardProdutoWidth: 220px;
+    }
+
+    .ofertasDoDiaTexto {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .ofertasDoDiaTexto h2 {
+        font-size: 1.7rem;
+    }
+
+    #ofertas2 {
+        font-size: 0.95rem;
+    }
+
+    #ofertas2 strong {
+        font-size: 1.3rem;
+    }
+
+    .cardsContainer .cardProduto {
+        max-width: calc((100% - 1.75rem) / 3);
+    }
+
+    .cardsColecoes {
+        min-height: 35vh;
+        padding: 1.5rem;
+    }
+
+}
+
+/* =========================================================
+   RESPONSIVIDADE TABLET / MOBILE
+========================================================= */
+
+@media (max-width: 768px) {
+
+    .cardsContainer,
+    .cardsCarrossel,
+    .colecoesContainer {
+        gap: 0.75rem;
+    }
+
+    .cardsContainer .cardProduto {
+        flex-basis: calc((100% - 1.5rem) / 3);
+        max-width: calc((100% - 1.5rem) / 3);
+        min-width: 0;
+    }
+
+    .imgProduto {
+        height: 150px;
+    }
+
+
+}
+
+@media (max-width: 576px) {
+
+    :root {
+        --sectionPadding: 1rem;
+    }
+
+    .ofertasDoDiaTexto {
+        padding-block: 1.5rem;
+    }
+
+    .maisVendidos h2,
+    .colecoes > h2 {
+        padding-block: 1.5rem;
+    }
+
+    .cardsContainer .cardProduto {
+        flex-basis: calc((100% - 0.75rem) / 2);
+        max-width: calc((100% - 0.75rem) / 2);
+        min-width: 0;
+    }
+
+    .cardsCarrossel .cardProduto {
+        flex-basis: 180px;
+    }
+
+    .cardProduto {
+        --fonteInfo: 0.7rem;
+        --alturaSelo: 1.5rem;
+
+        padding: 0.65rem;
+        row-gap: 0.75rem;
+    }
+
+    .imgProduto {
+        height: 125px;
+        padding: 0.75rem;
+    }
+
+    .nomeProduto {
+        font-size: 0.82rem;
+    }
+
+    .descontoProduto {
+        font-size: 0.68rem;
+        padding: 0 0.45rem;
+    }
+
+    .valorProduto {
+        font-size: 1rem;
+    }
+
+    .parcelaProduto {
+        font-size: 0.7rem;
+    }
+
+    .cardsColecoes {
+        flex-basis: 100%;
+        min-height: 26vh;
+        padding: 1rem;
+    }
+
+    .cardsColecoes h2 {
+        font-size: 1.3rem;
+    }
+
+}
+
+@media (max-width: 400px) {
+
+    .cardsContainer .cardProduto {
+        flex-basis: 100%;
+        max-width: 100%;
+    }
+
+    .cardsCarrossel .cardProduto {
+        flex-basis: 170px;
+    }
+
+    .ofertasDoDiaTexto h2 {
+        font-size: 1.2rem;
+    }
+
+    #ofertas2 {
+        font-size: 0.8rem;
+    }
+
+    .imgProduto {
+        height: 115px;
+    }
+
+
+    .nomeProduto {
+        font-size: 0.78rem;
+    }
+
+    .valorProduto {
+        font-size: 0.95rem;
+    }
+
+    .cardsColecoes {
+        min-height: 22vh;
+    }
+
+    .cardsColecoes h2 {
+        font-size: 1.1rem;
+    }
+
+}
+
+/* =========================================================
+   TELAS ALTERNATIVAS / DOBRÁVEIS
+========================================================= */
+
+/* Surface Duo / Galaxy Z Fold aberto */
+@media (min-width: 650px) and (max-width: 767px) {
+
+    :root {
+        --sectionPadding: 1.25rem;
+    }
+
+    .cardsContainer .cardProduto {
+        flex-basis: calc((100% - 1.5rem) / 3);
+        max-width: calc((100% - 1.5rem) / 3);
+    }
+
+    .cardsCarrossel .cardProduto {
+        flex-basis: 200px;
+    }
+
+    .imgProduto {
+        height: 140px;
+    }
+
+
+}
+
+/* Surface Duo / Galaxy Z Fold fechado */
+@media (min-width: 340px) and (max-width: 430px) {
+
+    :root {
+        --sectionPadding: 0.875rem;
+    }
+
+    .cardsContainer .cardProduto {
+        flex-basis: 100%;
+        max-width: 100%;
+    }
+
+    .cardsCarrossel .cardProduto {
+        flex-basis: 175px;
+    }
+
+    .imgProduto {
+        height: 135px;
+    }
+
+
+}
+
+/* Asus Zenbook Fold / telas dobráveis grandes */
+@media (min-width: 1101px) and (max-width: 1300px) {
+
+    .cardsContainer .cardProduto {
+        flex-basis: calc((100% - 3rem) / 4);
+        max-width: calc((100% - 3rem) / 4);
+    }
+
+    .cardsCarrossel .cardProduto {
+        flex-basis: 240px;
+    }
+
+}
+
+/* Nest Hub Max */
+@media (min-width: 1180px) and (max-width: 1300px) and (max-height: 850px) {
+
+    .cardsContainer .cardProduto {
+        flex-basis: calc((100% - 4rem) / 5);
+        max-width: calc((100% - 4rem) / 5);
+    }
+
+    .cardsCarrossel .cardProduto {
+        flex-basis: 220px;
+    }
+
+    .imgProduto {
+        height: 160px;
+    }
+
+
+}

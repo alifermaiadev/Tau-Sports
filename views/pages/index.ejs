@@ -1,0 +1,120 @@
+<%- include('../partials/head', {
+    titulo: 'Taú Sports',
+    css: ['global', 'header', 'footer', 'home', 'components', 'cards']
+}) %>
+<body>
+
+<%- include('../partials/header') %>
+
+<main>
+
+    <section class="bannerPrincipal" aria-label="Banner principal Adidas Trionda">
+        <div class="bannerPrincipalTexto">
+            <img src="/imagensUCE/logoAdidasTrefoil.png" alt="Logo Adidas Trefoil">
+
+            <h1>CRIADA PARA CAMPEÕES: Adidas Trionda Pro Copa do Mundo da FIFA 26™</h1>
+
+            <a href="#" class="botaoComprar">
+                <span>COMPRAR AGORA</span>
+                <img class="iconeSacola sacolaPreta" src="/imagensUCE/sacolaPreta.png" alt="">
+                <img class="iconeSacola sacolaAmarela" src="/imagensUCE/sacolaAmarela.png" alt="">
+            </a>
+        </div>
+    </section>
+
+    <section class="naTauTem">
+        <h2>NA TAÚ SPORTS TEM</h2>
+
+        <nav aria-label="Categorias de produtos">
+            <ul class="listaCategorias">
+                <li><a href="#"><img src="/imagensUCE/tenis.svg" alt=""><p>Tênis</p></a></li>
+                <li><a href="#"><img src="/imagensUCE/camiseta.svg" alt=""><p>Camiseta</p></a></li>
+                <li><a href="#"><img src="/imagensUCE/chuteira.svg" alt=""><p>Chuteira</p></a></li>
+                <li><a href="#"><img src="/imagensUCE/mochila.svg" alt=""><p>Mochila</p></a></li>
+                <li><a href="#"><img src="/imagensUCE/acessorio.svg" alt=""><p>Acessório</p></a></li>
+                <li><a href="#"><img src="/imagensUCE/bone.svg" alt=""><p>Boné</p></a></li>
+                <li><a href="#"><img src="/imagensUCE/shorts.svg" alt=""><p>Shorts</p></a></li>
+
+            </ul>
+        </nav>
+    </section>
+
+    <section class="ofertasDoDia">
+        <div class="ofertasDoDiaTexto">
+            <span>
+                <img src="/imagensUCE/relogio.svg" alt="">
+                <h2>OFERTAS DO DIA</h2>
+            </span>
+
+            <span id="ofertas2">
+                As ofertas expiram em:
+                <strong>18:25:03</strong>
+            </span>
+        </div>
+
+        <%- include('../partials/carrossel', { id: 'carrosselOfertas', rotulo: 'Ofertas do dia' }) %>
+    </section>
+
+    <section class="maisVendidos novidades" hidden>
+        <h2>NOVIDADES</h2>
+        <%- include('../partials/carrossel', { id: 'carrosselNovidades', rotulo: 'Novidades da loja' }) %>
+    </section>
+
+    <section class="marcas">
+        <h2>NAVEGUE POR MARCAS</h2>
+
+        <nav aria-label="Marcas">
+            <ul class="listaMarcas">
+
+                <li><a href="#"><img src="/imagensUCE/hocks.svg" alt="Hocks"></a></li>
+                <li><a href="#"><img src="/imagensUCE/penalty.svg" alt="Penalty"></a></li>
+                <li><a href="#"><img src="/imagensUCE/adidas.svg" alt="Adidas"></a></li>
+                <li><a href="#"><img src="/imagensUCE/nike.svg" alt="Nike"></a></li>
+                <li><a href="#"><img src="/imagensUCE/fila.svg" alt="Fila"></a></li>
+                <li><a href="#"><img src="/imagensUCE/alphaco.svg" alt="AlphaCo"></a></li>
+                <li><a href="#"><img src="/imagensUCE/puma.svg" alt="Puma"></a></li>
+                <li><a href="#"><img src="/imagensUCE/umbro.svg" alt="Umbro"></a></li>
+
+                <li><a href="#"><img src="/imagensUCE/hocks.svg" alt="Hocks"></a></li>
+                <li><a href="#"><img src="/imagensUCE/penalty.svg" alt="Penalty"></a></li>
+                <li><a href="#"><img src="/imagensUCE/adidas.svg" alt="Adidas"></a></li>
+                <li><a href="#"><img src="/imagensUCE/nike.svg" alt="Nike"></a></li>
+                <li><a href="#"><img src="/imagensUCE/fila.svg" alt="Fila"></a></li>
+                <li><a href="#"><img src="/imagensUCE/alphaco.svg" alt="AlphaCo"></a></li>
+                <li><a href="#"><img src="/imagensUCE/puma.svg" alt="Puma"></a></li>
+                <li><a href="#"><img src="/imagensUCE/umbro.svg" alt="Umbro"></a></li>
+            </ul>
+        </nav>
+    </section>
+
+    <section class="maisVendidos">
+        <h2>MAIS VENDIDOS</h2>
+
+        <%- include('../partials/carrossel', { id: 'carrosselVendidos', rotulo: 'Mais vendidos' }) %>
+    </section>
+
+    <section class="colecoes">
+        <h2>COLEÇÕES</h2>
+
+        <div class="colecoesContainer">
+            <a href="#" class="cardsColecoes colecao1">
+                <h2>Coleção <br> BASQUETE</h2>
+            </a>
+
+            <a href="#" class="cardsColecoes colecao2">
+                <h2>Coleção <br> VÔLEI</h2>
+            </a>
+
+            <a href="#" class="cardsColecoes colecao3">
+                <h2>Coleção <br> CORRIDA</h2>
+            </a>
+        </div>
+    </section>
+
+</main>
+
+<%- include('../partials/footer') %>
+
+<%- include('../partials/scripts', { scripts: ['core', 'carrossel', 'home'] }) %>
+</body>
+</html>

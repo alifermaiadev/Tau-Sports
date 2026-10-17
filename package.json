@@ -1,0 +1,31 @@
+{
+  "name": "tau-sports",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Taú Sports — loja em Express + EJS com login e cadastro ADMIN em MySQL",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "banco:preparar": "node scripts/preparar-banco.js",
+    "admin:criar": "node scripts/criar-admin.js",
+    "test": "node --test tests/*.test.js",
+    "test:mysql": "node scripts/testar-mysql.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^4.22.3",
+    "mysql2": "^3.24.6",
+    "nodemon": "^3.1.14"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "directories": {
+    "test": "tests"
+  }
+}

@@ -1,0 +1,40 @@
+<%
+    const itens = [
+        { slug: 'pedidos',       rotulo: 'Pedidos',             href: '/pedidos.html',       preto: 'pedidoPreto.png',         amarelo: 'pedidoAmarelo.png' },
+        { slug: 'trocas',        rotulo: 'Trocas e Devoluções', href: '/trocas.html',        preto: 'trocaPreto.png',          amarelo: 'trocaAmarelo.png' },
+        { slug: 'seusdados',     rotulo: 'Seus Dados',          href: '/seusdados.html',     preto: 'perfil.png',              amarelo: 'seusDadosAmarelo.svg' },
+        { slug: 'endereco',      rotulo: 'Endereços',           href: '/endereco.html',      preto: 'enderecoPreto.png',       amarelo: 'enderecoAmarelo.png' },
+        { slug: 'cartoessalvos', rotulo: 'Cartões Salvos',      href: '/cartoessalvos.html', preto: 'cartaoDeCreditoPreto.png', amarelo: 'cartaoDeCreditoAmarelo.png' }
+    ];
+    if (usuario && usuario.ies_admin === 'S') {
+        itens.push({
+            slug: 'cadastrarproduto',
+            rotulo: 'Cadastrar Produto',
+            href: '/cadastrarproduto.html',
+            preto: 'adicionar.png',
+            amarelo: 'adicionar.png'
+        });
+    }
+-%>
+    <aside class="perfilSelecao" aria-label="Menu da conta">
+        <ul>
+<% itens.forEach(function (item) { -%>
+            <li<%- item.slug === ativo ? ' class="ativo"' : '' %>>
+                <a href="<%= item.href %>">
+                    <img class="imagemPreto" src="/imagensUCE/<%= item.preto %>" alt="">
+                    <img class="imagemAmarelo" src="/imagensUCE/<%= item.amarelo %>" alt="">
+                    <span><%= item.rotulo %></span>
+                </a>
+            </li>
+<% }) -%>
+            <li>
+                <form action="/logout" method="post">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <button class="botaoSair" type="submit">
+                        <img src="/imagensUCE/excluirPreto.png" alt="">
+                        <span>Sair</span>
+                    </button>
+                </form>
+            </li>
+        </ul>
+    </aside>
