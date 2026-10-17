@@ -9,7 +9,32 @@ const texto = valor => typeof valor === 'string' ? valor.trim() : '';
 const emailValido = email => email.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
 const senhaValida = senha => typeof senha === 'string' && senha.length >= 8 && senha.length <= 128;
 
-function validarProduto(dados) {
+// Gera o código que o catálogo usa ("Tênis" -> "tenis").
+function criarChaveCategoria(nome) {
+  return nome.normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+    .slice(0, 50);
+}
+
+function validarCategoria(dados) {
+  const nome = texto(dados.nome);
+  const chave = criarChaveCategoria(nome);
+  const erros = [];
+
+  if (nome.length < 3 || nome.length > 50) {
+    erros.push('O nome da categoria deve ter entre 3 e 50 caracteres.');
+  }
+  if (!chave) {
+    erros.push('Informe um nome com letras ou números.');
+  }
+
+  return { erros, categoria: { nome, chave } };
+}
+
+function validarProduto(dados, categoriasDisponiveis = CATEGORIAS) {
   const erros = [];
   const campoTexto = (campo, rotulo, minimo, maximo) => {
     const valor = texto(dados[campo]);
@@ -46,7 +71,7 @@ function validarProduto(dados) {
   const marca = campoTexto('marca', 'Marca', 2, 50);
   const descricao = campoTexto('descricao', 'Descrição', 10, 5000);
   const categoria = texto(dados.categoria), genero = texto(dados.genero);
-  if (!Object.hasOwn(CATEGORIAS, categoria)) {
+  if (!Object.hasOwn(categoriasDisponiveis, categoria)) {
     erros.push('Selecione uma categoria válida.');
   }
   if (!Object.hasOwn(GENEROS, genero)) {
@@ -102,4 +127,4 @@ function validarProduto(dados) {
   } };
 }
 
-module.exports = { texto, emailValido, senhaValida, validarProduto, CATEGORIAS, GENEROS };
+module.exports = { texto, emailValido, senhaValida, validarProduto, validarCategoria, CATEGORIAS, GENEROS };

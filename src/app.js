@@ -4,19 +4,32 @@ const path = require('node:path');
 const express = require('express');
 const criarUsuarios = require('./modelos/usuarios');
 const criarProdutos = require('./modelos/produtos');
+const criarCategorias = require('./modelos/categorias');
 const criarSessao = require('./seguranca/sessao');
 const { gerarHash, verificarSenha } = require('./seguranca/senhas');
-const { texto, emailValido, senhaValida, validarProduto, CATEGORIAS, GENEROS } = require('./validacao');
-const PAGINAS = ['index', 'produto', 'login', 'cadastro', 'finalizarcompra', 'pedidos', 'trocas', 'seusdados', 'endereco', 'cartoessalvos', 'cadastrarproduto'];
-const CONTA = ['pedidos', 'trocas', 'seusdados', 'endereco', 'cartoessalvos', 'cadastrarproduto'];
+const { texto, emailValido, senhaValida, validarProduto, validarCategoria, GENEROS } = require('./validacao');
+const PAGINAS = ['index', 'produto', 'login', 'cadastro', 'finalizarcompra', 'pedidos', 'trocas', 'seusdados', 'endereco', 'cartoessalvos', 'cadastrarproduto', 'cadastrarcategoria'];
+const CONTA = ['pedidos', 'trocas', 'seusdados', 'endereco', 'cartoessalvos', 'cadastrarproduto', 'cadastrarcategoria'];
 const rotaAsync = funcao => (req, res, next) => Promise.resolve(funcao(req, res, next)).catch(next);
-const proximoSeguro = valor => /^\/?[a-z]+\.html$/.test(valor || '') && PAGINAS.includes(valor.replace(/^\//, '').replace('.html', '')) && !['login', 'cadastro'].includes(valor.replace(/^\//, '').replace('.html', ''))
-  ? '/' + valor.replace(/^\//, '') : '/seusdados.html';
+function proximoSeguro(valor) {
+  const pagina = String(valor || '').replace(/^\//, '');
+  if (!/^[a-z]+\.html$/.test(pagina)) {
+    return '/seusdados.html';
+  }
+  const nome = pagina.replace('.html', '');
+  if (!PAGINAS.includes(nome) || ['login', 'cadastro'].includes(nome)) {
+    return '/seusdados.html';
+  }
+  return '/' + pagina;
+}
 const jsonSeguro = objeto => JSON.stringify(objeto).replace(/[<>&\u2028\u2029]/g, c => '\\u' + c.charCodeAt(0).toString(16).padStart(4, '0'));
 
 module.exports = function criarApp({ banco, segredo }) {
   const app = express();
-  const usuarios = criarUsuarios(banco), produtos = criarProdutos(banco), sessao = criarSessao(banco, segredo);
+  const usuarios = criarUsuarios(banco);
+  const produtos = criarProdutos(banco);
+  const categorias = criarCategorias(banco);
+  const sessao = criarSessao(banco, segredo);
   const tentativas = new Map();
   const hashInexistente = gerarHash('credencial-inexistente-' + segredo);
   app.set('view engine', 'ejs');
@@ -40,13 +53,13 @@ module.exports = function criarApp({ banco, segredo }) {
   app.use(sessao.carregar);
   function exigirLogin(req, res, next) {
     if (!req.usuario) {
-      return res.redirect(303, '/login.html?next=' + encodeURIComponent('/cadastrarproduto.ejs'));
+      return res.redirect(303, '/login.html?next=' + encodeURIComponent('/cadastrarproduto.html'));
     }
     next();
   }
   function exigirAdmin(req, res, next) {
     if (req.usuario.ies_admin !== 'S') {
-      return res.status(403).render('pages/erro', { titulo: 'Acesso restrito', mensagem: 'O cadastro de produtos é permitido somente para administradores.' });
+      return res.status(403).render('pages/erro', { titulo: 'Acesso restrito', mensagem: 'O cadastro de produtos e categorias é permitido somente para administradores.' });
     }
     next();
   }
@@ -72,13 +85,15 @@ module.exports = function criarApp({ banco, segredo }) {
     res.render('pages/' + pagina, extras);
   }
   app.post('/login', sessao.verificarCsrf, limitarTentativas, rotaAsync(async (req, res) => {
-    const email = texto(req.body.email).toLowerCase(), senha = typeof req.body.senha === 'string' ? req.body.senha : '';
+    const email = texto(req.body.email).toLowerCase();
+    const senha = typeof req.body.senha === 'string' ? req.body.senha : '';
     const proximo = proximoSeguro(texto(req.body.next));
     if (!emailValido(email) || senha.length === 0 || senha.length > 128) {
       return res.status(400).render('pages/login', { erro: 'Informe um e-mail e uma senha válidos.', valores: { email }, proximo });
     }
     const usuario = await usuarios.porEmail(email);
-    const correta = await verificarSenha(senha, usuario ? usuario.senha_hash : await hashInexistente);
+    const hash = usuario ? usuario.senha_hash : await hashInexistente;
+    const correta = await verificarSenha(senha, hash);
     if (!usuario || !correta) {
       return res.status(401).render('pages/login', { erro: 'E-mail ou senha incorretos.', valores: { email }, proximo });
     }
@@ -111,14 +126,43 @@ module.exports = function criarApp({ banco, segredo }) {
     res.redirect(303, '/index.html');
   }));
   app.post('/produtos', exigirLogin, exigirAdmin, sessao.verificarCsrf, rotaAsync(async (req, res) => {
-    const { erros, produto } = validarProduto(req.body);
+    const opcoesCategoria = await categorias.listar();
+    const { erros, produto } = validarProduto(req.body, opcoesCategoria);
     if (erros.length) {
       res.status(400);
-      return renderizar(req, res, 'cadastrarproduto', { erros, valores: req.body, sucesso: false, produtoCadastrado: null, categorias: CATEGORIAS, generos: GENEROS });
+      return renderizar(req, res, 'cadastrarproduto', {
+        erros, valores: req.body, sucesso: false, produtoCadastrado: null,
+        categorias: opcoesCategoria, generos: GENEROS
+      });
     }
     await produtos.cadastrar(produto, req.usuario.id);
     res.redirect(303, '/cadastrarproduto.html?criado=' + encodeURIComponent(produto.id));
   }));
+  // Somente ADMIN pode criar categorias, assim como acontece com produtos.
+  app.post('/categorias', exigirLogin, exigirAdmin, sessao.verificarCsrf, rotaAsync(async (req, res) => {
+    const { erros, categoria } = validarCategoria(req.body);
+    if (erros.length) {
+      res.status(400);
+      return renderizar(req, res, 'cadastrarcategoria', {
+        erros, valores: req.body, sucesso: false, categoriaCadastrada: null
+      });
+    }
+
+    try {
+      await categorias.cadastrar(categoria);
+      res.redirect(303, '/cadastrarcategoria.html?criada=' + encodeURIComponent(categoria.chave));
+    } catch (erro) {
+      if (erro.code === 'ER_DUP_ENTRY') {
+        res.status(409);
+        return renderizar(req, res, 'cadastrarcategoria', {
+          erros: ['Esta categoria já está cadastrada.'], valores: req.body,
+          sucesso: false, categoriaCadastrada: null
+        });
+      }
+      throw erro;
+    }
+  }));
+
   app.get('/', rotaAsync((req, res) => renderizar(req, res, 'index')));
   app.get('/:pagina.html', rotaAsync(async (req, res, next) => {
     const pagina = req.params.pagina;
@@ -128,7 +172,7 @@ module.exports = function criarApp({ banco, segredo }) {
     if (CONTA.includes(pagina) && !req.usuario) {
       return res.redirect(303, '/login.html?next=' + encodeURIComponent('/' + pagina + '.html'));
     }
-    if (pagina === 'cadastrarproduto' && req.usuario.ies_admin !== 'S') {
+    if (['cadastrarproduto', 'cadastrarcategoria'].includes(pagina) && req.usuario.ies_admin !== 'S') {
       return exigirAdmin(req, res, next);
     }
     if (['login', 'cadastro'].includes(pagina) && req.usuario) {
@@ -137,7 +181,18 @@ module.exports = function criarApp({ banco, segredo }) {
     if (pagina === 'cadastrarproduto') {
       const catalogo = await produtos.listar();
       const cadastrado = catalogo.find(produto => produto.id === texto(req.query.criado));
-      return renderizar(req, res, pagina, { erros: [], valores: {}, sucesso: !!cadastrado, produtoCadastrado: cadastrado || null, categorias: CATEGORIAS, generos: GENEROS }, catalogo);
+      return renderizar(req, res, pagina, {
+        erros: [], valores: {}, sucesso: !!cadastrado, produtoCadastrado: cadastrado || null,
+        categorias: await categorias.listar(), generos: GENEROS
+      }, catalogo);
+    }
+    if (pagina === 'cadastrarcategoria') {
+      const cadastradas = await categorias.listar();
+      const chave = texto(req.query.criada);
+      const categoriaCadastrada = Object.hasOwn(cadastradas, chave) ? cadastradas[chave] : null;
+      return renderizar(req, res, pagina, {
+        erros: [], valores: {}, sucesso: !!categoriaCadastrada, categoriaCadastrada
+      });
     }
     return renderizar(req, res, pagina, { proximo: proximoSeguro(texto(req.query.next)) });
   }));

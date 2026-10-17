@@ -3,6 +3,11 @@
 // Simula as consultas utilizadas pelas rotas para testar HTTP sem MySQL.
 module.exports = function criarBancoMemoria() {
   const usuarios = [], sessoes = [], produtos = [], detalhes = [];
+  // Categorias presentes no schema.sql após a instalação.
+  const categorias = [
+    ['tenis', 'Tênis'], ['camiseta', 'Camiseta'], ['chuteira', 'Chuteira'],
+    ['mochila', 'Mochila'], ['acessorio', 'Acessório'], ['bone', 'Boné'], ['shorts', 'Shorts']
+  ];
   let idProduto = 0;
   const normalizar = sql => sql.replace(/\s+/g, ' ').trim();
   const api = {
@@ -44,6 +49,19 @@ module.exports = function criarBancoMemoria() {
       if (consulta.startsWith('UPDATE SESSOES SET expira_em')) {
         for (const s of sessoes.filter(s => s.usuario_id === valores[0])) { s.expira_em = new Date(0); }
         return [{ affectedRows: 1 }];
+      }
+      if (consulta.startsWith('SELECT chave_categoria, nome_categoria FROM CATEGORIA')) {
+        return [categorias.map(([chave_categoria, nome_categoria]) => ({ chave_categoria, nome_categoria }))
+          .sort((a, b) => a.nome_categoria.localeCompare(b.nome_categoria, 'pt-BR'))];
+      }
+      if (consulta.startsWith('INSERT INTO CATEGORIA')) {
+        if (categorias.some(([chave]) => chave === valores[0])) {
+          const erro = new Error('Categoria duplicada');
+          erro.code = 'ER_DUP_ENTRY';
+          throw erro;
+        }
+        categorias.push(valores);
+        return [{ insertId: categorias.length }];
       }
       if (consulta.startsWith('SELECT p.id_produto, p.nome_produto')) {
         return [produtos.slice().reverse().map(p => ({ ...p, ...(detalhes.find(d => d.id_produto === p.id_produto) || {}) }))];

@@ -28,7 +28,7 @@
 
   /* ================= MENU DA CONTA ================= */
   function menuConta() {
-    const rotas = { 'Pedidos': 'pedidos', 'Trocas e Devoluções': 'trocas', 'Seus Dados': 'seusdados', 'Endereços': 'endereco', 'Cartões Salvos': 'cartoessalvos', 'Cadastrar Produto': 'cadastrarproduto' };
+    const rotas = { 'Pedidos': 'pedidos', 'Trocas e Devoluções': 'trocas', 'Seus Dados': 'seusdados', 'Endereços': 'endereco', 'Cartões Salvos': 'cartoessalvos', 'Cadastrar Produto': 'cadastrarproduto', 'Cadastrar Categoria': 'cadastrarcategoria' };
     $$('.perfilSelecao li').forEach(li => {
       const a = $('a', li);
       if (!a) { return; }

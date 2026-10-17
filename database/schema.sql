@@ -80,3 +80,21 @@ CREATE TABLE IF NOT EXISTS PRODUTO_DETALHE (
   CONSTRAINT fk_detalhe_produto FOREIGN KEY (id_produto) REFERENCES PRODUTO(id_produto) ON DELETE CASCADE,
   CONSTRAINT fk_detalhe_autor FOREIGN KEY (criado_por) REFERENCES USUARIO(id_usuario) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Categorias têm uma chave para relacionar com PRODUTO.categoria_esporte,
+-- preservando os produtos e os códigos de categoria que já existem.
+CREATE TABLE IF NOT EXISTS CATEGORIA (
+  id_categoria INT AUTO_INCREMENT PRIMARY KEY,
+  chave_categoria VARCHAR(50) NOT NULL UNIQUE,
+  nome_categoria VARCHAR(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- INSERT IGNORE não duplica categorias nas próximas execuções.
+INSERT IGNORE INTO CATEGORIA (chave_categoria, nome_categoria) VALUES
+  ('tenis', 'Tênis'),
+  ('camiseta', 'Camiseta'),
+  ('chuteira', 'Chuteira'),
+  ('mochila', 'Mochila'),
+  ('acessorio', 'Acessório'),
+  ('bone', 'Boné'),
+  ('shorts', 'Shorts');

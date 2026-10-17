@@ -11,6 +11,7 @@ async function iniciar() {
   await banco.execute('SELECT token_hash FROM SESSOES LIMIT 1');
   await banco.execute('SELECT id_produto FROM PRODUTO LIMIT 1');
   await banco.execute('SELECT id_produto FROM PRODUTO_DETALHE LIMIT 1');
+  await banco.execute('SELECT id_categoria FROM CATEGORIA LIMIT 1');
   const servidor = app.listen(ambiente.porta, () => {
     console.log('Taú Sports rodando em http://localhost:' + ambiente.porta);
   });

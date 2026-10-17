@@ -7,6 +7,7 @@ const path = require('node:path');
 const criarApp = require('../src/app');
 const criarUsuarios = require('../src/modelos/usuarios');
 const criarProdutos = require('../src/modelos/produtos');
+const criarCategorias = require('../src/modelos/categorias');
 const { gerarHash } = require('../src/seguranca/senhas');
 const catalogo = require('../src/dados/catalogo-inicial.json');
 const SEGREDO = 'segredo-apenas-para-os-testes-automatizados';
@@ -86,7 +87,7 @@ function contexto(html) {
 
 test('login, autorização ADMIN e cadastro de produtos pelo fluxo HTTP', async t => {
   const { banco, limpar } = await prepararBanco();
-  const usuarios = criarUsuarios(banco), produtos = criarProdutos(banco);
+  const usuarios = criarUsuarios(banco), produtos = criarProdutos(banco), categorias = criarCategorias(banco);
   const senhaHash = await gerarHash(SENHA);
   const adminId = await usuarios.cadastrar({ nome: 'Admin Faculdade', email: 'admin@tau.test', senhaHash, cpf: '12345678901', telefone: '11999999999' });
   await usuarios.promoverAdmin(adminId);
@@ -126,11 +127,14 @@ test('login, autorização ADMIN e cadastro de produtos pelo fluxo HTTP', async 
       const res = await comprador.requisitar('/seusdados.html');
       assert.equal(res.status, 200);
       assert.doesNotMatch(res.html, /Cadastrar Produto/);
+      assert.doesNotMatch(res.html, /Cadastrar Categoria/);
       assert.equal(contexto(res.html).usuario.ies_admin, 'N');
       assert.equal(contexto(res.html).usuario.senha_hash, undefined);
     });
     await t.test('CLIENTE não acessa URL nem envia cadastro diretamente', async () => {
       assert.equal((await comprador.requisitar('/cadastrarproduto.html')).status, 403);
+      assert.equal((await comprador.requisitar('/cadastrarcategoria.html')).status, 403);
+      assert.equal((await comprador.requisitar('/categorias', { nome: 'Corrida', _csrf: comprador.csrf() })).status, 403);
       assert.equal((await comprador.requisitar('/produtos', { ...camposProduto, _csrf: comprador.csrf(), perfil: 'ADMIN' })).status, 403);
       assert.equal((await produtos.listar()).length, 6);
     });
@@ -141,6 +145,7 @@ test('login, autorização ADMIN e cadastro de produtos pelo fluxo HTTP', async 
       assert.match(login.headers.get('set-cookie'), /SameSite=Lax/i);
       const res = await admin.requisitar('/seusdados.html');
       assert.ok(res.html.indexOf('Cadastrar Produto') < res.html.indexOf('<span>Sair</span>'));
+      assert.ok(res.html.indexOf('Cadastrar Categoria') < res.html.indexOf('<span>Sair</span>'));
       assert.equal(contexto(res.html).usuario.ies_admin, 'S');
       assert.match((await admin.requisitar('/cadastrarproduto.html')).html, /action="\/produtos" method="post"/);
     });
@@ -158,6 +163,28 @@ test('login, autorização ADMIN e cadastro de produtos pelo fluxo HTTP', async 
       } finally {
         await new Promise(resolve => novoServidor.close(resolve));
       }
+    });
+    await t.test('ADMIN cadastra categoria e ela fica disponível para produtos', async () => {
+      assert.equal((await admin.requisitar('/cadastrarcategoria.html')).status, 200);
+      const res = await admin.requisitar('/categorias', { nome: 'Corrida', _csrf: admin.csrf() });
+      assert.equal(res.status, 303);
+      assert.equal(res.headers.get('location'), '/cadastrarcategoria.html?criada=corrida');
+      const salvo = await categorias.listar();
+      assert.equal(salvo.corrida, 'Corrida');
+      assert.equal(salvo.tenis, 'Tênis');
+      const confirmacao = await admin.requisitar(res.headers.get('location'));
+      assert.match(confirmacao.html, /cadastrada com sucesso/);
+      const formulario = await admin.requisitar('/cadastrarproduto.html');
+      assert.match(formulario.html, /<option value="corrida"/);
+    });
+    await t.test('categoria duplicada ou inválida não é cadastrada', async () => {
+      const repetida = await admin.requisitar('/categorias', { nome: 'Corrida', _csrf: admin.csrf() });
+      assert.equal(repetida.status, 409);
+      assert.match(repetida.html, /já está cadastrada/);
+      const invalida = await admin.requisitar('/categorias', { nome: 'a', _csrf: admin.csrf() });
+      assert.equal(invalida.status, 400);
+      assert.equal((await admin.requisitar('/categorias', { nome: 'Basquete', _csrf: 'incorreto' })).status, 403);
+      assert.equal(Object.keys(await categorias.listar()).length, 8);
     });
     await t.test('cadastro inválido preserva campos e não grava', async () => {
       const res = await admin.requisitar('/produtos', { ...camposProduto, preco: '-2', _csrf: admin.csrf() });
@@ -184,6 +211,12 @@ test('login, autorização ADMIN e cadastro de produtos pelo fluxo HTTP', async 
       const home = await visitante.requisitar('/index.html');
       assert.ok(contexto(home.html).produtos.some(produto => produto.id === produtoId));
       assert.equal((await visitante.requisitar('/produto.html?id=' + produtoId)).status, 200);
+    });
+    await t.test('produto pode usar categoria recém-cadastrada', async () => {
+      const res = await admin.requisitar('/produtos', { ...camposProduto, categoria: 'corrida', _csrf: admin.csrf() });
+      assert.equal(res.status, 303);
+      const id = new URL(res.headers.get('location'), base).searchParams.get('criado');
+      assert.equal((await produtos.listar()).find(p => p.id === id).categoria, 'corrida');
     });
     await t.test('conteúdo HTML do produto é serializado sem injetar script', async () => {
       const res = await admin.requisitar('/produtos', { ...camposProduto, nome: '</script><script>alert(1)</script>', _csrf: admin.csrf() });
