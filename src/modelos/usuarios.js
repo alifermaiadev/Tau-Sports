@@ -1,3 +1,4 @@
+// Objetivo: Consulta e salva usuários no banco MySQL.
 'use strict';
 
 module.exports = function criarUsuarios(banco) {
@@ -16,6 +17,16 @@ module.exports = function criarUsuarios(banco) {
         `INSERT INTO USUARIO
          (nome_usuario, email_usuario, senha_usuario, cpf_usuario, telefone_usuario, ativo, ies_admin)
          VALUES (?, ?, ?, ?, ?, 1, 'N')`,
+        [nome, email, senhaHash, cpf, telefone]
+      );
+      return resultado.insertId;
+    },
+    async cadastrarAdmin({ nome, email, senhaHash, cpf, telefone }) {
+      // Somente a rota protegida por ADMIN chama este método.
+      const [resultado] = await banco.execute(
+        `INSERT INTO USUARIO
+         (nome_usuario, email_usuario, senha_usuario, cpf_usuario, telefone_usuario, ativo, ies_admin)
+         VALUES (?, ?, ?, ?, ?, 1, 'S')`,
         [nome, email, senhaHash, cpf, telefone]
       );
       return resultado.insertId;

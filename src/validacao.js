@@ -1,13 +1,53 @@
+// Objetivo: Confere os dados recebidos do usuário antes de salvar no banco.
 'use strict';
 
 const { randomUUID } = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
+const { analisarSenha } = require('../public/js/regras-senha');
 const CATEGORIAS = { tenis: 'Tênis', camiseta: 'Camiseta', chuteira: 'Chuteira', mochila: 'Mochila', acessorio: 'Acessório', bone: 'Boné', shorts: 'Shorts' };
 const GENEROS = { masculino: 'Masculino', feminino: 'Feminino', infantil: 'Infantil', unissex: 'Unissex' };
 const texto = valor => typeof valor === 'string' ? valor.trim() : '';
 const emailValido = email => email.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
-const senhaValida = senha => typeof senha === 'string' && senha.length >= 8 && senha.length <= 128;
+function senhaValida(senha) {
+  return analisarSenha(senha).valida;
+}
+
+// Confere os dados comuns aos cadastros de cliente e de administrador.
+function validarDadosUsuario(formulario) {
+  const nome = texto(formulario.nome);
+  const email = texto(formulario.email).toLowerCase();
+  const cpfOriginal = texto(formulario.cpf);
+  const telefoneOriginal = texto(formulario.telefone);
+  const cpf = cpfOriginal.replace(/\D/g, '');
+  const telefone = telefoneOriginal.replace(/\D/g, '');
+  const erros = [];
+
+  if (nome.length < 3 || nome.length > 100) {
+    erros.push('O nome deve ter entre 3 e 100 caracteres.');
+  }
+  if (email.length > 100 || !emailValido(email)) {
+    erros.push('Informe um e-mail válido de até 100 caracteres.');
+  }
+  if (!/^\d{11}$/.test(cpf)) {
+    erros.push('O CPF deve ter 11 dígitos.');
+  }
+  if (!/^\d{10,11}$/.test(telefone)) {
+    erros.push('O telefone deve ter 10 ou 11 dígitos.');
+  }
+  if (!senhaValida(formulario.senha)) {
+    erros.push('A senha deve ter de 8 a 128 caracteres, maiúscula, minúscula, número e caractere especial.');
+  }
+  if (formulario.senha !== formulario.confirmarSenha) {
+    erros.push('A confirmação da senha deve ser igual à senha.');
+  }
+
+  return {
+    erros,
+    dados: { nome, email, cpf, telefone },
+    valores: { nome, email, cpf: cpfOriginal, telefone: telefoneOriginal }
+  };
+}
 
 // Gera o código que o catálogo usa ("Tênis" -> "tenis").
 function criarChaveCategoria(nome) {
@@ -127,4 +167,4 @@ function validarProduto(dados, categoriasDisponiveis = CATEGORIAS) {
   } };
 }
 
-module.exports = { texto, emailValido, senhaValida, validarProduto, validarCategoria, CATEGORIAS, GENEROS };
+module.exports = { texto, emailValido, senhaValida, analisarSenha, validarDadosUsuario, validarProduto, validarCategoria, CATEGORIAS, GENEROS };

@@ -29,7 +29,12 @@
   T.PRODUTOS = contexto.produtos;
   T.csrfToken = contexto.csrfToken;
 
-  T.produto = id => T.PRODUTOS.find(p => p.id === id) || null;
+  T.produto = function (id) {
+    const encontrado = T.PRODUTOS.find(function (produto) {
+      return produto.id === id;
+    });
+    return encontrado || null;
+  };
 
   /* ---------- UTILITÁRIOS ---------- */
   T.esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c =>
@@ -45,12 +50,32 @@
   const chaveLocal = k => ['perfil', 'endereco', 'cartoes', 'pedidos'].includes(k)
     ? 'tau:usuario:' + (contexto.usuario ? contexto.usuario.id : 'visitante') + ':' + k : 'tau:' + k;
   T.store = {
-    get(k, fb) {
-      try { const v = localStorage.getItem(chaveLocal(k)); return v === null ? fb : JSON.parse(v); }
-      catch (e) { return fb; }
+    get(chave, valorPadrao) {
+      try {
+        const salvo = localStorage.getItem(chaveLocal(chave));
+        if (salvo === null) {
+          return valorPadrao;
+        }
+        return JSON.parse(salvo);
+      } catch (erro) {
+        return valorPadrao;
+      }
     },
-    set(k, v) { try { localStorage.setItem(chaveLocal(k), JSON.stringify(v)); return true; } catch (e) { return false; } },
-    del(k) { try { localStorage.removeItem(chaveLocal(k)); } catch (e) {} }
+    set(chave, valor) {
+      try {
+        localStorage.setItem(chaveLocal(chave), JSON.stringify(valor));
+        return true;
+      } catch (erro) {
+        return false;
+      }
+    },
+    del(chave) {
+      try {
+        localStorage.removeItem(chaveLocal(chave));
+      } catch (erro) {
+        // Se o navegador bloquear o armazenamento, não quebrar a página.
+      }
+    }
   };
 
   T.mask = {

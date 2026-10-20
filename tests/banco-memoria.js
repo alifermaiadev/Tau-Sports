@@ -20,7 +20,7 @@ module.exports = function criarBancoMemoria() {
         if (usuarios.some(u => u.email === valores[1] || u.cpf === valores[3])) {
           const erro = new Error('Cadastro duplicado'); erro.code = 'ER_DUP_ENTRY'; throw erro;
         }
-        const usuario = { id: usuarios.length + 1, nome: valores[0], email: valores[1], senha_hash: valores[2], cpf: valores[3], telefone: valores[4], ies_admin: 'N', ativo: true };
+        const usuario = { id: usuarios.length + 1, nome: valores[0], email: valores[1], senha_hash: valores[2], cpf: valores[3], telefone: valores[4], ies_admin: consulta.includes("1, 'S')") ? 'S' : 'N', ativo: true };
         usuarios.push(usuario);
         return [{ insertId: usuario.id }];
       }

@@ -128,12 +128,15 @@ test('login, autorização ADMIN e cadastro de produtos pelo fluxo HTTP', async 
       assert.equal(res.status, 200);
       assert.doesNotMatch(res.html, /Cadastrar Produto/);
       assert.doesNotMatch(res.html, /Cadastrar Categoria/);
+      assert.doesNotMatch(res.html, /Cadastrar Usuário Admin/);
       assert.equal(contexto(res.html).usuario.ies_admin, 'N');
       assert.equal(contexto(res.html).usuario.senha_hash, undefined);
     });
     await t.test('CLIENTE não acessa URL nem envia cadastro diretamente', async () => {
       assert.equal((await comprador.requisitar('/cadastrarproduto.html')).status, 403);
       assert.equal((await comprador.requisitar('/cadastrarcategoria.html')).status, 403);
+      assert.equal((await comprador.requisitar('/cadastraradmin.html')).status, 403);
+      assert.equal((await comprador.requisitar('/administradores', { nome: 'Tentativa Cliente', _csrf: comprador.csrf() })).status, 403);
       assert.equal((await comprador.requisitar('/categorias', { nome: 'Corrida', _csrf: comprador.csrf() })).status, 403);
       assert.equal((await comprador.requisitar('/produtos', { ...camposProduto, _csrf: comprador.csrf(), perfil: 'ADMIN' })).status, 403);
       assert.equal((await produtos.listar()).length, 6);
@@ -146,6 +149,7 @@ test('login, autorização ADMIN e cadastro de produtos pelo fluxo HTTP', async 
       const res = await admin.requisitar('/seusdados.html');
       assert.ok(res.html.indexOf('Cadastrar Produto') < res.html.indexOf('<span>Sair</span>'));
       assert.ok(res.html.indexOf('Cadastrar Categoria') < res.html.indexOf('<span>Sair</span>'));
+      assert.ok(res.html.indexOf('Cadastrar Usuário Admin') < res.html.indexOf('<span>Sair</span>'));
       assert.equal(contexto(res.html).usuario.ies_admin, 'S');
       assert.match((await admin.requisitar('/cadastrarproduto.html')).html, /action="\/produtos" method="post"/);
     });
@@ -163,6 +167,55 @@ test('login, autorização ADMIN e cadastro de produtos pelo fluxo HTTP', async 
       } finally {
         await new Promise(resolve => novoServidor.close(resolve));
       }
+    });
+    await t.test('somente ADMIN pode abrir e enviar cadastro de outro administrador', async () => {
+      assert.equal((await visitante.requisitar('/cadastraradmin.html')).status, 303);
+      const deslogado = await visitante.requisitar('/administradores', { nome: 'Teste', _csrf: visitante.csrf() });
+      assert.equal(deslogado.status, 303);
+      assert.match(deslogado.headers.get('location'), /login\.html\?next=%2Fcadastraradmin\.html/);
+      const formulario = await admin.requisitar('/cadastraradmin.html');
+      assert.equal(formulario.status, 200);
+      assert.match(formulario.html, /action="\/administradores" method="post"/);
+      assert.equal((await admin.requisitar('/administradores', {
+        nome: 'Admin Sem Csrf', email: 'semcsrf@tau.test', cpf: '12345678909',
+        telefone: '11999999990', senha: SENHA, confirmarSenha: SENHA
+      })).status, 403);
+    });
+    await t.test('formulário ADMIN rejeita dados inválidos e duplicados', async () => {
+      const invalido = await admin.requisitar('/administradores', {
+        nome: 'A', email: 'nao-e-email', cpf: '123', telefone: '1',
+        senha: 'curta', confirmarSenha: 'outra', _csrf: admin.csrf()
+      });
+      assert.equal(invalido.status, 400);
+      assert.match(invalido.html, /Revise os campos/);
+      assert.equal(await usuarios.porEmail('nao-e-email'), null);
+      const duplicado = await admin.requisitar('/administradores', {
+        nome: 'Duplicado', email: 'cliente@tau.test', cpf: '12345678910',
+        telefone: '11999999990', senha: SENHA, confirmarSenha: SENHA, _csrf: admin.csrf()
+      });
+      assert.equal(duplicado.status, 409);
+      assert.match(duplicado.html, /E-mail ou CPF já cadastrado/);
+      assert.equal((await usuarios.porEmail('cliente@tau.test')).ies_admin, 'N');
+    });
+    await t.test('ADMIN cadastra outro ADMIN com hash e ele consegue logar', async () => {
+      const dados = {
+        nome: 'Segundo Administrador', email: 'admin2@tau.test', cpf: '12345678911',
+        telefone: '11999999991', senha: SENHA, confirmarSenha: SENHA, ies_admin: 'N',
+        _csrf: admin.csrf()
+      };
+      const cadastro = await admin.requisitar('/administradores', dados);
+      assert.equal(cadastro.status, 303);
+      assert.equal(cadastro.headers.get('location'), '/cadastraradmin.html?criado=1');
+      const confirmacao = await admin.requisitar('/cadastraradmin.html?criado=1');
+      assert.match(confirmacao.html, /Administrador cadastrado com sucesso/);
+      const salvo = await usuarios.porEmail('admin2@tau.test');
+      assert.equal(salvo.ies_admin, 'S');
+      assert.match(salvo.senha_hash, /^scrypt\$/);
+      assert.notEqual(salvo.senha_hash, SENHA);
+      const segundoAdmin = cliente(base);
+      assert.equal((await segundoAdmin.login('admin2@tau.test', 'senha-incorreta')).status, 401);
+      assert.equal((await segundoAdmin.login('admin2@tau.test')).status, 303);
+      assert.equal((await segundoAdmin.requisitar('/cadastraradmin.html')).status, 200);
     });
     await t.test('ADMIN cadastra categoria e ela fica disponível para produtos', async () => {
       assert.equal((await admin.requisitar('/cadastrarcategoria.html')).status, 200);
@@ -251,6 +304,8 @@ test('login, autorização ADMIN e cadastro de produtos pelo fluxo HTTP', async 
     await t.test('revogação de ADMIN no banco vale para a sessão atual', async () => {
       await banco.execute('UPDATE USUARIO SET ies_admin = ? WHERE id_usuario = ?', ['N', adminId]);
       assert.equal((await admin.requisitar('/cadastrarproduto.html')).status, 403);
+      assert.equal((await admin.requisitar('/cadastraradmin.html')).status, 403);
+      assert.equal((await admin.requisitar('/administradores', { nome: 'Desautorizado', _csrf: admin.csrf() })).status, 403);
       assert.equal((await admin.requisitar('/produtos', { ...camposProduto, _csrf: admin.csrf() })).status, 403);
       await banco.execute('UPDATE USUARIO SET ies_admin = ? WHERE id_usuario = ?', ['S', adminId]);
     });
@@ -266,7 +321,7 @@ test('login, autorização ADMIN e cadastro de produtos pelo fluxo HTTP', async 
     });
     await t.test('todas as páginas públicas e privadas renderizam em EJS', async () => {
       await admin.login('admin@tau.test');
-      for (const pagina of ['index', 'produto', 'finalizarcompra', 'pedidos', 'trocas', 'seusdados', 'endereco', 'cartoessalvos', 'cadastrarproduto']) {
+      for (const pagina of ['index', 'produto', 'finalizarcompra', 'pedidos', 'trocas', 'seusdados', 'endereco', 'cartoessalvos', 'cadastrarproduto', 'cadastraradmin']) {
         assert.equal((await admin.requisitar('/' + pagina + '.html')).status, 200, pagina);
       }
       assert.equal((await visitante.requisitar('/naoexiste.html')).status, 404);

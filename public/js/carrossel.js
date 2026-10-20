@@ -1,3 +1,4 @@
+// Objetivo: Faz os botões dos carrosséis avançarem e retrocederem.
 /* ==========================================================
    TAÚ SPORTS — carrossel.js
    Comportamento dos carrosséis de produtos (partials/carrossel.ejs).
@@ -10,12 +11,16 @@
   'use strict';
 
   function iniciar(raiz) {
-    if (raiz.dataset.carrosselPronto) return;
+    if (raiz.dataset.carrosselPronto) {
+      return;
+    }
 
     const pista = raiz.querySelector('.cardsCarrossel');
     const anterior = raiz.querySelector('.carrossel__botao--anterior');
     const proximo = raiz.querySelector('.carrossel__botao--proximo');
-    if (!pista || !anterior || !proximo) return;
+    if (!pista || !anterior || !proximo) {
+      return;
+    }
     raiz.dataset.carrosselPronto = '1';
 
     let quadro = 0;
@@ -36,7 +41,9 @@
     /* distância de uma "página": quantos cards inteiros cabem na área visível */
     function passo() {
       const card = pista.querySelector('.cardProduto');
-      if (!card) return pista.clientWidth;
+      if (!card) {
+        return pista.clientWidth;
+      }
       const estilo = getComputedStyle(pista);
       const gap = parseFloat(estilo.columnGap) || 0;
       const util = pista.clientWidth - (parseFloat(estilo.paddingLeft) || 0) - (parseFloat(estilo.paddingRight) || 0);
@@ -68,8 +75,11 @@
     document.querySelectorAll('[data-carrossel]').forEach(iniciar);
   }
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciarTodos);
-  else iniciarTodos();
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', iniciarTodos);
+  } else {
+    iniciarTodos();
+  }
 
   window.Tau = window.Tau || {};
   window.Tau.iniciarCarrosseis = iniciarTodos;

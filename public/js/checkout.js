@@ -1,3 +1,4 @@
+// Objetivo: Controla carrinho, resumo, descontos e finalização do pedido.
 /* ==========================================================
    Itens do carrinho, quantidades, cupom, frete, forma de
    pagamento, endereço e criação do pedido.
@@ -57,20 +58,26 @@
     const item = e.target.closest('.itemCarrinho');
     if (!btn || !item) return;
     const chave = item.dataset.chave;
-    if (btn.dataset.acao === 'remover') T.carrinho.remover(chave);
-    if (btn.dataset.acao === 'mais') T.carrinho.alterarQtd(chave, 1);
-    if (btn.dataset.acao === 'menos') T.carrinho.alterarQtd(chave, -1);
+    if (btn.dataset.acao === 'remover') {
+      T.carrinho.remover(chave);
+    } else if (btn.dataset.acao === 'mais') {
+      T.carrinho.alterarQtd(chave, 1);
+    } else if (btn.dataset.acao === 'menos') {
+      T.carrinho.alterarQtd(chave, -1);
+    }
   });
 
   /* ----- Resumo ----- */
   function renderResumo() {
     const t = T.carrinho.totais({ metodo });
     const vazio = t.qtd === 0;
-    const cupomHTML = t.cupom
-      ? `<span><strong>− ${T.brl(t.descontoCupom, true)}</strong> <a href="#" data-acao="removerCupom">Remover</a></span>`
-      : editandoCupom
-        ? `<form class="tauCupomForm" data-acao="formCupom"><input name="codigo" placeholder="CÓDIGO" aria-label="Código do cupom" autocomplete="off"><button type="submit">Aplicar</button></form>`
-        : `<a href="#" data-acao="cupom">Adicionar</a>`;
+    // O resumo mostra: cupom aplicado, formulário para digitar ou botão de adicionar.
+    let cupomHTML = '<a href="#" data-acao="cupom">Adicionar</a>';
+    if (t.cupom) {
+      cupomHTML = `<span><strong>− ${T.brl(t.descontoCupom, true)}</strong> <a href="#" data-acao="removerCupom">Remover</a></span>`;
+    } else if (editandoCupom) {
+      cupomHTML = `<form class="tauCupomForm" data-acao="formCupom"><input name="codigo" placeholder="CÓDIGO" aria-label="Código do cupom" autocomplete="off"><button type="submit">Aplicar</button></form>`;
+    }
     const n = T.parcelasMax(t.total);
 
     cardResumo.innerHTML = `
@@ -90,15 +97,27 @@
     const el = e.target.closest('[data-acao]');
     if (!el) return;
     const acao = el.dataset.acao;
-    if (acao === 'cupom') { e.preventDefault(); editandoCupom = true; renderResumo(); }
-    if (acao === 'removerCupom') { e.preventDefault(); T.carrinho.removerCupom(); renderResumo(); }
-    if (acao === 'pagar') pagar(el);
+    if (acao === 'cupom') {
+      e.preventDefault();
+      editandoCupom = true;
+      renderResumo();
+    } else if (acao === 'removerCupom') {
+      e.preventDefault();
+      T.carrinho.removerCupom();
+      renderResumo();
+    } else if (acao === 'pagar') {
+      pagar(el);
+    }
   });
   cardResumo.addEventListener('submit', e => {
     e.preventDefault();
     const codigo = new FormData(e.target).get('codigo');
-    if (T.carrinho.aplicarCupom(codigo)) { editandoCupom = false; T.toast('Cupom aplicado.'); }
-    else T.toast('Cupom inválido.');
+    if (T.carrinho.aplicarCupom(codigo)) {
+      editandoCupom = false;
+      T.toast('Cupom aplicado.');
+    } else {
+      T.toast('Cupom inválido.');
+    }
     renderResumo();
   });
 
@@ -148,7 +167,10 @@
 
   async function pagar(btn) {
     const itens = T.carrinho.itens();
-    if (!itens.length) return T.toast('Seu carrinho está vazio.');
+    if (!itens.length) {
+      T.toast('Seu carrinho está vazio.');
+      return;
+    }
     if (!T.auth.usuario()) {
       T.toast('Faça login para finalizar a compra.');
       return setTimeout(() => { location.href = 'login.html?next=finalizarcompra.html'; }, 1000);
@@ -177,17 +199,21 @@
       endereco: end
     };
 
-    btn.disabled = true; btn.textContent = 'Processando...';
+    btn.disabled = true;
+    btn.textContent = 'Processando...';
     try {
       const r = await T.pagamento.processar(pedido);
-      if (!r.ok) throw new Error('recusado');
+      if (!r.ok) {
+        throw new Error('recusado');
+      }
       pedido.status = r.status;
       T.store.set('pedidos', [pedido, ...T.store.get('pedidos', [])]);
       T.carrinho.limpar();
       T.toast('Pedido realizado com sucesso!');
       setTimeout(() => { location.href = 'pedidos.html'; }, 900);
     } catch (err) {
-      btn.disabled = false; btn.textContent = 'Realizar Pagamento';
+      btn.disabled = false;
+      btn.textContent = 'Realizar Pagamento';
       T.toast('Não foi possível processar o pagamento. Tente novamente.');
     }
   }

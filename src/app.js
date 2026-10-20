@@ -1,3 +1,4 @@
+// Objetivo: Configura o Express e define as rotas da loja e dos cadastros.
 'use strict';
 
 const path = require('node:path');
@@ -7,10 +8,25 @@ const criarProdutos = require('./modelos/produtos');
 const criarCategorias = require('./modelos/categorias');
 const criarSessao = require('./seguranca/sessao');
 const { gerarHash, verificarSenha } = require('./seguranca/senhas');
-const { texto, emailValido, senhaValida, validarProduto, validarCategoria, GENEROS } = require('./validacao');
-const PAGINAS = ['index', 'produto', 'login', 'cadastro', 'finalizarcompra', 'pedidos', 'trocas', 'seusdados', 'endereco', 'cartoessalvos', 'cadastrarproduto', 'cadastrarcategoria'];
-const CONTA = ['pedidos', 'trocas', 'seusdados', 'endereco', 'cartoessalvos', 'cadastrarproduto', 'cadastrarcategoria'];
-const rotaAsync = funcao => (req, res, next) => Promise.resolve(funcao(req, res, next)).catch(next);
+const { texto, emailValido, validarDadosUsuario, validarProduto, validarCategoria, GENEROS } = require('./validacao');
+const PAGINAS = [
+  'index', 'produto', 'login', 'cadastro', 'finalizarcompra',
+  'pedidos', 'trocas', 'seusdados', 'endereco', 'cartoessalvos',
+  'cadastrarproduto', 'cadastrarcategoria', 'cadastraradmin'
+];
+
+const PAGINAS_CONTA = [
+  'pedidos', 'trocas', 'seusdados', 'endereco', 'cartoessalvos',
+  'cadastrarproduto', 'cadastrarcategoria', 'cadastraradmin'
+];
+
+const PAGINAS_ADMIN = ['cadastrarproduto', 'cadastrarcategoria', 'cadastraradmin'];
+// Encaminha erros das rotas assíncronas para o tratador do Express.
+function rotaAsync(funcao) {
+  return function (req, res, next) {
+    Promise.resolve(funcao(req, res, next)).catch(next);
+  };
+}
 function proximoSeguro(valor) {
   const pagina = String(valor || '').replace(/^\//, '');
   if (!/^[a-z]+\.html$/.test(pagina)) {
@@ -22,7 +38,11 @@ function proximoSeguro(valor) {
   }
   return '/' + pagina;
 }
-const jsonSeguro = objeto => JSON.stringify(objeto).replace(/[<>&\u2028\u2029]/g, c => '\\u' + c.charCodeAt(0).toString(16).padStart(4, '0'));
+function jsonSeguro(objeto) {
+  return JSON.stringify(objeto).replace(/[<>&\u2028\u2029]/g, function (caractere) {
+    return '\\u' + caractere.charCodeAt(0).toString(16).padStart(4, '0');
+  });
+}
 
 module.exports = function criarApp({ banco, segredo }) {
   const app = express();
@@ -53,13 +73,14 @@ module.exports = function criarApp({ banco, segredo }) {
   app.use(sessao.carregar);
   function exigirLogin(req, res, next) {
     if (!req.usuario) {
-      return res.redirect(303, '/login.html?next=' + encodeURIComponent('/cadastrarproduto.html'));
+      const destino = req.path === '/administradores' ? '/cadastraradmin.html' : '/cadastrarproduto.html';
+      return res.redirect(303, '/login.html?next=' + encodeURIComponent(destino));
     }
     next();
   }
   function exigirAdmin(req, res, next) {
     if (req.usuario.ies_admin !== 'S') {
-      return res.status(403).render('pages/erro', { titulo: 'Acesso restrito', mensagem: 'O cadastro de produtos e categorias é permitido somente para administradores.' });
+      return res.status(403).render('pages/erro', { titulo: 'Acesso restrito', mensagem: 'Esta funcionalidade é permitida somente para administradores.' });
     }
     next();
   }
@@ -102,21 +123,24 @@ module.exports = function criarApp({ banco, segredo }) {
     res.redirect(303, proximo);
   }));
   app.post('/cadastro', sessao.verificarCsrf, limitarTentativas, rotaAsync(async (req, res) => {
-    const nome = texto(req.body.nome), email = texto(req.body.email).toLowerCase();
-    const cpf = texto(req.body.cpf).replace(/\D/g, '');
-    const telefone = texto(req.body.telefone).replace(/\D/g, '');
-    const valores = { nome, email, cpf: texto(req.body.cpf), telefone: texto(req.body.telefone) };
-    if (nome.length < 3 || nome.length > 100 || email.length > 100 || !emailValido(email) || !/^\d{11}$/.test(cpf) || !/^\d{10,11}$/.test(telefone) || !senhaValida(req.body.senha) || req.body.senha !== req.body.confirmarSenha) {
-      return res.status(400).render('pages/cadastro', { erro: 'Informe nome, e-mail, CPF (11 dígitos), telefone (10 ou 11 dígitos) e senha de 8 a 128 caracteres. Confirme a mesma senha.', valores });
+    const cadastro = validarDadosUsuario(req.body);
+
+    if (cadastro.erros.length > 0) {
+      return res.status(400).render('pages/cadastro', {
+        erro: cadastro.erros.join(' '),
+        valores: cadastro.valores
+      });
     }
+
     try {
       // O formulário público nunca pode definir privilégios de administrador.
-      const id = await usuarios.cadastrar({ nome, email, senhaHash: await gerarHash(req.body.senha), cpf, telefone });
+      const senhaHash = await gerarHash(req.body.senha);
+      const id = await usuarios.cadastrar({ ...cadastro.dados, senhaHash });
       await sessao.entrar(req, res, id);
       res.redirect(303, '/seusdados.html');
     } catch (erro) {
       if (erro.code === 'ER_DUP_ENTRY') {
-        return res.status(409).render('pages/cadastro', { erro: 'E-mail ou CPF já cadastrado.', valores });
+        return res.status(409).render('pages/cadastro', { erro: 'E-mail ou CPF já cadastrado.', valores: cadastro.valores });
       }
       throw erro;
     }
@@ -163,20 +187,53 @@ module.exports = function criarApp({ banco, segredo }) {
     }
   }));
 
+  // Administradores autenticados podem cadastrar outros administradores pela interface.
+  app.post('/administradores', exigirLogin, exigirAdmin, sessao.verificarCsrf, rotaAsync(async (req, res) => {
+    const cadastro = validarDadosUsuario(req.body);
+
+    if (cadastro.erros.length > 0) {
+      res.status(400);
+      return renderizar(req, res, 'cadastraradmin', {
+        erros: cadastro.erros,
+        valores: cadastro.valores,
+        sucesso: false
+      });
+    }
+
+    try {
+      const senhaHash = await gerarHash(req.body.senha);
+      await usuarios.cadastrarAdmin({ ...cadastro.dados, senhaHash });
+      res.redirect(303, '/cadastraradmin.html?criado=1');
+    } catch (erro) {
+      if (erro.code === 'ER_DUP_ENTRY') {
+        res.status(409);
+        return renderizar(req, res, 'cadastraradmin', {
+          erros: ['E-mail ou CPF já cadastrado.'], valores: cadastro.valores, sucesso: false
+        });
+      }
+      throw erro;
+    }
+  }));
+
   app.get('/', rotaAsync((req, res) => renderizar(req, res, 'index')));
   app.get('/:pagina.html', rotaAsync(async (req, res, next) => {
     const pagina = req.params.pagina;
     if (!PAGINAS.includes(pagina)) {
       return next();
     }
-    if (CONTA.includes(pagina) && !req.usuario) {
+    if (PAGINAS_CONTA.includes(pagina) && !req.usuario) {
       return res.redirect(303, '/login.html?next=' + encodeURIComponent('/' + pagina + '.html'));
     }
-    if (['cadastrarproduto', 'cadastrarcategoria'].includes(pagina) && req.usuario.ies_admin !== 'S') {
+    if (PAGINAS_ADMIN.includes(pagina) && req.usuario.ies_admin !== 'S') {
       return exigirAdmin(req, res, next);
     }
     if (['login', 'cadastro'].includes(pagina) && req.usuario) {
       return res.redirect(303, proximoSeguro(texto(req.query.next)));
+    }
+    if (pagina === 'cadastraradmin') {
+      return renderizar(req, res, pagina, {
+        erros: [], valores: {}, sucesso: texto(req.query.criado) === '1'
+      });
     }
     if (pagina === 'cadastrarproduto') {
       const catalogo = await produtos.listar();

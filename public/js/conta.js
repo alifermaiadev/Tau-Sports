@@ -1,3 +1,4 @@
+// Objetivo: Controla login na tela, menu da conta, pedidos, dados, endereços e cartões.
 
 (function () {
   'use strict';
@@ -6,14 +7,21 @@
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const pagina = T.pagina();
 
-  const STATUS_PODE_TROCAR = s => s !== 'Aguardando pagamento';
+  function podeSolicitarTroca(status) {
+    return status !== 'Aguardando pagamento';
+  }
   const nomeMetodo = { cartao: 'Cartão de crédito', pix: 'PIX', boleto: 'Boleto bancário' };
 
   /* ================= LOGIN ================= */
   function login() {
-    const form = $('.login-form');
-    if (!form) return;
-    if (T.auth.usuario()) { location.replace('pedidos.html'); return; }
+    const formulario = $('.login-form');
+    if (!formulario) {
+      return;
+    }
+    if (T.auth.usuario()) {
+      location.replace('pedidos.html');
+      return;
+    }
 
     // O formulário envia e-mail e senha diretamente ao servidor.
     $('.esqueceuASenha').addEventListener('click', e => {
@@ -43,7 +51,9 @@
   /* ================= PEDIDOS / TROCAS ================= */
   function listaPedidos(modo) {
     const sec = $('.perfilInformacao');
-    if (!sec) return;
+    if (!sec) {
+      return;
+    }
     $$('.pedido', sec).forEach(el => el.remove());
     $$('.listaVazia', sec).forEach(el => el.remove());
     // Dados guardados por versões antigas da demonstração podem estar incompletos.
@@ -68,11 +78,16 @@
       const detalhes = itens.map(i =>
         `<div>${T.esc(Number(i.qtd) || 0)}x ${T.esc(i.nome)} — tam. ${T.esc(i.tamanho || '—')}, ${T.esc(i.cor || '—')} — ${T.brl((Number(i.preco) || 0) * (Number(i.qtd) || 0), true)}</div>`).join('');
       const total = Number(p.totais && p.totais.total) || itens.reduce((s, i) => s + (Number(i.preco) || 0) * (Number(i.qtd) || 0), 0);
-      const acao = modo === 'trocas'
-            ? (p.trocaSolicitada
-            ? '<a class="botaoComprar" href="#" aria-disabled="true">Troca solicitada</a>'
-            : STATUS_PODE_TROCAR(p.status) ? '<a class="botaoComprar" href="#" data-acao="troca">Solicitar troca</a>' : '')
-        : '<a class="botaoComprar" href="#" data-acao="detalhes">Ver detalhes</a>';
+      // Define qual botão mostrar, sem usar condições ternárias aninhadas.
+      let acao = '<a class="botaoComprar" href="#" data-acao="detalhes">Ver detalhes</a>';
+      if (modo === 'trocas') {
+        acao = '';
+        if (p.trocaSolicitada) {
+          acao = '<a class="botaoComprar" href="#" aria-disabled="true">Troca solicitada</a>';
+        } else if (podeSolicitarTroca(p.status)) {
+          acao = '<a class="botaoComprar" href="#" data-acao="troca">Solicitar troca</a>';
+        }
+      }
       return `
         <article class="pedido" data-id="${T.esc(p.id)}">
             <img src="${T.esc(primeiro.imagem)}" alt="${T.esc(primeiro.nome)}">
@@ -283,13 +298,26 @@
   }
 
   /* ================= INICIALIZAÇÃO ================= */
-  if (pagina === 'login') return login();
+  if (pagina === 'login') {
+    login();
+    return;
+  }
 
-  if (!T.auth.exigir()) return;
+  if (!T.auth.exigir()) {
+    return;
+  }
+
   menuConta();
-  if (pagina === 'pedidos') listaPedidos('pedidos');
-  if (pagina === 'trocas') listaPedidos('trocas');
-  if (pagina === 'seusdados') seusDados();
-  if (pagina === 'endereco') endereco();
-  if (pagina === 'cartoessalvos') cartoes();
+
+  if (pagina === 'pedidos') {
+    listaPedidos('pedidos');
+  } else if (pagina === 'trocas') {
+    listaPedidos('trocas');
+  } else if (pagina === 'seusdados') {
+    seusDados();
+  } else if (pagina === 'endereco') {
+    endereco();
+  } else if (pagina === 'cartoessalvos') {
+    cartoes();
+  }
 })();

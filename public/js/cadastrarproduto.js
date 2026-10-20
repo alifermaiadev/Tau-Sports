@@ -7,6 +7,7 @@
   }
 
   const alerta = document.getElementById('alertaValidacaoProduto');
+  // Campos visíveis podem exibir erros; o token oculto não deve ser validado.
   const controles = 'input:not([type="hidden"]), select, textarea';
 
   function rotuloDoCampo(campo) {
@@ -73,6 +74,7 @@
     alerta.hidden = false;
   }, true);
 
+  // Limpa os avisos conforme o usuário corrige cada campo.
   function atualizarAposEdicao(evento) {
     if (!evento.target.matches(controles)) {
       return;

@@ -1,3 +1,4 @@
+// Objetivo: Consulta e salva as categorias no banco MySQL.
 // Consultas SQL das categorias. Mantemos uma chave curta usada nos produtos.
 module.exports = function criarCategorias(banco) {
   return {

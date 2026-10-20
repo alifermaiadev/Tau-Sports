@@ -1,3 +1,4 @@
+// Objetivo: Cuida dos cookies, da sessão e da proteção CSRF.
 'use strict';
 
 const { randomBytes, createHash, createHmac, timingSafeEqual } = require('node:crypto');

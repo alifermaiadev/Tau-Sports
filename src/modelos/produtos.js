@@ -1,3 +1,4 @@
+// Objetivo: Consulta e salva os produtos no banco MySQL.
 'use strict';
 
 function lerJson(valor, padrao) {

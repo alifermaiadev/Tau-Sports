@@ -1,3 +1,4 @@
+// Objetivo: Cria o hash de uma senha e verifica o hash no login.
 // Senhas são armazenadas com scrypt + salt aleatório, nunca em texto puro.
 const { randomBytes, scrypt, timingSafeEqual } = require('node:crypto');
 const { promisify } = require('node:util');
