@@ -8,7 +8,8 @@ execute o comando abaixo para as instalações:
 npm init -y
 npm install mysql2 nodemon express
 
-//PASSO 4: no cmd, execute o comando para criar seu usuario admin:
+//PASSO 4: no cmd, execute o comando para criar seu usuario admin e preparar o banco:
+npm run banco:preparar
 npm run admin:criar
 
 OBSERVACAO: A senha tem validação, tem que ter letra maiuscula, minuscula, caracter especial.... Vou deixar um modelo de senha valido abaixo:
