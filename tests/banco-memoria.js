@@ -2,7 +2,7 @@
 
 // Simula as consultas utilizadas pelas rotas para testar HTTP sem MySQL.
 module.exports = function criarBancoMemoria() {
-  const usuarios = [], sessoes = [], produtos = [], detalhes = [];
+  const usuarios = [], sessoes = [], produtos = [], detalhes = [], identidadesSociais = [];
   let idProduto = 0;
   const normalizar = sql => sql.replace(/\s+/g, ' ').trim();
   const api = {
@@ -18,6 +18,21 @@ module.exports = function criarBancoMemoria() {
         const usuario = { id: usuarios.length + 1, nome: valores[0], email: valores[1], senha_hash: valores[2], cpf: valores[3], telefone: valores[4], ies_admin: 'N', ativo: true };
         usuarios.push(usuario);
         return [{ insertId: usuario.id }];
+      }
+      if (consulta.startsWith('SELECT provedor FROM IDENTIDADES_SOCIAIS')) {
+        return [identidadesSociais.filter(i => i.id_usuario === valores[0]).map(i => ({ provedor: i.provedor }))];
+      }
+      if (consulta.includes('FROM IDENTIDADES_SOCIAIS i')) {
+        const identidade = identidadesSociais.find(i => i.provedor === valores[0] && i.id_provedor === valores[1]);
+        const usuario = identidade && usuarios.find(u => u.id === identidade.id_usuario);
+        return [usuario ? [{ id: usuario.id, nome: usuario.nome, email: usuario.email, ies_admin: usuario.ies_admin, ativo: usuario.ativo }] : []];
+      }
+      if (consulta.startsWith('INSERT INTO IDENTIDADES_SOCIAIS')) {
+        if (identidadesSociais.some(i => (i.provedor === valores[1] && i.id_provedor === valores[2]) || (i.id_usuario === valores[0] && i.provedor === valores[1]))) {
+          const erro = new Error('Identidade social duplicada'); erro.code = 'ER_DUP_ENTRY'; throw erro;
+        }
+        identidadesSociais.push({ id_usuario: valores[0], provedor: valores[1], id_provedor: valores[2], email_provedor: valores[3] });
+        return [{ affectedRows: 1 }];
       }
       if (consulta.startsWith('UPDATE USUARIO SET ies_admin')) {
         const usuario = usuarios.find(u => u.id === valores[valores.length - 1]);
@@ -62,8 +77,9 @@ module.exports = function criarBancoMemoria() {
       throw new Error('Consulta não prevista no substituto de testes: ' + consulta);
     },
     async getConnection() {
-      const inicial = { p: produtos.length, d: detalhes.length, idProduto };
+      const inicial = { u: usuarios.length, i: identidadesSociais.length, p: produtos.length, d: detalhes.length, idProduto };
       return { execute: api.execute, async beginTransaction() {}, async commit() {}, async rollback() {
+        usuarios.length = inicial.u; identidadesSociais.length = inicial.i;
         produtos.length = inicial.p; detalhes.length = inicial.d; idProduto = inicial.idProduto;
       }, release() {} };
     },

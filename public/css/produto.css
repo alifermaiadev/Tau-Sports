@@ -48,7 +48,7 @@ main {
 
 .produto__wrapper {
     display: grid;
-    grid-template-columns: 1fr 340px;
+    grid-template-columns: minmax(0, 1fr) 340px;
     gap: 2.5rem;
     align-items: start;
 }
@@ -58,6 +58,7 @@ main {
 ========================================================= */
 
 .produto__coluna-esquerda {
+    min-width: 0;
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
@@ -467,7 +468,7 @@ main {
 /* TABLETS */
 @media (max-width: 1024px) {
     .produto__wrapper {
-        grid-template-columns: 1fr 300px;
+        grid-template-columns: minmax(0, 1fr) 300px;
         gap: 2rem;
     }
 }

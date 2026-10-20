@@ -1,12 +1,13 @@
 <%- include('../partials/head', { titulo: 'Criar conta | Tau Sports', css: ['global', 'components', 'login', 'header', 'footer'] }) %>
 <body>
 <%- include('../partials/header-login') %>
-<main class="login-page">
+<main class="login-page cadastro-page">
     <section class="login-container">
         <div class="login-banner"><div class="overlay"></div></div>
         <div class="login-box">
             <div class="login-header"><h1>Crie sua conta</h1><p>Cadastre-se para acessar a Taú Sports.</p></div>
             <% if (erro) { %><p class="mensagemFormulario mensagemErro" role="alert"><%= erro %></p><% } %>
+            <% if (typeof socialErro !== 'undefined' && socialErro) { %><p class="mensagemFormulario mensagemErro" role="alert"><%= socialErro %></p><% } %>
             <form class="login-form" action="/cadastro" method="post">
                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                 <div class="input-group"><label for="nome">Nome completo</label><input class="input" type="text" id="nome" name="nome" value="<%= valores.nome || '' %>" autocomplete="name" minlength="3" maxlength="100" required></div>
@@ -17,6 +18,17 @@
                 <div class="input-group"><label for="confirmarSenha">Confirme a senha</label><input class="input" type="password" id="confirmarSenha" name="confirmarSenha" autocomplete="new-password" minlength="8" maxlength="128" required></div>
                 <button type="submit" class="btn btn-primary login-btn">Criar conta</button>
             </form>
+            <div class="divider"><span>ou cadastre-se com</span></div>
+            <div class="social-login">
+                <a class="social-btn" href="/auth/google">
+                    <img src="/imagensUCE/google.png" alt="">
+                    <span>Continuar com Google</span>
+                </a>
+                <a class="social-btn facebook" href="/auth/facebook">
+                    <img src="/imagensUCE/facebookBranco.svg" alt="">
+                    <span>Continuar com Facebook</span>
+                </a>
+            </div>
             <div class="login-footer"><p>Já possui uma conta? <a href="/login.html">Entrar</a></p></div>
         </div>
     </section>

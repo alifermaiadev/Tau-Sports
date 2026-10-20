@@ -159,7 +159,7 @@
 
 .cartaoSalvo {
     display: grid;
-    grid-template-columns: 220px 1fr auto;
+    grid-template-columns: minmax(0, 220px) minmax(0, 1fr) auto;
     align-items: center;
     gap: 1.25rem;
 
@@ -199,12 +199,14 @@
 }
 
 .cartaoInformacoes h3 {
+    overflow-wrap: anywhere;
     margin: 0 0 0.35rem;
     font-size: 1rem;
     color: #111;
 }
 
 .cartaoInformacoes p {
+    overflow-wrap: anywhere;
     margin: 0 0 0.5rem;
     color: #666;
 }

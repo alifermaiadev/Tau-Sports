@@ -34,7 +34,8 @@ module.exports = function criarSessao(banco, segredo) {
         if (req.tokenSessao) {
           const [linhas] = await banco.execute(
             `SELECT u.id_usuario AS id, u.nome_usuario AS nome, u.email_usuario AS email,
-                    COALESCE(u.ies_admin, 'N') AS ies_admin FROM SESSOES s
+                    CAST(COALESCE(CAST(u.ies_admin AS BINARY), X'4E') AS CHAR CHARACTER SET utf8mb4) AS ies_admin
+             FROM SESSOES s
              INNER JOIN USUARIO u ON u.id_usuario = s.usuario_id
              WHERE s.token_hash = ? AND s.expira_em > UTC_TIMESTAMP() AND u.ativo = 1`, [hashToken(req.tokenSessao)]
           );

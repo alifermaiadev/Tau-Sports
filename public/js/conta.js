@@ -21,9 +21,6 @@
       T.toast('Recuperação de senha ainda não disponível. Contate o administrador.');
     });
 
-    $$('.social-btn').forEach(b => b.addEventListener('click', e => {
-      e.preventDefault(); T.toast('Login social precisa ser configurado no back-end.');
-    }));
   }
 
   /* ================= MENU DA CONTA ================= */
@@ -41,17 +38,28 @@
   }
 
   /* ================= PEDIDOS / TROCAS ================= */
-  function listaPedidos(modo) {
+  async function listaPedidos(modo) {
     const sec = $('.perfilInformacao');
     if (!sec) return;
     $$('.pedido', sec).forEach(el => el.remove());
     $$('.listaVazia', sec).forEach(el => el.remove());
-    // Dados guardados por versões antigas da demonstração podem estar incompletos.
-    const pedidosSalvos = T.store.get('pedidos', []);
-    const pedidos = (Array.isArray(pedidosSalvos) ? pedidosSalvos : []).filter(p =>
-      p && p.id != null && Array.isArray(p.itens) && p.itens.length &&
-      p.itens.some(i => i && i.nome)
-    );
+    $$('.pedidosCarregando', sec).forEach(el => el.remove());
+    const carregando = document.createElement('p');
+    carregando.className = 'pedidosCarregando';
+    carregando.textContent = 'Carregando seus pedidos...';
+    sec.append(carregando);
+    let pedidos;
+    try {
+      const resposta = await fetch('/api/pedidos', { headers: { Accept: 'application/json' } });
+      const resultado = await resposta.json();
+      if (!resposta.ok) throw new Error(resultado.erro || 'Não foi possível carregar seus pedidos.');
+      pedidos = Array.isArray(resultado.pedidos) ? resultado.pedidos : [];
+    } catch (erro) {
+      carregando.className = 'listaVazia';
+      carregando.textContent = erro.message || 'Não foi possível carregar seus pedidos. Atualize a página.';
+      return;
+    }
+    carregando.remove();
     if (!pedidos.length) {
       sec.insertAdjacentHTML('beforeend',
         '<p class="listaVazia">Você ainda não fez nenhum pedido. <a href="index.html">Ir às compras</a></p>');
@@ -62,7 +70,8 @@
       return Number.isNaN(d.getTime()) ? 'Data não disponível' : d.toLocaleDateString('pt-BR');
     };
     sec.insertAdjacentHTML('beforeend', pedidos.map(p => {
-      const itens = p.itens.filter(i => i && i.nome);
+      const itens = (Array.isArray(p.itens) ? p.itens : []).filter(i => i && i.nome);
+      if (!itens.length) return '';
       const primeiro = itens[0], resto = itens.length - 1;
       const qtd = itens.reduce((s, i) => s + (Number(i.qtd) || 0), 0);
       const detalhes = itens.map(i =>
@@ -94,7 +103,7 @@
 
     if (sec.dataset.tauPedidosListener) return;
     sec.dataset.tauPedidosListener = 'true';
-    sec.addEventListener('click', e => {
+    sec.addEventListener('click', async e => {
       const a = e.target.closest('a[data-acao]');
       if (!a) return;
       e.preventDefault();
@@ -104,11 +113,21 @@
         a.textContent = d.hidden ? 'Ver detalhes' : 'Ocultar detalhes';
       }
       if (a.dataset.acao === 'troca' && confirm('Deseja solicitar a troca/devolução deste pedido?')) {
-        const todos = T.store.get('pedidos', []);
-        const p = todos.find(x => x.id === card.dataset.id);
-        if (p) { p.trocaSolicitada = true; T.store.set('pedidos', todos); }
-        a.textContent = 'Troca solicitada'; a.removeAttribute('data-acao'); a.setAttribute('aria-disabled', 'true');
-        T.toast('Solicitação de troca registrada.');
+        a.setAttribute('aria-disabled', 'true');
+        try {
+          const resposta = await fetch('/api/pedidos/' + encodeURIComponent(card.dataset.id) + '/troca', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8', Accept: 'application/json' },
+            body: new URLSearchParams({ _csrf: T.csrfToken })
+          });
+          const resultado = await resposta.json().catch(() => ({}));
+          if (!resposta.ok) throw new Error(resultado.erro || 'Não foi possível registrar a solicitação.');
+          a.textContent = 'Troca solicitada'; a.removeAttribute('data-acao');
+          T.toast('Solicitação de troca registrada.');
+        } catch (erro) {
+          a.removeAttribute('aria-disabled');
+          T.toast(erro.message || 'Não foi possível registrar a solicitação.');
+        }
       }
     });
   }
@@ -192,7 +211,7 @@
     $('#enderecoPadrao').checked = !!salvo.padrao;
 
     T.aplicarMascara(cep, T.mask.cep);
-    ['cep', 'estado', 'endereco', 'numero', 'cidade'].forEach(c => { $('#' + c).required = true; });
+    ['cep', 'estado', 'endereco', 'numero', 'bairro', 'cidade'].forEach(c => { $('#' + c).required = true; });
     cep.pattern = '\\d{5}-\\d{3}'; cep.title = 'Formato: 00000-000';
 
     cep.addEventListener('input', async () => {

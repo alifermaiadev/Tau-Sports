@@ -30,7 +30,10 @@ async function prepararBanco() {
   const banco = mysql.createPool({ ...conexao, database: nome });
   try {
     const schema = fs.readFileSync(path.join(__dirname, '../database/schema.sql'), 'utf8');
-    for (const comando of schema.split(';').map(item => item.trim()).filter(Boolean)) {
+    const comandos = schema.split(';').map(item => item.trim()).filter(Boolean)
+      // Mantenha o schema de integração dentro do banco temporário deste teste.
+      .filter(comando => !/^(?:CREATE\s+DATABASE|USE\s+)/i.test(comando));
+    for (const comando of comandos) {
       await banco.query(comando);
     }
     return { banco, limpar: async () => {

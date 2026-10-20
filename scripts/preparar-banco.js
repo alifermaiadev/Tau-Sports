@@ -9,7 +9,10 @@ const catalogo = require('../src/dados/catalogo-inicial.json');
 async function preparar() {
   // CREATE TABLE IF NOT EXISTS: não apaga nem substitui registros já cadastrados.
   const schema = fs.readFileSync(path.join(__dirname, '../database/schema.sql'), 'utf8');
-  for (const comando of schema.split(';').map(valor => valor.trim()).filter(Boolean)) {
+  const comandos = schema.split(';').map(valor => valor.trim()).filter(Boolean)
+    // A conexão já usa DB_NAME; não troque para tau_sports se foi configurado outro banco.
+    .filter(comando => !/^(?:CREATE\s+DATABASE|USE\s+)/i.test(comando));
+  for (const comando of comandos) {
     await banco.query(comando);
   }
   const [colunas] = await banco.execute(

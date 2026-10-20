@@ -334,6 +334,15 @@ form input::placeholder {
         background-color var(--transition-fast);
 }
 
+a.social-btn {
+    color: inherit;
+    text-decoration: none;
+}
+
+a.social-btn.facebook {
+    color: var(--white);
+}
+
 .social-btn img {
     width: 24px;
 }
@@ -531,3 +540,187 @@ form input::placeholder {
 }
 .mensagemFormulario { padding: 1rem; margin-bottom: 1rem; line-height: 1.5; }
 .mensagemErro { border: 1px solid #b3261e; background: #fff3f2; color: #8c1d18; }
+.mensagemSucesso { border: 1px solid #287a43; background: #effaf2; color: #185c2d; }
+
+/* Cadastro: formulário em duas colunas no notebook, sem largura fixa ou corte vertical. */
+.cadastro-page {
+    flex: 1 0 auto;
+    width: 100%;
+    min-width: 0;
+    align-items: flex-start;
+    padding: clamp(1rem, 3vh, 2rem) 1.25rem;
+}
+
+.cadastro-page .login-container {
+    width: min(100%, 56rem);
+    min-width: 0;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+}
+
+.cadastro-page .login-banner {
+    display: none;
+}
+
+.cadastro-page .login-box {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 56rem;
+    min-width: 0;
+    margin: 0;
+    padding: clamp(1.25rem, 3vw, 2rem);
+    gap: 1rem;
+    align-items: stretch;
+    overflow: visible;
+}
+
+.cadastro-page .login-header {
+    width: 100%;
+}
+
+.cadastro-page .login-box h1 {
+    margin: 0 0 0.4rem;
+    font-size: clamp(1.55rem, 2.5vw, 2rem);
+    line-height: 1.2;
+}
+
+.cadastro-page .login-header p {
+    line-height: 1.45;
+}
+
+.cadastro-page .mensagemFormulario {
+    width: 100%;
+    margin: 0;
+}
+
+.cadastro-page .login-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.85rem 1rem;
+    min-width: 0;
+}
+
+.cadastro-page .login-form input[type="hidden"] {
+    display: none;
+}
+
+.cadastro-page .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    min-width: 0;
+}
+
+.cadastro-page .input-group label {
+    display: block;
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.25;
+}
+
+.cadastro-page .input-group input {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    height: 2.8rem;
+    border-radius: var(--radius-sm);
+}
+
+.cadastro-page .input-group small {
+    color: var(--gray);
+    font-size: 0.8rem;
+    line-height: 1.35;
+}
+
+.cadastro-page .login-btn {
+    grid-column: 1 / -1;
+    width: 100%;
+    max-width: none;
+    min-height: 2.9rem;
+    margin: 0;
+    border-radius: var(--radius-sm);
+}
+
+.cadastro-page .divider {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    margin: 0;
+    color: var(--gray);
+    font-size: 0.9rem;
+}
+
+.cadastro-page .divider::before,
+.cadastro-page .divider::after {
+    content: "";
+    flex: 1 1 auto;
+    height: 1px;
+    background: var(--border-color);
+}
+
+.cadastro-page .social-login {
+    margin: 0;
+    gap: 0.75rem;
+}
+
+.cadastro-page .social-btn {
+    box-sizing: border-box;
+    min-width: 0;
+    min-height: 2.8rem;
+    padding: 0.55rem 0.75rem;
+    gap: 0.55rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+}
+
+.cadastro-page .social-btn span {
+    min-width: 0;
+    line-height: 1.3;
+    text-align: center;
+}
+
+.cadastro-page .login-footer {
+    font-size: 0.9rem;
+    line-height: 1.45;
+}
+
+@media (max-width: 768px) {
+    .cadastro-page {
+        padding: 1rem 0.75rem;
+    }
+
+    .cadastro-page .login-box {
+        padding: 1.5rem 1.25rem;
+    }
+
+    .cadastro-page .login-form {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0.85rem;
+    }
+
+    .cadastro-page .social-login {
+        flex-direction: column;
+    }
+
+    .cadastro-page .social-btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 400px) {
+    .cadastro-page .login-box {
+        padding: 1.25rem 1rem;
+        border-radius: var(--radius-md);
+    }
+
+    .cadastro-page .login-btn,
+    .cadastro-page .input-group input {
+        min-height: 3rem;
+    }
+
+    .cadastro-page .social-btn {
+        font-size: 0.82rem;
+    }
+}

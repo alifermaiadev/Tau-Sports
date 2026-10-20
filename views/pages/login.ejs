@@ -38,6 +38,9 @@
                 <% if (erro) { %>
                     <p class="mensagemFormulario mensagemErro" role="alert"><%= erro %></p>
                 <% } %>
+                <% if (typeof socialErro !== 'undefined' && socialErro) { %>
+                    <p class="mensagemFormulario mensagemErro" role="alert"><%= socialErro %></p>
+                <% } %>
                 <form class="login-form" action="/login" method="post">
                     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                     <input type="hidden" name="next" value="<%= proximo %>">
@@ -108,7 +111,7 @@
                 <!-- LOGIN SOCIAL -->
                 <div class="social-login">
 
-                    <button class="social-btn">
+                    <a class="social-btn" href="/auth/google?next=<%= encodeURIComponent(proximo || '/seusdados.html') %>">
 
                         <img 
                             src="/imagensUCE/google.png" 
@@ -119,9 +122,9 @@
                             Continuar com Google
                         </span>
 
-                    </button>
+                    </a>
 
-                    <button class="social-btn facebook">
+                    <a class="social-btn facebook" href="/auth/facebook?next=<%= encodeURIComponent(proximo || '/seusdados.html') %>">
 
                         <img 
                             src="/imagensUCE/facebookBranco.svg" 
@@ -132,7 +135,7 @@
                             Continuar com Facebook
                         </span>
 
-                    </button>
+                    </a>
 
                 </div>
 

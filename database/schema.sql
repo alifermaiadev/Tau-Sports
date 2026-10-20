@@ -1,6 +1,9 @@
+CREATE DATABASE IF NOT EXISTS tau_sports CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE tau_sports;
+
 -- Compatível com as tabelas originais do Tau Sports (MySQL 8+).
 -- Execute pelo npm run banco:preparar. CREATE TABLE IF NOT EXISTS não elimina dados.
--- O banco tau_sports precisa existir e estar selecionado em DB_NAME no .env.
+-- Ao executar este arquivo diretamente, ele cria e seleciona o banco tau_sports.
 CREATE TABLE IF NOT EXISTS USUARIO (
   id_usuario INT AUTO_INCREMENT PRIMARY KEY,
   nome_usuario VARCHAR(100) NOT NULL,
@@ -53,6 +56,13 @@ CREATE TABLE IF NOT EXISTS ITEM_PEDIDO (
   FOREIGN KEY (id_produto) REFERENCES PRODUTO(id_produto)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- Snapshot de itens, variações e endereço da compra, sem depender do catálogo atual.
+CREATE TABLE IF NOT EXISTS PEDIDO_DETALHE (
+  id_pedido INT NOT NULL PRIMARY KEY,
+  pedido_json JSON NOT NULL,
+  CONSTRAINT fk_pedido_detalhe_pedido FOREIGN KEY (id_pedido) REFERENCES PEDIDO(id_pedido) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 -- Sessões autenticadas no servidor, não dependem do localStorage.
 CREATE TABLE IF NOT EXISTS SESSOES (
   token_hash CHAR(64) PRIMARY KEY,
@@ -60,6 +70,19 @@ CREATE TABLE IF NOT EXISTS SESSOES (
   expira_em DATETIME NOT NULL,
   INDEX idx_sessoes_expiracao (expira_em),
   CONSTRAINT fk_sessoes_usuario FOREIGN KEY (usuario_id) REFERENCES USUARIO(id_usuario) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Identidades de login Google/Facebook vinculadas a uma conta Tau Sports.
+CREATE TABLE IF NOT EXISTS IDENTIDADES_SOCIAIS (
+  id_identidade BIGINT AUTO_INCREMENT PRIMARY KEY,
+  id_usuario INT NOT NULL,
+  provedor VARCHAR(20) NOT NULL,
+  id_provedor VARCHAR(191) NOT NULL,
+  email_provedor VARCHAR(254) NULL,
+  criado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_social_provedor_id (provedor, id_provedor),
+  UNIQUE KEY uq_social_usuario_provedor (id_usuario, provedor),
+  CONSTRAINT fk_social_usuario FOREIGN KEY (id_usuario) REFERENCES USUARIO(id_usuario) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Informações extras usadas pelo catálogo EJS. PRODUTO continua intacta.

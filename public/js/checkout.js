@@ -81,7 +81,7 @@
       <div class="linhaResumo"><span>Cupom de desconto${t.cupom ? ' (' + T.esc(t.cupom) + ')' : ''}</span>${cupomHTML}</div>
       <div class="linhaResumo total"><span>Valor Total</span><div><strong>${T.brl(t.total, true)}</strong>${vazio ? '' : `<small>ou em até ${n}x de ${T.brl(t.total / n)}</small>`}</div></div>
       ${t.economia > 0 ? `<p class="economia">Você está economizando ${T.brl(t.economia, true)}</p>` : ''}
-      <button class="botaoPagamento" type="button" data-acao="pagar"${vazio ? ' disabled' : ''}>Realizar Pagamento</button>`;
+      <button class="botaoPagamento" type="button" data-acao="pagar"${vazio ? ' disabled' : ''}>Finalizar pedido</button>`;
     const inp = $('.tauCupomForm input', cardResumo);
     if (inp) inp.focus();
   }
@@ -158,37 +158,33 @@
       T.toast('Cadastre um endereço de entrega.');
       return setTimeout(() => { location.href = 'endereco.html'; }, 1200);
     }
-    const cartao = metodo === 'cartao' ? T.cartoes.creditoPadrao() : null;
-    if (metodo === 'cartao' && !cartao) {
-      T.toast('Cadastre um cartão de crédito ou escolha outro método.');
-      return;
-    }
-
-    const t = T.carrinho.totais({ metodo });
-    const pedido = {
-      id: 'TAU' + Date.now().toString().slice(-8),
-      criadoEm: new Date().toISOString(),
-      itens: itens.map(i => {
-        const p = T.produto(i.id);
-        return { id: p.id, nome: p.nome, imagem: p.imagens[0], tamanho: i.tamanho, cor: i.cor, qtd: i.qtd, preco: p.preco };
-      }),
-      totais: t, metodo,
-      cartao: cartao ? { bandeira: cartao.bandeira, final: cartao.final } : null,
-      endereco: end
-    };
-
-    btn.disabled = true; btn.textContent = 'Processando...';
+    btn.disabled = true; btn.textContent = 'Salvando pedido...';
     try {
-      const r = await T.pagamento.processar(pedido);
-      if (!r.ok) throw new Error('recusado');
-      pedido.status = r.status;
-      T.store.set('pedidos', [pedido, ...T.store.get('pedidos', [])]);
+      const resposta = await fetch('/api/pedidos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8', Accept: 'application/json' },
+        body: new URLSearchParams({
+          _csrf: T.csrfToken,
+          itens: JSON.stringify(itens.map(({ id, tamanho, cor, qtd }) => ({ id, tamanho, cor, qtd }))),
+          endereco: JSON.stringify(end),
+          metodo,
+          cupom: T.carrinho.cupomAtual() || ''
+        })
+      });
+      const resultado = await resposta.json().catch(() => ({}));
+      if (!resposta.ok) {
+        if (resposta.status === 401) {
+          T.toast('Sua sessão expirou. Entre novamente para finalizar o pedido.');
+          return setTimeout(() => { location.href = 'login.html?next=finalizarcompra.html'; }, 1000);
+        }
+        throw new Error(resultado.erro || 'Não foi possível salvar o pedido.');
+      }
       T.carrinho.limpar();
-      T.toast('Pedido realizado com sucesso!');
+      T.toast('Pedido registrado. Aguardando confirmação do pagamento.');
       setTimeout(() => { location.href = 'pedidos.html'; }, 900);
     } catch (err) {
-      btn.disabled = false; btn.textContent = 'Realizar Pagamento';
-      T.toast('Não foi possível processar o pagamento. Tente novamente.');
+      btn.disabled = false; btn.textContent = 'Finalizar pedido';
+      T.toast(err.message || 'Não foi possível salvar o pedido. Tente novamente.');
     }
   }
 

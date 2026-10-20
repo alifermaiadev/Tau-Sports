@@ -30,9 +30,10 @@
             <li>
                 <form action="/logout" method="post">
                     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <input type="hidden" name="trocar" value="1">
                     <button class="botaoSair" type="submit">
                         <img src="/imagensUCE/excluirPreto.png" alt="">
-                        <span>Sair</span>
+                        <span>Sair / trocar usuário</span>
                     </button>
                 </form>
             </li>

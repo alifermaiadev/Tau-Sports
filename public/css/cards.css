@@ -273,6 +273,7 @@
     -webkit-line-clamp: 2;
     line-clamp: 2;
     overflow: hidden;
+    min-width: 0;
 }
 
 .descontoProduto {
@@ -293,6 +294,7 @@
 }
 
 .precoProduto {
+    min-width: 0;
     align-self: end;
 
     display: grid;
@@ -305,6 +307,7 @@
     font-weight: 700;
     font-size: 1.4rem;
     line-height: 1.2;
+    overflow-wrap: anywhere;
 }
 
 .parcelaProduto {
@@ -476,6 +479,10 @@
         min-width: 0;
     }
 
+    .cardsCarrossel .cardProduto {
+        min-width: 0;
+    }
+
     .imgProduto {
         height: 150px;
     }
@@ -592,85 +599,11 @@
 
 }
 
-/* =========================================================
-   TELAS ALTERNATIVAS / DOBRÁVEIS
-========================================================= */
-
-/* Surface Duo / Galaxy Z Fold aberto */
-@media (min-width: 650px) and (max-width: 767px) {
-
-    :root {
-        --sectionPadding: 1.25rem;
-    }
-
-    .cardsContainer .cardProduto {
-        flex-basis: calc((100% - 1.5rem) / 3);
-        max-width: calc((100% - 1.5rem) / 3);
-    }
-
-    .cardsCarrossel .cardProduto {
-        flex-basis: 200px;
-    }
-
-    .imgProduto {
-        height: 140px;
-    }
-
-
-}
-
-/* Surface Duo / Galaxy Z Fold fechado */
-@media (min-width: 340px) and (max-width: 430px) {
-
-    :root {
-        --sectionPadding: 0.875rem;
-    }
-
-    .cardsContainer .cardProduto {
-        flex-basis: 100%;
-        max-width: 100%;
-    }
-
-    .cardsCarrossel .cardProduto {
-        flex-basis: 175px;
-    }
-
-    .imgProduto {
-        height: 135px;
-    }
-
-
-}
-
-/* Asus Zenbook Fold / telas dobráveis grandes */
-@media (min-width: 1101px) and (max-width: 1300px) {
-
-    .cardsContainer .cardProduto {
-        flex-basis: calc((100% - 3rem) / 4);
-        max-width: calc((100% - 3rem) / 4);
-    }
-
-    .cardsCarrossel .cardProduto {
-        flex-basis: 240px;
-    }
-
-}
-
-/* Nest Hub Max */
-@media (min-width: 1180px) and (max-width: 1300px) and (max-height: 850px) {
+/* Cinco cards de 220px cabem com margens e espaçamento a partir desta largura. */
+@media (min-width: 1228px) and (max-width: 1300px) {
 
     .cardsContainer .cardProduto {
         flex-basis: calc((100% - 4rem) / 5);
         max-width: calc((100% - 4rem) / 5);
     }
-
-    .cardsCarrossel .cardProduto {
-        flex-basis: 220px;
-    }
-
-    .imgProduto {
-        height: 160px;
-    }
-
-
 }

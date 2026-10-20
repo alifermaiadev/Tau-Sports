@@ -42,6 +42,60 @@
     font-size: 0.95rem;
 }
 
+.perfilInformacao {
+    flex-wrap: wrap;
+}
+
+.perfilInformacao > .cardFormulario {
+    flex: 1 1 calc(50% - 0.75rem);
+    min-width: min(100%, 360px);
+}
+
+.perfilInformacao > .cardFormulario:last-child {
+    flex-basis: 100%;
+}
+
+.provedoresSociais {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.provedorSocial {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.9rem 1rem;
+    border: 1px solid #d9d9d9;
+}
+
+.provedorSocial a {
+    color: #111;
+    font-weight: 700;
+}
+
+.provedorSocial strong {
+    color: #287a43;
+}
+
+.perfilInformacao .mensagemFormulario {
+    flex-basis: 100%;
+    padding: 1rem;
+    line-height: 1.5;
+}
+
+.perfilInformacao .mensagemErro {
+    border: 1px solid #b3261e;
+    background: #fff3f2;
+    color: #8c1d18;
+}
+
+.perfilInformacao .mensagemSucesso {
+    border: 1px solid #287a43;
+    background: #effaf2;
+    color: #185c2d;
+}
+
 .formUsuario {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));

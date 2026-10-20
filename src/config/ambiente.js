@@ -33,6 +33,18 @@ module.exports = {
     decimalNumbers: true
   },
   porta: Number(process.env.PORT || 3000),
+  appBaseUrl: (process.env.APP_BASE_URL || 'http://localhost:3000').replace(/\/+$/, ''),
+  oauth: {
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID || '',
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || ''
+    },
+    facebook: {
+      appId: process.env.FACEBOOK_APP_ID || '',
+      appSecret: process.env.FACEBOOK_APP_SECRET || '',
+      graphVersion: process.env.FACEBOOK_GRAPH_VERSION || ''
+    }
+  },
   producao: process.env.NODE_ENV === 'production',
   segredo: process.env.SESSION_SECRET,
   duracaoSessao: 8 * 60 * 60 * 1000
