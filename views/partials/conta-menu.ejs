@@ -8,26 +8,13 @@
     ];
     if (usuario && usuario.ies_admin === 'S') {
         itens.push({
-            slug: 'cadastraradmin',
-            rotulo: 'Cadastrar Usuário Admin',
-            href: '/cadastraradmin.html',
-            preto: 'adicionar.png',
-            amarelo: 'adicionar.png'
-        });
-        itens.push({
-            slug: 'cadastrarcategoria',
-            rotulo: 'Cadastrar Categoria',
-            href: '/cadastrarcategoria.html',
-            preto: 'adicionar.png',
-            amarelo: 'adicionar.png'
-        });
-        itens.push({
             slug: 'cadastrarproduto',
-            rotulo: 'Cadastrar Produto',
+            rotulo: 'Cadastrar',
             href: '/cadastrarproduto.html',
             preto: 'adicionar.png',
             amarelo: 'adicionar.png'
         });
+        itens.push({ slug: 'relatorios', rotulo: 'Relatórios', href: '/relatorios.html', preto: 'pedidoPreto.png', amarelo: 'pedidoAmarelo.png' });
     }
 -%>
     <aside class="perfilSelecao" aria-label="Menu da conta">

@@ -1,4 +1,3 @@
-// Objetivo: Exibe os detalhes do produto e permite adicioná-lo ao carrinho.
 /* ==========================================================
    Monta a página a partir do catálogo, seleção de tamanho/cor,
    carrinho, "Comprar" e lightbox da galeria.
@@ -51,11 +50,7 @@
   /* ----- Compra ----- */
   $('.compra__nome').textContent = p.nome;
   const de = $('.preco__de');
-  if (p.precoDe) {
-    de.innerHTML = 'de <s>' + T.brl(p.precoDe) + '</s>';
-  } else {
-    de.hidden = true;
-  }
+  if (p.precoDe) de.innerHTML = 'de <s>' + T.brl(p.precoDe) + '</s>'; else de.hidden = true;
   $('.preco__por').textContent = T.brl(p.preco);
   const parc = $('.preco__parcelamento');
   parc.textContent = 'ou até ' + p.parcelas + 'x ' + T.brl(p.preco / p.parcelas) + ' sem juros';
@@ -68,11 +63,7 @@
 
   const gridTam = $('.tamanhos__grid');
   gridTam.innerHTML = p.tamanhos.map(t => `<button class="tamanho" type="button" aria-pressed="false">${T.esc(t)}</button>`).join('');
-  if (p.tamanhos.length === 1) {
-    const botaoTamanho = $('.tamanho', gridTam);
-    botaoTamanho.classList.add('ativo');
-    botaoTamanho.setAttribute('aria-pressed', 'true');
-  }
+  if (p.tamanhos.length === 1) { const b = $('.tamanho', gridTam); b.classList.add('ativo'); b.setAttribute('aria-pressed', 'true'); }
   const guia = $('.tamanhos__guia');
   if (p.tamanhos.length === 1 && guia) guia.hidden = true;
 

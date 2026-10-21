@@ -108,7 +108,7 @@
                 <!-- LOGIN SOCIAL -->
                 <div class="social-login">
 
-                    <button class="social-btn">
+                    <a class="social-btn" href="/auth/google?next=<%= encodeURIComponent(proximo) %>">
 
                         <img 
                             src="/imagensUCE/google.png" 
@@ -119,9 +119,9 @@
                             Continuar com Google
                         </span>
 
-                    </button>
+                    </a>
 
-                    <button class="social-btn facebook">
+                    <a class="social-btn facebook" href="/auth/facebook?next=<%= encodeURIComponent(proximo) %>">
 
                         <img 
                             src="/imagensUCE/facebookBranco.svg" 
@@ -132,7 +132,7 @@
                             Continuar com Facebook
                         </span>
 
-                    </button>
+                    </a>
 
                 </div>
 

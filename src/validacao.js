@@ -1,80 +1,15 @@
-// Objetivo: Confere os dados recebidos do usuário antes de salvar no banco.
 'use strict';
 
 const { randomUUID } = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
-const { analisarSenha } = require('../public/js/regras-senha');
 const CATEGORIAS = { tenis: 'Tênis', camiseta: 'Camiseta', chuteira: 'Chuteira', mochila: 'Mochila', acessorio: 'Acessório', bone: 'Boné', shorts: 'Shorts' };
 const GENEROS = { masculino: 'Masculino', feminino: 'Feminino', infantil: 'Infantil', unissex: 'Unissex' };
 const texto = valor => typeof valor === 'string' ? valor.trim() : '';
 const emailValido = email => email.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
-function senhaValida(senha) {
-  return analisarSenha(senha).valida;
-}
+const senhaValida = senha => typeof senha === 'string' && senha.length >= 8 && senha.length <= 128;
 
-// Confere os dados comuns aos cadastros de cliente e de administrador.
-function validarDadosUsuario(formulario) {
-  const nome = texto(formulario.nome);
-  const email = texto(formulario.email).toLowerCase();
-  const cpfOriginal = texto(formulario.cpf);
-  const telefoneOriginal = texto(formulario.telefone);
-  const cpf = cpfOriginal.replace(/\D/g, '');
-  const telefone = telefoneOriginal.replace(/\D/g, '');
-  const erros = [];
-
-  if (nome.length < 3 || nome.length > 100) {
-    erros.push('O nome deve ter entre 3 e 100 caracteres.');
-  }
-  if (email.length > 100 || !emailValido(email)) {
-    erros.push('Informe um e-mail válido de até 100 caracteres.');
-  }
-  if (!/^\d{11}$/.test(cpf)) {
-    erros.push('O CPF deve ter 11 dígitos.');
-  }
-  if (!/^\d{10,11}$/.test(telefone)) {
-    erros.push('O telefone deve ter 10 ou 11 dígitos.');
-  }
-  if (!senhaValida(formulario.senha)) {
-    erros.push('A senha deve ter de 8 a 128 caracteres, maiúscula, minúscula, número e caractere especial.');
-  }
-  if (formulario.senha !== formulario.confirmarSenha) {
-    erros.push('A confirmação da senha deve ser igual à senha.');
-  }
-
-  return {
-    erros,
-    dados: { nome, email, cpf, telefone },
-    valores: { nome, email, cpf: cpfOriginal, telefone: telefoneOriginal }
-  };
-}
-
-// Gera o código que o catálogo usa ("Tênis" -> "tenis").
-function criarChaveCategoria(nome) {
-  return nome.normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '')
-    .slice(0, 50);
-}
-
-function validarCategoria(dados) {
-  const nome = texto(dados.nome);
-  const chave = criarChaveCategoria(nome);
-  const erros = [];
-
-  if (nome.length < 3 || nome.length > 50) {
-    erros.push('O nome da categoria deve ter entre 3 e 50 caracteres.');
-  }
-  if (!chave) {
-    erros.push('Informe um nome com letras ou números.');
-  }
-
-  return { erros, categoria: { nome, chave } };
-}
-
-function validarProduto(dados, categoriasDisponiveis = CATEGORIAS) {
+function validarProduto(dados, opcoes = { categorias: CATEGORIAS, generos: GENEROS, marcas: null }) {
   const erros = [];
   const campoTexto = (campo, rotulo, minimo, maximo) => {
     const valor = texto(dados[campo]);
@@ -111,12 +46,15 @@ function validarProduto(dados, categoriasDisponiveis = CATEGORIAS) {
   const marca = campoTexto('marca', 'Marca', 2, 50);
   const descricao = campoTexto('descricao', 'Descrição', 10, 5000);
   const categoria = texto(dados.categoria), genero = texto(dados.genero);
-  if (!Object.hasOwn(categoriasDisponiveis, categoria)) {
+  if (!Object.hasOwn(opcoes.categorias, categoria)) {
     erros.push('Selecione uma categoria válida.');
   }
-  if (!Object.hasOwn(GENEROS, genero)) {
+  if (!Object.hasOwn(opcoes.generos, genero)) {
     erros.push('Selecione um público válido.');
   }
+  if (opcoes.marcas && !opcoes.marcas.includes(marca)) erros.push('Selecione uma marca cadastrada.');
+  const tipo = texto(dados.tipo);
+  if (!['roupa', 'calcado', 'outro'].includes(tipo)) erros.push('Selecione o tipo de produto.');
   const preco = dinheiro('preco', true), precoDe = dinheiro('precoDe', false);
   if (precoDe !== null && precoDe <= preco) {
     erros.push('O preço anterior deve ser maior que o preço de venda.');
@@ -148,7 +86,11 @@ function validarProduto(dados, categoriasDisponiveis = CATEGORIAS) {
       break;
     }
   }
-  const tamanhos = lista('tamanhos', /,/, 30, 20), cores = lista('cores', /,/, 20, 40);
+  const recebidos = Array.isArray(dados.tamanhos) ? dados.tamanhos : typeof dados.tamanhos === 'string' ? dados.tamanhos.split(',') : [];
+  const tamanhos = [...new Set(recebidos.map(texto).filter(Boolean))];
+  const permitidos = { roupa: ['PP', 'P', 'M', 'G', 'GG', 'XG'], calcado: Array.from({length: 10}, (_, i) => String(i + 35)), outro: ['Único'] };
+  if (tamanhos.some(t => !(permitidos[tipo] || []).includes(t))) erros.push('Selecione apenas tamanhos válidos para o tipo do produto.');
+  const cores = lista('cores', /,/, 20, 40);
   if (tamanhos.length && tamanhos[0].length > 10) {
     erros.push('O tamanho principal deve ter no máximo 10 caracteres.');
   }
@@ -161,10 +103,10 @@ function validarProduto(dados, categoriasDisponiveis = CATEGORIAS) {
   const detalhes = lista('detalhes', /\r?\n/, 20, 250);
   const slug = nome.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 80) || 'produto';
   return { erros, produto: {
-    id: slug + '-' + randomUUID().slice(0, 8), nome, marca, categoria, genero, preco, precoDe,
+    tipo, id: slug + '-' + randomUUID().slice(0, 8), nome, marca, categoria, genero, preco, precoDe,
     descontoPix, parcelas, descricao, imagens, tamanhos,
     cores: cores.map(cor => ({ nome: cor, imagem: imagens[0] })), tags, detalhes
   } };
 }
 
-module.exports = { texto, emailValido, senhaValida, analisarSenha, validarDadosUsuario, validarProduto, validarCategoria, CATEGORIAS, GENEROS };
+module.exports = { texto, emailValido, senhaValida, validarProduto, CATEGORIAS, GENEROS };

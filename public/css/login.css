@@ -531,3 +531,5 @@ form input::placeholder {
 }
 .mensagemFormulario { padding: 1rem; margin-bottom: 1rem; line-height: 1.5; }
 .mensagemErro { border: 1px solid #b3261e; background: #fff3f2; color: #8c1d18; }
+
+.social-login a.social-btn{text-decoration:none;text-align:center}

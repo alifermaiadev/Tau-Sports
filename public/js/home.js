@@ -1,4 +1,3 @@
-// Objetivo: Exibe os produtos na página inicial e aplica filtros.
 /* ==========================================================
      Renderiza os cards a partir do catálogo e aplica filtros/busca.
    ========================================================== */
@@ -33,18 +32,10 @@
         const c = T.norm(filtros.categoria);
         if (c === 'calcados' ? !['tenis', 'chuteira'].includes(p.categoria) : p.categoria !== c) return false;
       }
-      if (filtros.marca && T.norm(p.marca) !== T.norm(filtros.marca)) {
-        return false;
-      }
-      if (filtros.genero && p.genero !== T.norm(filtros.genero)) {
-        return false;
-      }
-      if (filtros.tag && !p.tags.includes(T.norm(filtros.tag))) {
-        return false;
-      }
-      if (filtros.outlet && !p.precoDe) {
-        return false;
-      }
+      if (filtros.marca && T.norm(p.marca) !== T.norm(filtros.marca)) return false;
+      if (filtros.genero && p.genero !== T.norm(filtros.genero)) return false;
+      if (filtros.tag && !p.tags.includes(T.norm(filtros.tag))) return false;
+      if (filtros.outlet && !p.precoDe) return false;
       if (filtros.busca) {
         const alvo = T.norm([p.nome, p.marca, p.categoria, p.genero].join(' '));
         if (!T.norm(filtros.busca).split(/\s+/).every(t => alvo.includes(t))) return false;
@@ -71,12 +62,9 @@
   ['.bannerPrincipal', '.ofertasDoDia', '.maisVendidos', '.novidades', '.colecoes'].forEach(s => {
     const el = $(s); if (el) el.remove();
   });
-  let rotulo = String(filtros.categoria || filtros.marca || filtros.genero || filtros.tag).toUpperCase();
-  if (filtros.busca) {
-    rotulo = 'RESULTADOS PARA "' + filtros.busca + '"';
-  } else if (filtros.outlet) {
-    rotulo = 'OUTLET';
-  }
+  const rotulo = filtros.busca ? 'RESULTADOS PARA "' + filtros.busca + '"'
+    : filtros.outlet ? 'OUTLET'
+    : String(filtros.categoria || filtros.marca || filtros.genero || filtros.tag).toUpperCase();
   const lista = filtrar();
 
   const sec = document.createElement('section');

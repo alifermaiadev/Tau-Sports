@@ -3,11 +3,6 @@
 // Simula as consultas utilizadas pelas rotas para testar HTTP sem MySQL.
 module.exports = function criarBancoMemoria() {
   const usuarios = [], sessoes = [], produtos = [], detalhes = [];
-  // Categorias presentes no schema.sql após a instalação.
-  const categorias = [
-    ['tenis', 'Tênis'], ['camiseta', 'Camiseta'], ['chuteira', 'Chuteira'],
-    ['mochila', 'Mochila'], ['acessorio', 'Acessório'], ['bone', 'Boné'], ['shorts', 'Shorts']
-  ];
   let idProduto = 0;
   const normalizar = sql => sql.replace(/\s+/g, ' ').trim();
   const api = {
@@ -16,11 +11,20 @@ module.exports = function criarBancoMemoria() {
       if (consulta.startsWith('SELECT id_usuario AS id, nome_usuario AS nome')) {
         return [usuarios.filter(u => u.email === valores[0] && u.ativo).map(u => ({ ...u }))];
       }
+      if (consulta.startsWith('SELECT slug, nome FROM CATEGORIA')) return [[
+        {slug:'tenis',nome:'Tênis'},{slug:'camiseta',nome:'Camiseta'},
+        {slug:'chuteira',nome:'Chuteira'},{slug:'mochila',nome:'Mochila'},
+        {slug:'acessorio',nome:'Acessório'},{slug:'bone',nome:'Boné'},
+        {slug:'shorts',nome:'Shorts'} ]];
+      if (consulta.startsWith('SELECT nome FROM MARCA')) return [[{nome:'Taú'},{nome:'Adidas'},{nome:'Nike'}]];
+      if (consulta.startsWith('SELECT slug, nome FROM GENERO')) return [[
+        {slug:'unissex',nome:'Unissex'},{slug:'masculino',nome:'Masculino'},
+        {slug:'feminino',nome:'Feminino'},{slug:'infantil',nome:'Infantil'} ]];
       if (consulta.startsWith('INSERT INTO USUARIO')) {
         if (usuarios.some(u => u.email === valores[1] || u.cpf === valores[3])) {
           const erro = new Error('Cadastro duplicado'); erro.code = 'ER_DUP_ENTRY'; throw erro;
         }
-        const usuario = { id: usuarios.length + 1, nome: valores[0], email: valores[1], senha_hash: valores[2], cpf: valores[3], telefone: valores[4], ies_admin: consulta.includes("1, 'S')") ? 'S' : 'N', ativo: true };
+        const usuario = { id: usuarios.length + 1, nome: valores[0], email: valores[1], senha_hash: valores[2], cpf: valores[3], telefone: valores[4], ies_admin: 'N', ativo: true };
         usuarios.push(usuario);
         return [{ insertId: usuario.id }];
       }
@@ -50,19 +54,6 @@ module.exports = function criarBancoMemoria() {
         for (const s of sessoes.filter(s => s.usuario_id === valores[0])) { s.expira_em = new Date(0); }
         return [{ affectedRows: 1 }];
       }
-      if (consulta.startsWith('SELECT chave_categoria, nome_categoria FROM CATEGORIA')) {
-        return [categorias.map(([chave_categoria, nome_categoria]) => ({ chave_categoria, nome_categoria }))
-          .sort((a, b) => a.nome_categoria.localeCompare(b.nome_categoria, 'pt-BR'))];
-      }
-      if (consulta.startsWith('INSERT INTO CATEGORIA')) {
-        if (categorias.some(([chave]) => chave === valores[0])) {
-          const erro = new Error('Categoria duplicada');
-          erro.code = 'ER_DUP_ENTRY';
-          throw erro;
-        }
-        categorias.push(valores);
-        return [{ insertId: categorias.length }];
-      }
       if (consulta.startsWith('SELECT p.id_produto, p.nome_produto')) {
         return [produtos.slice().reverse().map(p => ({ ...p, ...(detalhes.find(d => d.id_produto === p.id_produto) || {}) }))];
       }
@@ -73,7 +64,7 @@ module.exports = function criarBancoMemoria() {
         return [{ insertId: id_produto }];
       }
       if (consulta.startsWith('INSERT INTO PRODUTO_DETALHE ')) {
-        const campos = ['id_produto','id_catalogo','genero','preco_de','desconto_pix','parcelas','imagens','tamanhos','cores','tags','detalhes','criado_por'];
+        const campos = ['id_produto','id_catalogo','genero','preco_de','desconto_pix','parcelas','imagens','tamanhos','cores','tags','detalhes','criado_por','tipo_produto'];
         detalhes.push(Object.fromEntries(campos.map((campo, i) => [campo, valores[i]])));
         return [{ affectedRows: 1 }];
       }

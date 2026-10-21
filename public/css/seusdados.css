@@ -195,4 +195,5 @@
     .opcaoCheckbox {
         align-items: flex-start;
     }
-}
+}/* Opções de vinculação de conta social usam os mesmos botões da página de dados. */
+.acoesFormulario a.cancelarCadastro { display:inline-flex;align-items:center;min-height:40px;border:1px solid #333;text-decoration:none;cursor:pointer; }

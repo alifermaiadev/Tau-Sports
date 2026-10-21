@@ -1,0 +1,23 @@
+<%- include('../partials/head', { titulo:'Relatórios | Taú Sports', css:['global','header','footer','pedidos','components','seusdados','cadastrarproduto','relatorios'] }) %>
+<body>
+<%- include('../partials/header') %>
+<main class="paginaUsuario">
+<%- include('../partials/conta-menu', { ativo:'relatorios' }) %>
+<section class="perfilInformacao relatorios" aria-labelledby="tituloRelatorios">
+ <div class="cabecalhoPerfil"><span class="perfilAdmin">ADMIN</span><h1 id="tituloRelatorios">Relatórios</h1><p>Consulte os dados atualizados do sistema.</p></div>
+ <nav class="abasRelatorios" aria-label="Escolher relatório">
+  <% [['categoria','Categoria'],['marca','Marca'],['cliente','Cliente'],['venda','Venda'],['enderecos','Endereços']].forEach(function ([id, nome]) { %>
+   <button type="button" data-relatorio="<%= id %>" aria-pressed="false"><%= nome %></button>
+  <% }) %>
+ </nav>
+ <article class="cardFormulario relatorioConteudo" aria-live="polite">
+  <h2 id="nomeRelatorio">Categoria</h2>
+  <p id="estadoRelatorio" role="status">Carregando registros...</p>
+  <div class="tabelaResponsiva" id="tabelaRelatorio" hidden>
+   <table><thead id="cabecalhoRelatorio"></thead><tbody id="corpoRelatorio"></tbody></table>
+  </div>
+ </article>
+</section>
+</main>
+<%- include('../partials/scripts', { scripts:['core','conta','relatorios'] }) %>
+</body></html>

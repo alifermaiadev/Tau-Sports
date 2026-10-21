@@ -288,3 +288,10 @@
         width: 100%;
     }
 }
+.botaoAdicionarCartao{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:.8rem 1.1rem;margin:0 0 1rem;border:0;border-radius:6px;background:#111;color:#ffdf00;font:inherit;font-weight:700;cursor:pointer}
+.botaoAdicionarCartao:hover{background:#333}.botaoAdicionarCartao:focus-visible{outline:3px solid #ffdf00;outline-offset:3px}
+.formularioCartao{padding:1.2rem;margin-bottom:1.25rem;background:#fafafa;border:1px solid #ddd;border-radius:8px}
+.formularioCartao[hidden]{display:none!important}.formularioCartao select{width:100%;min-height:44px;border:1px solid #cfcfcf;background:white;padding:.65rem;font:inherit;border-radius:5px}
+.formularioCartao .avisoTeste{font-size:.9rem;color:#555;line-height:1.5}
+.listaCartoes .cartaoSalvo{min-width:0}.listaCartoes .cartaoInformacoes{min-width:0;overflow-wrap:anywhere}.listaCartoes .cartaoAcoes{flex-wrap:wrap}
+@media(max-width:600px){.formularioCartao{grid-template-columns:1fr;padding:1rem}.formularioCartao .acoesFormulario button{width:100%}.listaCartoes .cartaoVisual{max-width:100%}.listaCartoes .cartaoAcoes button{flex:1 1 130px}}

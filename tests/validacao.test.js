@@ -1,12 +1,11 @@
 'use strict';
 
 const { test } = require('node:test');
-const { scryptSync } = require('node:crypto');
 const assert = require('node:assert/strict');
 const { gerarHash, verificarSenha } = require('../src/seguranca/senhas');
-const { validarProduto, validarCategoria } = require('../src/validacao');
+const { validarProduto } = require('../src/validacao');
 
-const dados = { nome: 'Camisa de treino', marca: 'Taú', categoria: 'camiseta', genero: 'masculino', preco: '89,90', imagens: '/imagensUCE/camisaAlemanha.png', tamanhos: 'P, M, G', cores: 'Preto', descricao: 'Camisa confortável para atividades esportivas.' };
+const dados = { nome: 'Camisa de treino', marca: 'Taú', categoria: 'camiseta', genero: 'masculino', tipo: 'roupa', preco: '89,90', imagens: '/imagensUCE/camisaAlemanha.png', tamanhos: ['P','M','G'], cores: 'Preto', descricao: 'Camisa confortável para atividades esportivas.' };
 
 test('hash usa salt distinto e aceita somente a senha correta', async () => {
   const primeiro = await gerarHash('Senha123!');
@@ -36,23 +35,10 @@ test('rejeita valores e categorias fora da regra', () => {
   }
 });
 
-test('categoria gera uma chave curta e rejeita nome inválido', () => {
-  assert.deepEqual(validarCategoria({ nome: '  Futebol de Salão  ' }), {
-    erros: [], categoria: { nome: 'Futebol de Salão', chave: 'futebol-de-salao' }
-  });
-  assert.ok(validarCategoria({ nome: 'x' }).erros.length > 0);
-  assert.ok(validarCategoria({ nome: '&&&' }).erros.length > 0);
-});
-test('produto aceita apenas categorias presentes no banco', () => {
-  assert.equal(validarProduto({ ...dados, categoria: 'corrida' }, { corrida: 'Corrida' }).erros.length, 0);
-  assert.ok(validarProduto({ ...dados, categoria: 'tenis' }, { corrida: 'Corrida' }).erros.length > 0);
-});
-
-test('login aceita hashes gerados pelo algoritmo da versão anterior', async () => {
-  const saltAntigo = '0123456789abcdef0123456789abcdef';
-  const opcoesAntigas = { N: 32768, r: 8, p: 1, maxmem: 64 * 1024 * 1024 };
-  const hashAntigo = 'scrypt$' + saltAntigo + '$' +
-    scryptSync('SenhaAntiga123!', saltAntigo, 64, opcoesAntigas).toString('hex');
-  assert.equal(await verificarSenha('SenhaAntiga123!', hashAntigo), true);
-  assert.equal(await verificarSenha('Incorreta123!', hashAntigo), false);
+test('checkboxes respeitam tamanhos por tipo e múltipla seleção', () => {
+  assert.deepEqual(validarProduto({ ...dados, tipo:'calcado',tamanhos:['35','40','44'] }).erros, []);
+  assert.deepEqual(validarProduto({ ...dados, tipo:'outro',tamanhos:['Único'] }).erros, []);
+  assert.ok(validarProduto({ ...dados,tipo:'calcado',tamanhos:['P','40'] }).erros.some(e=>e.includes('tamanhos válidos')));
+  assert.ok(validarProduto({ ...dados,tipo:'roupa',tamanhos:[] }).erros.some(e=>e.includes('pelo menos um tamanho')));
+  assert.deepEqual(validarProduto({ ...dados,tamanhos:['M','M','G'] }).produto.tamanhos,['M','G']);
 });

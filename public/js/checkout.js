@@ -1,4 +1,3 @@
-// Objetivo: Controla carrinho, resumo, descontos e finalização do pedido.
 /* ==========================================================
    Itens do carrinho, quantidades, cupom, frete, forma de
    pagamento, endereço e criação do pedido.
@@ -13,6 +12,11 @@
   const [cardResumo, cardPagamento] = $$('.cardCheckout');
   let metodo = 'cartao';
   let editandoCupom = false;
+  let enderecoServidor = null;
+  async function consultarEndereco() {
+    try { const r=await fetch('/api/enderecos'); if(r.ok){const dados=await r.json();enderecoServidor=dados[0] || null;renderPagamento();} }
+    catch(e){T.toast('Não foi possível consultar o endereço salvo.');}
+  }
 
   const nomeBandeira = { visa: 'Visa', mastercard: 'Mastercard' };
 
@@ -58,26 +62,20 @@
     const item = e.target.closest('.itemCarrinho');
     if (!btn || !item) return;
     const chave = item.dataset.chave;
-    if (btn.dataset.acao === 'remover') {
-      T.carrinho.remover(chave);
-    } else if (btn.dataset.acao === 'mais') {
-      T.carrinho.alterarQtd(chave, 1);
-    } else if (btn.dataset.acao === 'menos') {
-      T.carrinho.alterarQtd(chave, -1);
-    }
+    if (btn.dataset.acao === 'remover') T.carrinho.remover(chave);
+    if (btn.dataset.acao === 'mais') T.carrinho.alterarQtd(chave, 1);
+    if (btn.dataset.acao === 'menos') T.carrinho.alterarQtd(chave, -1);
   });
 
   /* ----- Resumo ----- */
   function renderResumo() {
     const t = T.carrinho.totais({ metodo });
     const vazio = t.qtd === 0;
-    // O resumo mostra: cupom aplicado, formulário para digitar ou botão de adicionar.
-    let cupomHTML = '<a href="#" data-acao="cupom">Adicionar</a>';
-    if (t.cupom) {
-      cupomHTML = `<span><strong>− ${T.brl(t.descontoCupom, true)}</strong> <a href="#" data-acao="removerCupom">Remover</a></span>`;
-    } else if (editandoCupom) {
-      cupomHTML = `<form class="tauCupomForm" data-acao="formCupom"><input name="codigo" placeholder="CÓDIGO" aria-label="Código do cupom" autocomplete="off"><button type="submit">Aplicar</button></form>`;
-    }
+    const cupomHTML = t.cupom
+      ? `<span><strong>− ${T.brl(t.descontoCupom, true)}</strong> <a href="#" data-acao="removerCupom">Remover</a></span>`
+      : editandoCupom
+        ? `<form class="tauCupomForm" data-acao="formCupom"><input name="codigo" placeholder="CÓDIGO" aria-label="Código do cupom" autocomplete="off"><button type="submit">Aplicar</button></form>`
+        : `<a href="#" data-acao="cupom">Adicionar</a>`;
     const n = T.parcelasMax(t.total);
 
     cardResumo.innerHTML = `
@@ -88,7 +86,7 @@
       <div class="linhaResumo"><span>Cupom de desconto${t.cupom ? ' (' + T.esc(t.cupom) + ')' : ''}</span>${cupomHTML}</div>
       <div class="linhaResumo total"><span>Valor Total</span><div><strong>${T.brl(t.total, true)}</strong>${vazio ? '' : `<small>ou em até ${n}x de ${T.brl(t.total / n)}</small>`}</div></div>
       ${t.economia > 0 ? `<p class="economia">Você está economizando ${T.brl(t.economia, true)}</p>` : ''}
-      <button class="botaoPagamento" type="button" data-acao="pagar"${vazio ? ' disabled' : ''}>Realizar Pagamento</button>`;
+      <button class="botaoPagamento" type="button" data-acao="pagar"${vazio ? ' disabled' : ''}>Confirmar pedido</button><small>O pagamento não é capturado pelo site; o pedido ficará aguardando pagamento.</small>`;
     const inp = $('.tauCupomForm input', cardResumo);
     if (inp) inp.focus();
   }
@@ -97,27 +95,15 @@
     const el = e.target.closest('[data-acao]');
     if (!el) return;
     const acao = el.dataset.acao;
-    if (acao === 'cupom') {
-      e.preventDefault();
-      editandoCupom = true;
-      renderResumo();
-    } else if (acao === 'removerCupom') {
-      e.preventDefault();
-      T.carrinho.removerCupom();
-      renderResumo();
-    } else if (acao === 'pagar') {
-      pagar(el);
-    }
+    if (acao === 'cupom') { e.preventDefault(); editandoCupom = true; renderResumo(); }
+    if (acao === 'removerCupom') { e.preventDefault(); T.carrinho.removerCupom(); renderResumo(); }
+    if (acao === 'pagar') pagar(el);
   });
   cardResumo.addEventListener('submit', e => {
     e.preventDefault();
     const codigo = new FormData(e.target).get('codigo');
-    if (T.carrinho.aplicarCupom(codigo)) {
-      editandoCupom = false;
-      T.toast('Cupom aplicado.');
-    } else {
-      T.toast('Cupom inválido.');
-    }
+    if (T.carrinho.aplicarCupom(codigo)) { editandoCupom = false; T.toast('Cupom aplicado.'); }
+    else T.toast('Cupom inválido.');
     renderResumo();
   });
 
@@ -144,7 +130,7 @@
     const dois = $$('.acoesPagamento a', cardPagamento)[1];
     if (dois) dois.addEventListener('click', e => { e.preventDefault(); T.toast('Pagamento com 2 cartões ainda não está disponível.'); });
 
-    const end = T.store.get('endereco', null);
+    const end = enderecoServidor;
     const box = $('.enderecoEntrega', cardPagamento);
     const [l1, l2] = $$('p', box);
     if (end && end.endereco) {
@@ -167,57 +153,38 @@
 
   async function pagar(btn) {
     const itens = T.carrinho.itens();
-    if (!itens.length) {
-      T.toast('Seu carrinho está vazio.');
-      return;
-    }
+    if (!itens.length) return T.toast('Seu carrinho está vazio.');
     if (!T.auth.usuario()) {
       T.toast('Faça login para finalizar a compra.');
       return setTimeout(() => { location.href = 'login.html?next=finalizarcompra.html'; }, 1000);
     }
-    const end = T.store.get('endereco', null);
+    const end = enderecoServidor;
     if (!end || !end.cep || !end.endereco) {
       T.toast('Cadastre um endereço de entrega.');
       return setTimeout(() => { location.href = 'endereco.html'; }, 1200);
     }
-    const cartao = metodo === 'cartao' ? T.cartoes.creditoPadrao() : null;
-    if (metodo === 'cartao' && !cartao) {
-      T.toast('Cadastre um cartão de crédito ou escolha outro método.');
+    if (metodo === 'cartao' && !T.cartoes.creditoPadrao()) {
+      T.toast('Adicione um cartão de teste antes de finalizar com cartão.');
       return;
     }
+    // Sem processador de pagamentos integrado: nunca cobrar um cartão pelo navegador.
 
-    const t = T.carrinho.totais({ metodo });
-    const pedido = {
-      id: 'TAU' + Date.now().toString().slice(-8),
-      criadoEm: new Date().toISOString(),
-      itens: itens.map(i => {
-        const p = T.produto(i.id);
-        return { id: p.id, nome: p.nome, imagem: p.imagens[0], tamanho: i.tamanho, cor: i.cor, qtd: i.qtd, preco: p.preco };
-      }),
-      totais: t, metodo,
-      cartao: cartao ? { bandeira: cartao.bandeira, final: cartao.final } : null,
-      endereco: end
-    };
-
-    btn.disabled = true;
-    btn.textContent = 'Processando...';
+    btn.disabled = true; btn.textContent = 'Salvando pedido...';
     try {
-      const r = await T.pagamento.processar(pedido);
-      if (!r.ok) {
-        throw new Error('recusado');
-      }
-      pedido.status = r.status;
-      T.store.set('pedidos', [pedido, ...T.store.get('pedidos', [])]);
+      const r=await fetch('/api/pedidos',{
+        method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':T.csrfToken},
+        body:JSON.stringify({ metodo, cupom:T.carrinho.cupomAtual(), itens:itens.map(i=>({id:i.id,tamanho:i.tamanho,cor:i.cor,qtd:i.qtd})) })
+      });
+      const resultado=await r.json();
+      if(!r.ok)throw Error(resultado.erro || 'Falha ao registrar pedido.');
       T.carrinho.limpar();
-      T.toast('Pedido realizado com sucesso!');
-      setTimeout(() => { location.href = 'pedidos.html'; }, 900);
-    } catch (err) {
-      btn.disabled = false;
-      btn.textContent = 'Realizar Pagamento';
-      T.toast('Não foi possível processar o pagamento. Tente novamente.');
+      T.toast('Pedido #' + resultado.id + ' registrado no MySQL. Pagamento pendente.');
+      setTimeout(() => { location.href='pedidos.html'; },1000);
+    } catch(err) {
+      btn.disabled=false;btn.textContent='Confirmar pedido';T.toast(err.message);
     }
   }
 
   document.addEventListener('carrinho:mudou', () => { renderItens(); renderResumo(); });
-  renderItens(); renderResumo(); renderPagamento();
+  renderItens(); renderResumo(); renderPagamento(); consultarEndereco();
 })();

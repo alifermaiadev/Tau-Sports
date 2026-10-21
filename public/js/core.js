@@ -29,12 +29,7 @@
   T.PRODUTOS = contexto.produtos;
   T.csrfToken = contexto.csrfToken;
 
-  T.produto = function (id) {
-    const encontrado = T.PRODUTOS.find(function (produto) {
-      return produto.id === id;
-    });
-    return encontrado || null;
-  };
+  T.produto = id => T.PRODUTOS.find(p => p.id === id) || null;
 
   /* ---------- UTILITÁRIOS ---------- */
   T.esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c =>
@@ -50,32 +45,12 @@
   const chaveLocal = k => ['perfil', 'endereco', 'cartoes', 'pedidos'].includes(k)
     ? 'tau:usuario:' + (contexto.usuario ? contexto.usuario.id : 'visitante') + ':' + k : 'tau:' + k;
   T.store = {
-    get(chave, valorPadrao) {
-      try {
-        const salvo = localStorage.getItem(chaveLocal(chave));
-        if (salvo === null) {
-          return valorPadrao;
-        }
-        return JSON.parse(salvo);
-      } catch (erro) {
-        return valorPadrao;
-      }
+    get(k, fb) {
+      try { const v = localStorage.getItem(chaveLocal(k)); return v === null ? fb : JSON.parse(v); }
+      catch (e) { return fb; }
     },
-    set(chave, valor) {
-      try {
-        localStorage.setItem(chaveLocal(chave), JSON.stringify(valor));
-        return true;
-      } catch (erro) {
-        return false;
-      }
-    },
-    del(chave) {
-      try {
-        localStorage.removeItem(chaveLocal(chave));
-      } catch (erro) {
-        // Se o navegador bloquear o armazenamento, não quebrar a página.
-      }
-    }
+    set(k, v) { try { localStorage.setItem(chaveLocal(k), JSON.stringify(v)); return true; } catch (e) { return false; } },
+    del(k) { try { localStorage.removeItem(chaveLocal(k)); } catch (e) {} }
   };
 
   T.mask = {
@@ -152,10 +127,7 @@
   T.store.del('sessao');
 
   /* ---------- CARTÕES (guarda só bandeira + 4 últimos dígitos, NUNCA número/CVV) ---------- */
-  const CARTOES_INICIAIS = [
-    { id: 'c1', bandeira: 'visa', final: '4582', validade: '08/29', titular: 'Alifer Henrique da Silva Maia', tipo: 'crédito', padrao: true },
-    { id: 'c2', bandeira: 'mastercard', final: '9021', validade: '11/28', titular: 'Alifer Henrique da Silva Maia', tipo: 'débito', padrao: false }
-  ];
+  const CARTOES_INICIAIS = []; // Nunca simular cartões reais para um novo cliente.
   T.cartoes = {
     lista() {
       let l = T.store.get('cartoes', null);

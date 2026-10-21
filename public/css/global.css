@@ -51,3 +51,9 @@ body{
     background-color: var(--white);
 }
 
+
+/* Componentes compartilhados: evitar largura fixa em telas pequenas. */
+img,video{max-width:100%}button,input,select,textarea{font:inherit}button{touch-action:manipulation}
+@media(max-width:1100px){.paginaUsuario{grid-template-columns:230px minmax(0,1fr);gap:1rem;padding:1rem}}
+@media(max-width:760px){.paginaUsuario{display:grid;grid-template-columns:minmax(0,1fr);padding:.85rem;gap:1rem}.paginaUsuario>.perfilSelecao{width:100%;max-width:100%}.paginaUsuario>.perfilInformacao{width:100%;min-width:0;padding:1rem}.perfilSelecao ul{display:flex;overflow-x:auto;scrollbar-width:thin}.perfilSelecao li{flex:0 0 auto;border-bottom:0}.perfilSelecao a{padding:.8rem;white-space:nowrap}}
+@media(max-width:420px){.paginaUsuario{padding:.5rem}.paginaUsuario>.perfilInformacao{padding:.75rem}.cardFormulario{max-width:100%;min-width:0}}

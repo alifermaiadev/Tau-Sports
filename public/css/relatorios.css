@@ -1,0 +1,18 @@
+/* Mesma paleta e estrutura da área de cadastro e de Minha Conta. */
+.perfilInformacao.relatorios{flex-direction:column;gap:1.4rem;min-width:0}
+.relatorios .cabecalhoPerfil{width:100%}
+.abasRelatorios{display:flex;flex-wrap:wrap;gap:.6rem;width:100%}
+.abasRelatorios button{border:1px solid #d0d0d0;background:#fff;color:#111;cursor:pointer;font:inherit;font-weight:600;padding:.75rem 1rem;border-radius:5px}
+.abasRelatorios button[aria-pressed="true"]{background:#ffdf00;border-color:#111}
+.abasRelatorios button:focus-visible{outline:3px solid #222;outline-offset:2px}
+.relatorios .relatorioConteudo{width:100%;min-width:0;overflow:hidden}
+.tabelaResponsiva{width:100%;overflow-x:auto}
+.tabelaResponsiva[hidden]{display:none}
+.tabelaResponsiva table{width:100%;border-collapse:collapse;text-align:left;font:inherit;min-width:560px}
+.tabelaResponsiva th,.tabelaResponsiva td{padding:.9rem .8rem;border-bottom:1px solid #e5e5e5;white-space:normal}
+.tabelaResponsiva th{background:#1e1e1e;color:#fff;font-weight:600}
+.tabelaResponsiva tbody tr:nth-child(even){background:#fafafa}
+.tabelaResponsiva tbody tr:hover{background:#fffbea}
+#estadoRelatorio{padding:1rem 0;color:#555}
+#estadoRelatorio.erro{color:#a51c18}
+@media(max-width:768px){.abasRelatorios button{flex:1 1 40%;font-size:.9rem}.relatorios .relatorioConteudo{padding:1rem}}

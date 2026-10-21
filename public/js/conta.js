@@ -1,4 +1,3 @@
-// Objetivo: Controla login na tela, menu da conta, pedidos, dados, endereços e cartões.
 
 (function () {
   'use strict';
@@ -7,21 +6,14 @@
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const pagina = T.pagina();
 
-  function podeSolicitarTroca(status) {
-    return status !== 'Aguardando pagamento';
-  }
+  const STATUS_PODE_TROCAR = s => s !== 'Aguardando pagamento';
   const nomeMetodo = { cartao: 'Cartão de crédito', pix: 'PIX', boleto: 'Boleto bancário' };
 
   /* ================= LOGIN ================= */
   function login() {
-    const formulario = $('.login-form');
-    if (!formulario) {
-      return;
-    }
-    if (T.auth.usuario()) {
-      location.replace('pedidos.html');
-      return;
-    }
+    const form = $('.login-form');
+    if (!form) return;
+    if (T.auth.usuario()) { location.replace('pedidos.html'); return; }
 
     // O formulário envia e-mail e senha diretamente ao servidor.
     $('.esqueceuASenha').addEventListener('click', e => {
@@ -29,14 +21,12 @@
       T.toast('Recuperação de senha ainda não disponível. Contate o administrador.');
     });
 
-    $$('.social-btn').forEach(b => b.addEventListener('click', e => {
-      e.preventDefault(); T.toast('Login social precisa ser configurado no back-end.');
-    }));
+    // Links OAuth navegam para o servidor, onde state e credenciais são validados.
   }
 
   /* ================= MENU DA CONTA ================= */
   function menuConta() {
-    const rotas = { 'Pedidos': 'pedidos', 'Trocas e Devoluções': 'trocas', 'Seus Dados': 'seusdados', 'Endereços': 'endereco', 'Cartões Salvos': 'cartoessalvos', 'Cadastrar Produto': 'cadastrarproduto', 'Cadastrar Categoria': 'cadastrarcategoria' };
+    const rotas = { 'Pedidos': 'pedidos', 'Trocas e Devoluções': 'trocas', 'Seus Dados': 'seusdados', 'Endereços': 'endereco', 'Cartões Salvos': 'cartoessalvos', 'Cadastrar': 'cadastrarproduto', 'Relatórios': 'relatorios' };
     $$('.perfilSelecao li').forEach(li => {
       const a = $('a', li);
       if (!a) { return; }
@@ -49,15 +39,21 @@
   }
 
   /* ================= PEDIDOS / TROCAS ================= */
-  function listaPedidos(modo) {
+  async function listaPedidos(modo) {
     const sec = $('.perfilInformacao');
-    if (!sec) {
-      return;
-    }
+    if (!sec) return;
     $$('.pedido', sec).forEach(el => el.remove());
     $$('.listaVazia', sec).forEach(el => el.remove());
     // Dados guardados por versões antigas da demonstração podem estar incompletos.
-    const pedidosSalvos = T.store.get('pedidos', []);
+    let pedidosSalvos;
+    try {
+      const resposta = await fetch('/api/pedidos');
+      if (!resposta.ok) throw new Error('Falha ao carregar os pedidos.');
+      pedidosSalvos = await resposta.json();
+    } catch (erro) {
+      sec.insertAdjacentHTML('beforeend', '<p class="listaVazia" role="alert">Não foi possível consultar os pedidos. Atualize a página.</p>');
+      return;
+    }
     const pedidos = (Array.isArray(pedidosSalvos) ? pedidosSalvos : []).filter(p =>
       p && p.id != null && Array.isArray(p.itens) && p.itens.length &&
       p.itens.some(i => i && i.nome)
@@ -78,16 +74,11 @@
       const detalhes = itens.map(i =>
         `<div>${T.esc(Number(i.qtd) || 0)}x ${T.esc(i.nome)} — tam. ${T.esc(i.tamanho || '—')}, ${T.esc(i.cor || '—')} — ${T.brl((Number(i.preco) || 0) * (Number(i.qtd) || 0), true)}</div>`).join('');
       const total = Number(p.totais && p.totais.total) || itens.reduce((s, i) => s + (Number(i.preco) || 0) * (Number(i.qtd) || 0), 0);
-      // Define qual botão mostrar, sem usar condições ternárias aninhadas.
-      let acao = '<a class="botaoComprar" href="#" data-acao="detalhes">Ver detalhes</a>';
-      if (modo === 'trocas') {
-        acao = '';
-        if (p.trocaSolicitada) {
-          acao = '<a class="botaoComprar" href="#" aria-disabled="true">Troca solicitada</a>';
-        } else if (podeSolicitarTroca(p.status)) {
-          acao = '<a class="botaoComprar" href="#" data-acao="troca">Solicitar troca</a>';
-        }
-      }
+      const acao = modo === 'trocas'
+            ? (p.trocaSolicitada
+            ? '<a class="botaoComprar" href="#" aria-disabled="true">Troca solicitada</a>'
+            : STATUS_PODE_TROCAR(p.status) ? '<a class="botaoComprar" href="#" data-acao="troca">Solicitar troca</a>' : '')
+        : '<a class="botaoComprar" href="#" data-acao="detalhes">Ver detalhes</a>';
       return `
         <article class="pedido" data-id="${T.esc(p.id)}">
             <img src="${T.esc(primeiro.imagem)}" alt="${T.esc(primeiro.nome)}">
@@ -109,7 +100,7 @@
 
     if (sec.dataset.tauPedidosListener) return;
     sec.dataset.tauPedidosListener = 'true';
-    sec.addEventListener('click', e => {
+    sec.addEventListener('click', async e => {
       const a = e.target.closest('a[data-acao]');
       if (!a) return;
       e.preventDefault();
@@ -119,11 +110,14 @@
         a.textContent = d.hidden ? 'Ver detalhes' : 'Ocultar detalhes';
       }
       if (a.dataset.acao === 'troca' && confirm('Deseja solicitar a troca/devolução deste pedido?')) {
-        const todos = T.store.get('pedidos', []);
-        const p = todos.find(x => x.id === card.dataset.id);
-        if (p) { p.trocaSolicitada = true; T.store.set('pedidos', todos); }
-        a.textContent = 'Troca solicitada'; a.removeAttribute('data-acao'); a.setAttribute('aria-disabled', 'true');
-        T.toast('Solicitação de troca registrada.');
+        try {
+          const r=await fetch('/api/pedidos/'+encodeURIComponent(card.dataset.id)+'/troca',{
+            method:'POST',headers:{'X-CSRF-Token':T.csrfToken}
+          });
+          const dados=await r.json();if(!r.ok)throw Error(dados.erro || 'Falha ao solicitar troca.');
+          a.textContent='Troca solicitada';a.removeAttribute('data-acao');a.setAttribute('aria-disabled','true');
+          T.toast('Solicitação de troca registrada.');
+        } catch(erro) { T.toast(erro.message); }
       }
     });
   }
@@ -194,17 +188,38 @@
     const [form1, form2] = $$('.formUsuario');
     const campos = ['cep', 'estado', 'endereco', 'numero', 'bairro', 'cidade', 'complemento'];
     const extras = ['nomeEndereco', 'referencia'];
-    const salvo = T.store.get('endereco', {});
+    let salvo = {}; let todosEnderecos = [];
+    async function carregar() {
+      try {
+        const r=await fetch('/api/enderecos'); if(!r.ok)throw Error();
+        todosEnderecos=await r.json(); salvo=todosEnderecos[0] || {};
+        T.store.set('endereco',salvo);mostrarSalvo();desenharLista();
+      }catch(e){T.toast('Não foi possível consultar os endereços.');}
+    }
+    function desenharLista(){
+      const bloco=document.getElementById('listaEnderecos');if(!bloco)return;
+      bloco.replaceChildren();
+      todosEnderecos.forEach(end=>{
+        const botao=document.createElement('button');botao.type='button';botao.className='cancelarCadastro';
+        botao.textContent=(end.padrao ? '★ Principal: ' : '')+[end.endereco,end.numero,end.cidade,end.estado].filter(Boolean).join(', ')+' — Editar';
+        botao.addEventListener('click',()=>{salvo=end;mostrarSalvo();document.getElementById('cep').focus();});bloco.append(botao);
+      });
+    }
+    const novo=document.getElementById('novoEndereco');
+    if(novo)novo.addEventListener('click',()=>{salvo={};mostrarSalvo();document.getElementById('enderecoPadrao').checked=false;document.getElementById('cep').focus();});
 
     const setUF = uf => {
       const sel = $('#estado');
       if (uf && ![...sel.options].some(o => o.value === uf)) sel.add(new Option(uf, uf));
       sel.value = uf || '';
     };
-    campos.concat(extras).forEach(c => { if (c !== 'estado' && salvo[c]) $('#' + c).value = salvo[c]; });
-    setUF(salvo.estado);
-    if (salvo.tipoEndereco) { const r = $(`input[name=tipoEndereco][value="${salvo.tipoEndereco}"]`); if (r) r.checked = true; }
-    $('#enderecoPadrao').checked = !!salvo.padrao;
+    function mostrarSalvo() {
+      campos.concat(extras).forEach(c => { if(c!=='estado') $('#' + c).value=salvo[c] || ''; });
+      setUF(salvo.estado);
+      if(salvo.tipoEndereco) { const r = $(`input[name=tipoEndereco][value="${salvo.tipoEndereco}"]`); if(r)r.checked=true; }
+      $('#enderecoPadrao').checked=!!salvo.padrao;
+    }
+    mostrarSalvo();carregar();
 
     T.aplicarMascara(cep, T.mask.cep);
     ['cep', 'estado', 'endereco', 'numero', 'cidade'].forEach(c => { $('#' + c).required = true; });
@@ -223,23 +238,26 @@
       $('#numero').focus();
     });
 
-    const guardar = extra => T.store.set('endereco', { ...T.store.get('endereco', {}), ...extra });
+    const guardar = async extra => {
+      const combinado = { ...salvo, ...extra };
+      const r=await fetch('/api/enderecos',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':T.csrfToken},body:JSON.stringify(combinado)});
+      const dados=await r.json(); if(!r.ok) throw Error(dados.erro || 'Não foi possível salvar o endereço.');
+      salvo=dados;T.store.set('endereco',dados);await carregar();
+    };
 
-    form1.addEventListener('submit', e => {
+    form1.addEventListener('submit', async e => {
       e.preventDefault();
       const dados = {};
       campos.forEach(c => { dados[c] = $('#' + c).value.trim(); });
-      guardar(dados);
-      T.toast('Endereço salvo.');
+      try { await guardar(dados); T.toast('Endereço salvo no sistema.'); } catch (erro) { T.toast(erro.message); }
     });
-    form2.addEventListener('submit', e => {
+    form2.addEventListener('submit', async e => {
       e.preventDefault();
       const t = $('input[name=tipoEndereco]:checked');
-      guardar({
+      try { await guardar({
         nomeEndereco: $('#nomeEndereco').value.trim(), referencia: $('#referencia').value.trim(),
         tipoEndereco: t ? t.value : '', padrao: $('#enderecoPadrao').checked
-      });
-      T.toast('Informações de entrega salvas.');
+      }); T.toast('Informações de entrega salvas no sistema.'); } catch(erro) { T.toast(erro.message); }
     });
   }
 
@@ -248,6 +266,32 @@
     const box = $('.listaCartoes');
     if (!box) return;
     const nomeBand = { visa: 'Visa', mastercard: 'Mastercard' };
+    const botaoAdicionar = $('#abrirCadastroCartao');
+    const formulario = $('#formCartao');
+    const alternarFormulario = mostrar => {
+      formulario.hidden = !mostrar;
+      botaoAdicionar.setAttribute('aria-expanded', String(mostrar));
+      if (mostrar) $('#titularTeste', formulario).focus();
+    };
+    botaoAdicionar.addEventListener('click', () => alternarFormulario(formulario.hidden));
+    $('#cancelarCartaoTeste').addEventListener('click', () => alternarFormulario(false));
+    formulario.addEventListener('submit', e => {
+      e.preventDefault();
+      if (!formulario.reportValidity()) return;
+      const dados = new FormData(formulario);
+      const titular = String(dados.get('titular') || '').trim();
+      const final = String(dados.get('final') || '').trim();
+      const validade = String(dados.get('validade') || '').trim();
+      const bandeira = String(dados.get('bandeira') || 'visa');
+      if (titular.length < 3 || !/^\d{4}$/.test(final) || !/^(0[1-9]|1[0-2])\/\d{2}$/.test(validade) || !['visa','mastercard'].includes(bandeira)) {
+        T.toast('Confira os dados fictícios do cartão.'); return;
+      }
+      const lista = T.cartoes.lista();
+      lista.push({ id: 'teste-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8), tipo: 'crédito', titular, final, validade, bandeira, padrao: !lista.some(x => x.padrao) });
+      T.cartoes.salvar(lista);
+      formulario.reset(); alternarFormulario(false); render();
+      T.toast('Cartão de teste adicionado.');
+    });
 
     const render = () => {
       const l = T.cartoes.lista();
@@ -298,26 +342,13 @@
   }
 
   /* ================= INICIALIZAÇÃO ================= */
-  if (pagina === 'login') {
-    login();
-    return;
-  }
+  if (pagina === 'login') return login();
 
-  if (!T.auth.exigir()) {
-    return;
-  }
-
+  if (!T.auth.exigir()) return;
   menuConta();
-
-  if (pagina === 'pedidos') {
-    listaPedidos('pedidos');
-  } else if (pagina === 'trocas') {
-    listaPedidos('trocas');
-  } else if (pagina === 'seusdados') {
-    seusDados();
-  } else if (pagina === 'endereco') {
-    endereco();
-  } else if (pagina === 'cartoessalvos') {
-    cartoes();
-  }
+  if (pagina === 'pedidos') listaPedidos('pedidos');
+  if (pagina === 'trocas') listaPedidos('trocas');
+  if (pagina === 'seusdados') seusDados();
+  if (pagina === 'endereco') endereco();
+  if (pagina === 'cartoessalvos') cartoes();
 })();

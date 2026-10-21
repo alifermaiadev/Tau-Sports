@@ -10,7 +10,8 @@
     "banco:preparar": "node scripts/preparar-banco.js",
     "admin:criar": "node scripts/criar-admin.js",
     "test": "node --test tests/*.test.js",
-    "test:mysql": "node scripts/testar-mysql.js"
+    "test:mysql": "node scripts/testar-mysql.js",
+    "test:ejs": "node scripts/validar-ejs.js"
   },
   "engines": {
     "node": ">=18"
@@ -19,7 +20,8 @@
     "ejs": "^3.1.10",
     "express": "^4.22.3",
     "mysql2": "^3.24.6",
-    "nodemon": "^3.1.14"
+    "nodemon": "^3.1.14",
+    "simple-oauth2": "^5.1.0"
   },
   "keywords": [],
   "author": "",
@@ -27,13 +29,5 @@
   "type": "commonjs",
   "directories": {
     "test": "tests"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/alifermaiadev/Tau-Sports.git"
-  },
-  "bugs": {
-    "url": "https://github.com/alifermaiadev/Tau-Sports/issues"
-  },
-  "homepage": "https://github.com/alifermaiadev/Tau-Sports#readme"
+  }
 }

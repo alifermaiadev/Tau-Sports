@@ -1,4 +1,3 @@
-// Objetivo: Cuida dos cookies, da sessão e da proteção CSRF.
 'use strict';
 
 const { randomBytes, createHash, createHmac, timingSafeEqual } = require('node:crypto');
@@ -13,7 +12,7 @@ function cookies(req) {
 }
 
 module.exports = function criarSessao(banco, segredo) {
-  if (!segredo || segredo.length < 32) {
+  if (!segredo || segredo.length < 32 || /SUBSTITUA|COLOQUE_SUA_SENHA/i.test(segredo)) {
     throw new Error('Configure SESSION_SECRET no .env com pelo menos 32 caracteres.');
   }
   const opcoesCookie = { httpOnly: true, sameSite: 'lax', secure: ambiente.producao, path: '/' };

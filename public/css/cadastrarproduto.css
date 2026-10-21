@@ -16,3 +16,31 @@
 .cadastroProduto .alertaValidacaoProduto[hidden] { display: none; }
 .cadastroProduto [aria-invalid="true"] { border-color: #b3261e !important; outline: 2px solid #b3261e; outline-offset: 1px; }
 .cadastroProduto .erroCampoProduto { color: #a51c18; font-weight: 600; display: block; }
+
+.formularioOpcao[hidden]{display:none!important}
+.grupoTamanhos{display:flex;flex-wrap:wrap;gap:.6rem;padding:.5rem 0}
+.grupoTamanhos .opcaoCheckbox{display:inline-flex;align-items:center;gap:.4rem;padding:.65rem .8rem;border:1px solid #ddd;border-radius:5px;cursor:pointer}
+.grupoTamanhos .opcaoCheckbox:has(input:checked){border-color:#222;background:#fff6ae}
+.cadastroProduto .formularioOpcao{width:100%}
+.cadastroProduto .campoFormulario>select{width:100%;min-height:44px}
+
+.formularioProdutosExistentes{width:100%;min-width:0}
+.tabelaAdministrativa{overflow-x:auto;width:100%}
+.tabelaAdministrativa table{width:100%;border-collapse:collapse;min-width:480px}
+.tabelaAdministrativa th{background:#1e1e1e;color:white;text-align:left}
+.tabelaAdministrativa th,.tabelaAdministrativa td{padding:.7rem;border-bottom:1px solid #ddd}
+.tabelaAdministrativa a{text-decoration:underline;font-weight:600}
+
+/* Cadastro: layout fluido sem estouro de colunas em notebook, tablet e celular. */
+.cadastroProduto,.cadastroProduto .cardFormulario,.cadastroProduto .formUsuario,.cadastroProduto .campoFormulario{min-width:0;max-width:100%}
+.cadastroProduto .cardFormulario{border-radius:10px;padding:clamp(1rem,2.5vw,2rem)}
+.cadastroProduto .formUsuario{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(.8rem,1.8vw,1.4rem)}
+.cadastroProduto .campoFormulario input:not([type=checkbox]),.cadastroProduto .campoFormulario select,.cadastroProduto .campoFormulario textarea{width:100%;max-width:100%;min-width:0;border-radius:6px;box-sizing:border-box}
+.cadastroProduto .campoFormulario input:not([type=checkbox]):focus-visible,.cadastroProduto select:focus-visible,.cadastroProduto textarea:focus-visible{border-color:#111;outline:2px solid #ffd600;outline-offset:1px}
+.cadastroProduto .grupoTamanhos{display:grid;grid-template-columns:repeat(auto-fit,minmax(80px,1fr));gap:.6rem}
+.cadastroProduto .grupoTamanhos .opcaoCheckbox{margin:0;justify-content:center;min-height:46px}
+.cadastroProduto .acoesFormulario{display:flex;flex-wrap:wrap;gap:.7rem}
+.cadastroProduto .acoesFormulario button{min-height:46px;border-radius:6px}
+.cadastroProduto textarea{overflow-wrap:anywhere}
+@media(max-width:780px){.cadastroProduto .formUsuario{grid-template-columns:minmax(0,1fr)}.cadastroProduto .campoGrande{grid-column:auto}}
+@media(max-width:480px){.cadastroProduto{gap:1rem}.cadastroProduto .cardFormulario{padding:1rem}.cadastroProduto .grupoTamanhos{grid-template-columns:repeat(auto-fit,minmax(68px,1fr))}.cadastroProduto .acoesFormulario button{width:100%}.cadastroProduto .cabecalhoPerfil h1{font-size:1.5rem}}

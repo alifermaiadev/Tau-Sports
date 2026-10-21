@@ -20,44 +20,16 @@
         <p>Gerencie os cartões cadastrados na sua conta.</p>
     </div>
 
-    <div class="listaCartoes">
-        <div class="cartaoSalvo">
-            <div class="cartaoVisual">
-                <div class="cartaoBandeira"> <img src="/imagensUCE/visa.svg" alt=""></div>
-                <strong>•••• •••• •••• 4582</strong>
-                <small>Vence em 08/29</small>
-            </div>
-
-            <div class="cartaoInformacoes">
-                <h3>Alifer Henrique da Silva Maia</h3>
-                <p>Cartão de crédito</p>
-                <span class="seloPadrao">Padrão</span>
-            </div>
-
-            <div class="cartaoAcoes">
-                <button type="button" class="botaoSecundario">Editar</button>
-                <button type="button" class="botaoRemover">Remover</button>
-            </div>
-        </div>
-
-        <div class="cartaoSalvo">
-            <div class="cartaoVisual">
-                <span class="cartaoBandeira"><img src="/imagensUCE/mastercard.svg" alt=""></span>
-                <strong>•••• •••• •••• 9021</strong>
-                <small>Vence em 11/28</small>
-            </div>
-
-            <div class="cartaoInformacoes">
-                <h3>Alifer Henrique da Silva Maia</h3>
-                <p>Cartão de débito</p>
-            </div>
-
-            <div class="cartaoAcoes">
-                <button type="button" class="botaoSecundario">Editar</button>
-                <button type="button" class="botaoRemover">Remover</button>
-            </div>
-        </div>
-    </div>
+    <button type="button" id="abrirCadastroCartao" class="botaoAdicionarCartao" aria-expanded="false" aria-controls="formCartao">+ Adicionar cartão de teste</button>
+    <form id="formCartao" class="formUsuario formularioCartao" hidden>
+      <p class="campoGrande avisoTeste">Ambiente de demonstração: não informe dados reais de cartão. Nenhum pagamento será processado.</p>
+      <div class="campoFormulario campoGrande"><label for="titularTeste">Nome do titular fictício</label><input id="titularTeste" name="titular" required maxlength="80" minlength="3" placeholder="Cliente Teste" autocomplete="off"></div>
+      <div class="campoFormulario"><label for="bandeiraTeste">Bandeira</label><select id="bandeiraTeste" name="bandeira"><option value="visa">Visa (teste)</option><option value="mastercard">Mastercard (teste)</option></select></div>
+      <div class="campoFormulario"><label for="finalTeste">4 últimos dígitos fictícios</label><input id="finalTeste" name="final" type="text" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="4242" required autocomplete="off"></div>
+      <div class="campoFormulario"><label for="validadeTeste">Validade fictícia (MM/AA)</label><input id="validadeTeste" name="validade" type="text" pattern="(0[1-9]|1[0-2])/[0-9]{2}" maxlength="5" placeholder="12/29" required autocomplete="off"></div>
+      <div class="acoesFormulario campoGrande"><button type="button" id="cancelarCartaoTeste" class="botaoSecundario">Cancelar</button><button type="submit">Salvar cartão de teste</button></div>
+    </form>
+    <div class="listaCartoes" aria-live="polite"></div>
 </article>
 </section>
 </main>
