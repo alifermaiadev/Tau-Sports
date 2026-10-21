@@ -6,7 +6,7 @@
 //PASSO 3:
 execute o comando abaixo para as instalações:
 npm init -y
-npm install mysql2 nodemon express
+npm install mysql2 nodemon express ejs
 
 //PASSO 4: no cmd, execute o comando para criar seu usuario admin e preparar o banco:
 npm run banco:preparar

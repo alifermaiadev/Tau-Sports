@@ -27,5 +27,13 @@
   "type": "commonjs",
   "directories": {
     "test": "tests"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alifermaiadev/Tau-Sports.git"
+  },
+  "bugs": {
+    "url": "https://github.com/alifermaiadev/Tau-Sports/issues"
+  },
+  "homepage": "https://github.com/alifermaiadev/Tau-Sports#readme"
 }
