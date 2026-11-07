@@ -8,6 +8,21 @@
     ];
     if (usuario && usuario.ies_admin === 'S') {
         itens.push({
+            slug: 'cadastraradmin',
+            rotulo: 'Cadastrar Usuário Admin',
+            href: '/cadastraradmin.html',
+            preto: 'adicionar.png',
+            amarelo: 'adicionar.png'
+        });
+        itens.push({
+            slug: 'cadastrarcategoria',
+            rotulo: 'Cadastrar Categoria',
+            href: '/cadastrarcategoria.html',
+            preto: 'adicionar.png',
+            amarelo: 'adicionar.png'
+        });
+        itens.push({ slug: 'relatorios', rotulo: 'Dashboard de Vendas', href: '/relatorios.html', preto: 'pedidoPreto.png', amarelo: 'pedidoAmarelo.png' });
+        itens.push({
             slug: 'cadastrarproduto',
             rotulo: 'Cadastrar Produto',
             href: '/cadastrarproduto.html',
@@ -30,10 +45,9 @@
             <li>
                 <form action="/logout" method="post">
                     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                    <input type="hidden" name="trocar" value="1">
                     <button class="botaoSair" type="submit">
                         <img src="/imagensUCE/excluirPreto.png" alt="">
-                        <span>Sair / trocar usuário</span>
+                        <span>Sair</span>
                     </button>
                 </form>
             </li>

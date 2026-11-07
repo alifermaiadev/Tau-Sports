@@ -1,0 +1,73 @@
+<%- include('../partials/head', { titulo:'Dashboard e Relatórios | Taú Sports', css:['global','header','footer','pedidos','components','seusdados','cadastrarproduto','relatorios'] }) %>
+<body>
+<%- include('../partials/header') %>
+<main class="paginaUsuario paginaRelatorios">
+  <%- include('../partials/conta-menu', { ativo:'relatorios' }) %>
+  <section class="perfilInformacao relatorios" aria-labelledby="tituloRelatorios">
+    <div class="dashboardTopo">
+      <div>
+        <span class="dashboardEyebrow"><span class="sinalOnline" aria-hidden="true"></span> PAINEL ADMINISTRATIVO</span>
+        <h1 id="tituloRelatorios">Visão geral de vendas</h1>
+        <p>Indicadores do e-commerce, relatórios e desempenho dos produtos em um só lugar.</p>
+      </div>
+      <div class="dashboardAcoes">
+        <label for="periodoDashboard">Período</label>
+        <select id="periodoDashboard" aria-label="Selecionar período do dashboard">
+          <option value="30d">Últimos 30 dias</option>
+          <option value="90d" selected>Últimos 90 dias</option>
+          <option value="365d">Últimos 12 meses</option>
+          <option value="todos">Todo o histórico</option>
+        </select>
+        <button class="botaoAtualizar" id="atualizarDashboard" type="button" title="Atualizar dados">↻ <span>Atualizar</span></button>
+      </div>
+    </div>
+    <p id="statusDashboard" class="mensagemDashboard" role="status">Carregando indicadores reais da loja...</p>
+    <div id="painelDashboard" hidden>
+      <div class="metricasDashboard" aria-label="Indicadores da loja">
+        <article class="metricaCard"><div class="metricaLinha"><span>Valor dos pedidos</span><span class="metricaIcone">R$</span></div><strong id="metricaValor">—</strong><small>Pedidos registrados no período</small></article>
+        <article class="metricaCard"><div class="metricaLinha"><span>Pedidos</span><span class="metricaIcone">▣</span></div><strong id="metricaPedidos">—</strong><small>Quantidade de pedidos</small></article>
+        <article class="metricaCard"><div class="metricaLinha"><span>Ticket médio</span><span class="metricaIcone">↗</span></div><strong id="metricaTicket">—</strong><small>Valor médio por pedido</small></article>
+        <article class="metricaCard"><div class="metricaLinha"><span>Clientes ativos</span><span class="metricaIcone">◉</span></div><strong id="metricaClientes">—</strong><small>Total cadastrado na loja</small></article>
+        <article class="metricaCard"><div class="metricaLinha"><span>Produtos</span><span class="metricaIcone">◇</span></div><strong id="metricaProdutos">—</strong><small>Itens disponíveis no catálogo</small></article>
+        <article class="metricaCard metricaCardDestaque"><div class="metricaLinha"><span>Pedidos pendentes</span><span class="metricaIcone">◷</span></div><strong id="metricaPendentes">—</strong><small>Aguardando pagamento</small></article>
+      </div>
+      <div class="dashboardDestaques">
+        <article class="dashboardBloco dashboardBlocoEvolucao">
+          <div class="blocoTitulo"><div><h2>Evolução das vendas</h2><p>Valor total de pedidos registrados por período</p></div><span class="blocoTag">Vendas</span></div>
+          <div class="graficoBarras" id="graficoVendas" role="img" aria-label="Gráfico de valores de pedidos por período"></div>
+        </article>
+        <article class="dashboardBloco">
+          <div class="blocoTitulo"><div><h2>Categorias em destaque</h2><p>Unidades vendidas por categoria</p></div><a href="?aba=categoria" data-abrir="categoria">Ver todas</a></div>
+          <div class="graficoHorizontal" id="graficoCategorias"></div>
+        </article>
+      </div>
+      <div class="dashboardDestaques dashboardDestaquesSecundario">
+        <article class="dashboardBloco"><div class="blocoTitulo"><div><h2>Produtos mais vendidos</h2><p>Quantidade de itens por produto</p></div></div><div class="listaRanking" id="listaProdutos"></div></article>
+        <article class="dashboardBloco"><div class="blocoTitulo"><div><h2>Vendas por marca</h2><p>Distribuição por unidades vendidas</p></div><a href="?aba=marca" data-abrir="marca">Ver marcas</a></div><div class="graficoHorizontal" id="graficoMarcas"></div></article>
+        <article class="dashboardBloco"><div class="blocoTitulo"><div><h2>Status dos pedidos</h2><p>Situação dos registros no período</p></div></div><div class="listaRanking" id="listaStatus"></div><div class="valorConfirmado">Pagamentos confirmados <strong id="metricaConfirmado">—</strong></div></article>
+      </div>
+      <article class="dashboardBloco pedidosRecentes"><div class="blocoTitulo"><div><h2>Pedidos recentes</h2><p>Últimos pedidos no período selecionado</p></div><a href="?aba=venda" data-abrir="venda">Ver relatório de vendas</a></div>
+        <div class="tabelaResponsiva"><table><thead><tr><th>Pedido</th><th>Cliente</th><th>Data</th><th>Status</th><th class="colunaValor">Valor</th><th>Atualizar status</th></tr></thead><tbody id="listaPedidosRecentes"></tbody></table></div>
+      </article>
+      <p id="mensagemStatusPedido" class="mensagemDashboard" role="status" aria-live="polite" hidden></p>
+      <p class="avisoDashboard">Os pedidos gerados no checkout demonstrativo ficam aguardando pagamento. O valor dos pedidos não representa necessariamente faturamento recebido.</p>
+    </div>
+    <div class="separadorRelatorios"><div><h2>Relatórios detalhados</h2><p>Abra uma categoria para consultar todos os registros individualmente.</p></div></div>
+    <nav class="cardsRelatorios" aria-label="Relatórios individuais">
+      <a class="cardRelatorio" data-relatorio="categoria" href="?aba=categoria"><span class="cardRelatorioIcone">▦</span><span class="cardRelatorioConteudo"><strong>Categorias</strong><small>Produtos e preços por categoria</small></span><span class="cardRelatorioSeta">↗</span></a>
+      <a class="cardRelatorio" data-relatorio="marca" href="?aba=marca"><span class="cardRelatorioIcone">◈</span><span class="cardRelatorioConteudo"><strong>Marcas</strong><small>Produtos e preço médio por marca</small></span><span class="cardRelatorioSeta">↗</span></a>
+      <a class="cardRelatorio" data-relatorio="cliente" href="?aba=cliente"><span class="cardRelatorioIcone">♙</span><span class="cardRelatorioConteudo"><strong>Clientes</strong><small>Cadastros e contatos</small></span><span class="cardRelatorioSeta">↗</span></a>
+      <a class="cardRelatorio" data-relatorio="venda" href="?aba=venda"><span class="cardRelatorioIcone">▤</span><span class="cardRelatorioConteudo"><strong>Vendas</strong><small>Pedidos, valores e status</small></span><span class="cardRelatorioSeta">↗</span></a>
+      <a class="cardRelatorio" data-relatorio="enderecos" href="?aba=enderecos"><span class="cardRelatorioIcone">⌖</span><span class="cardRelatorioConteudo"><strong>Endereços</strong><small>Localização de entrega dos clientes</small></span><span class="cardRelatorioSeta">↗</span></a>
+    </nav>
+    <article class="dashboardBloco painelDetalhe" id="painelDetalhe" hidden aria-live="polite">
+      <div class="blocoTitulo"><div><h2 id="nomeRelatorio">Relatório</h2><p>Dados atualizados diretamente do banco de dados.</p></div>
+        <button type="button" id="fecharRelatorio" class="fecharRelatorio">✕ Fechar</button></div>
+      <p id="estadoRelatorio" role="status">Carregando registros...</p>
+      <div class="tabelaResponsiva" id="tabelaRelatorio" hidden><table><thead id="cabecalhoRelatorio"></thead><tbody id="corpoRelatorio"></tbody></table></div>
+    </article>
+  </section>
+</main>
+<%- include('../partials/scripts', { scripts:['core','conta','relatorios'] }) %>
+</body>
+</html>

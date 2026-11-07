@@ -1,0 +1,12 @@
+/* Indicador de segurança das senhas nos dois cadastros. */
+.forcaSenha { margin-top: 10px; font-size: 13px; }
+.forcaSenha p { margin: 6px 0; }
+.forcaSenhaBarra { height: 7px; border-radius: 6px; background: #d4d4d4; overflow: hidden; }
+.forcaSenhaBarra::before { content: ''; display: block; height: 100%; width: 0; transition: width .2s; }
+.forcaSenhaBarra.fraca::before { width: 33%; background: #d64545; }
+.forcaSenhaBarra.media::before { width: 66%; background: #c28b00; }
+.forcaSenhaBarra.forte::before { width: 100%; background: #27864e; }
+.requisitosSenha { margin: 8px 0 0; padding-left: 18px; line-height: 1.7; }
+.requisitosSenha li { color: #a23737; }
+.requisitosSenha li.atendido { color: #268048; }
+.erroSenha { color: #ba2929; min-height: 1em; }

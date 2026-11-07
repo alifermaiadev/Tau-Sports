@@ -12,6 +12,11 @@
   const [cardResumo, cardPagamento] = $$('.cardCheckout');
   let metodo = 'cartao';
   let editandoCupom = false;
+  let enderecoServidor = null;
+  async function consultarEndereco() {
+    try { const r=await fetch('/api/enderecos'); if(r.ok){const dados=await r.json();enderecoServidor=dados[0] || null;renderPagamento();} }
+    catch(e){T.toast('Não foi possível consultar o endereço salvo.');}
+  }
 
   const nomeBandeira = { visa: 'Visa', mastercard: 'Mastercard' };
 
@@ -81,7 +86,7 @@
       <div class="linhaResumo"><span>Cupom de desconto${t.cupom ? ' (' + T.esc(t.cupom) + ')' : ''}</span>${cupomHTML}</div>
       <div class="linhaResumo total"><span>Valor Total</span><div><strong>${T.brl(t.total, true)}</strong>${vazio ? '' : `<small>ou em até ${n}x de ${T.brl(t.total / n)}</small>`}</div></div>
       ${t.economia > 0 ? `<p class="economia">Você está economizando ${T.brl(t.economia, true)}</p>` : ''}
-      <button class="botaoPagamento" type="button" data-acao="pagar"${vazio ? ' disabled' : ''}>Finalizar pedido</button>`;
+      <button class="botaoPagamento" type="button" data-acao="pagar"${vazio ? ' disabled' : ''}>Confirmar pedido</button><small>O pagamento não é capturado pelo site; o pedido ficará aguardando pagamento.</small>`;
     const inp = $('.tauCupomForm input', cardResumo);
     if (inp) inp.focus();
   }
@@ -125,7 +130,7 @@
     const dois = $$('.acoesPagamento a', cardPagamento)[1];
     if (dois) dois.addEventListener('click', e => { e.preventDefault(); T.toast('Pagamento com 2 cartões ainda não está disponível.'); });
 
-    const end = T.store.get('endereco', null);
+    const end = enderecoServidor;
     const box = $('.enderecoEntrega', cardPagamento);
     const [l1, l2] = $$('p', box);
     if (end && end.endereco) {
@@ -153,41 +158,33 @@
       T.toast('Faça login para finalizar a compra.');
       return setTimeout(() => { location.href = 'login.html?next=finalizarcompra.html'; }, 1000);
     }
-    const end = T.store.get('endereco', null);
+    const end = enderecoServidor;
     if (!end || !end.cep || !end.endereco) {
       T.toast('Cadastre um endereço de entrega.');
       return setTimeout(() => { location.href = 'endereco.html'; }, 1200);
     }
+    if (metodo === 'cartao' && !T.cartoes.creditoPadrao()) {
+      T.toast('Adicione um cartão de teste antes de finalizar com cartão.');
+      return;
+    }
+    // Sem processador de pagamentos integrado: nunca cobrar um cartão pelo navegador.
+
     btn.disabled = true; btn.textContent = 'Salvando pedido...';
     try {
-      const resposta = await fetch('/api/pedidos', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8', Accept: 'application/json' },
-        body: new URLSearchParams({
-          _csrf: T.csrfToken,
-          itens: JSON.stringify(itens.map(({ id, tamanho, cor, qtd }) => ({ id, tamanho, cor, qtd }))),
-          endereco: JSON.stringify(end),
-          metodo,
-          cupom: T.carrinho.cupomAtual() || ''
-        })
+      const r=await fetch('/api/pedidos',{
+        method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':T.csrfToken},
+        body:JSON.stringify({ metodo, cupom:T.carrinho.cupomAtual(), itens:itens.map(i=>({id:i.id,tamanho:i.tamanho,cor:i.cor,qtd:i.qtd})) })
       });
-      const resultado = await resposta.json().catch(() => ({}));
-      if (!resposta.ok) {
-        if (resposta.status === 401) {
-          T.toast('Sua sessão expirou. Entre novamente para finalizar o pedido.');
-          return setTimeout(() => { location.href = 'login.html?next=finalizarcompra.html'; }, 1000);
-        }
-        throw new Error(resultado.erro || 'Não foi possível salvar o pedido.');
-      }
+      const resultado=await r.json();
+      if(!r.ok)throw Error(resultado.erro || 'Falha ao registrar pedido.');
       T.carrinho.limpar();
-      T.toast('Pedido registrado. Aguardando confirmação do pagamento.');
-      setTimeout(() => { location.href = 'pedidos.html'; }, 900);
-    } catch (err) {
-      btn.disabled = false; btn.textContent = 'Finalizar pedido';
-      T.toast(err.message || 'Não foi possível salvar o pedido. Tente novamente.');
+      T.toast('Pedido #' + resultado.id + ' registrado no MySQL. Pagamento pendente.');
+      setTimeout(() => { location.href='pedidos.html'; },1000);
+    } catch(err) {
+      btn.disabled=false;btn.textContent='Confirmar pedido';T.toast(err.message);
     }
   }
 
   document.addEventListener('carrinho:mudou', () => { renderItens(); renderResumo(); });
-  renderItens(); renderResumo(); renderPagamento();
+  renderItens(); renderResumo(); renderPagamento(); consultarEndereco();
 })();

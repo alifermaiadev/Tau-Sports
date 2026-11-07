@@ -1,15 +1,80 @@
+// Objetivo: Confere os dados recebidos do usuário antes de salvar no banco.
 'use strict';
 
 const { randomUUID } = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
+const { analisarSenha } = require('../public/js/regras-senha');
 const CATEGORIAS = { tenis: 'Tênis', camiseta: 'Camiseta', chuteira: 'Chuteira', mochila: 'Mochila', acessorio: 'Acessório', bone: 'Boné', shorts: 'Shorts' };
 const GENEROS = { masculino: 'Masculino', feminino: 'Feminino', infantil: 'Infantil', unissex: 'Unissex' };
 const texto = valor => typeof valor === 'string' ? valor.trim() : '';
 const emailValido = email => email.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
-const senhaValida = senha => typeof senha === 'string' && senha.length >= 8 && senha.length <= 128;
+function senhaValida(senha) {
+  return analisarSenha(senha).valida;
+}
 
-function validarProduto(dados) {
+// Confere os dados comuns aos cadastros de cliente e de administrador.
+function validarDadosUsuario(formulario) {
+  const nome = texto(formulario.nome);
+  const email = texto(formulario.email).toLowerCase();
+  const cpfOriginal = texto(formulario.cpf);
+  const telefoneOriginal = texto(formulario.telefone);
+  const cpf = cpfOriginal.replace(/\D/g, '');
+  const telefone = telefoneOriginal.replace(/\D/g, '');
+  const erros = [];
+
+  if (nome.length < 3 || nome.length > 100) {
+    erros.push('O nome deve ter entre 3 e 100 caracteres.');
+  }
+  if (email.length > 100 || !emailValido(email)) {
+    erros.push('Informe um e-mail válido de até 100 caracteres.');
+  }
+  if (!/^\d{11}$/.test(cpf)) {
+    erros.push('O CPF deve ter 11 dígitos.');
+  }
+  if (!/^\d{10,11}$/.test(telefone)) {
+    erros.push('O telefone deve ter 10 ou 11 dígitos.');
+  }
+  if (!senhaValida(formulario.senha)) {
+    erros.push('A senha deve ter de 8 a 128 caracteres, maiúscula, minúscula, número e caractere especial.');
+  }
+  if (formulario.senha !== formulario.confirmarSenha) {
+    erros.push('A confirmação da senha deve ser igual à senha.');
+  }
+
+  return {
+    erros,
+    dados: { nome, email, cpf, telefone },
+    valores: { nome, email, cpf: cpfOriginal, telefone: telefoneOriginal }
+  };
+}
+
+// Gera o código que o catálogo usa ("Tênis" -> "tenis").
+function criarChaveCategoria(nome) {
+  return nome.normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+    .slice(0, 50);
+}
+
+function validarCategoria(dados) {
+  const nome = texto(dados.nome);
+  const chave = criarChaveCategoria(nome);
+  const erros = [];
+
+  if (nome.length < 3 || nome.length > 50) {
+    erros.push('O nome da categoria deve ter entre 3 e 50 caracteres.');
+  }
+  if (!chave) {
+    erros.push('Informe um nome com letras ou números.');
+  }
+
+  return { erros, categoria: { nome, chave } };
+}
+
+function validarProdutoLegado(dados, categoriasDisponiveis = CATEGORIAS) {
   const erros = [];
   const campoTexto = (campo, rotulo, minimo, maximo) => {
     const valor = texto(dados[campo]);
@@ -46,7 +111,7 @@ function validarProduto(dados) {
   const marca = campoTexto('marca', 'Marca', 2, 50);
   const descricao = campoTexto('descricao', 'Descrição', 10, 5000);
   const categoria = texto(dados.categoria), genero = texto(dados.genero);
-  if (!Object.hasOwn(CATEGORIAS, categoria)) {
+  if (!Object.hasOwn(categoriasDisponiveis, categoria)) {
     erros.push('Selecione uma categoria válida.');
   }
   if (!Object.hasOwn(GENEROS, genero)) {
@@ -62,10 +127,12 @@ function validarProduto(dados) {
   }
   for (const imagem of imagens) {
     let valida = false;
-    if (/^\/imagensUCE\/[^?#]+$/.test(imagem)) {
+    if (/^\/(?:imagensUCE|uploads\/produtos)\/[^?#]+$/.test(imagem)) {
       try {
-        const raiz = path.join(__dirname, '../public/imagensUCE');
-        const arquivo = path.resolve(raiz, decodeURIComponent(imagem.slice('/imagensUCE/'.length)));
+        const uploads = imagem.startsWith('/uploads/produtos/');
+        const raiz = path.join(__dirname, uploads ? '../public/uploads/produtos' : '../public/imagensUCE');
+        const prefixo = uploads ? '/uploads/produtos/' : '/imagensUCE/';
+        const arquivo = path.resolve(raiz, decodeURIComponent(imagem.slice(prefixo.length)));
         valida = arquivo.startsWith(raiz + path.sep) && fs.existsSync(arquivo) && fs.statSync(arquivo).isFile();
       } catch (erro) {
         valida = false;
@@ -102,4 +169,14 @@ function validarProduto(dados) {
   } };
 }
 
-module.exports = { texto, emailValido, senhaValida, validarProduto, CATEGORIAS, GENEROS };
+// Compatibilidade: o formulário novo envia "tipo" e checkboxes de tamanho;
+// formulários anteriores continuam validando de acordo com a versão original.
+function validarProduto(dados, opcoes = CATEGORIAS) {
+  if (typeof dados.tipo === 'string' && dados.tipo.trim()) {
+    const forma = opcoes && Object.hasOwn(opcoes,'categorias') ? opcoes :
+      { categorias:opcoes, generos:GENEROS, marcas:null };
+    return require('./validacao-produto').validarProduto(dados, forma);
+  }
+  return validarProdutoLegado(dados, opcoes && Object.hasOwn(opcoes,'categorias') ? opcoes.categorias : opcoes);
+}
+module.exports = { texto, emailValido, senhaValida, analisarSenha, validarDadosUsuario, validarProduto, validarCategoria, CATEGORIAS, GENEROS };

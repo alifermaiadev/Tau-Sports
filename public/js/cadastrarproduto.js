@@ -1,10 +1,62 @@
 /* Validação visível do cadastro de produtos. A gravação continua sendo feita pelo POST /produtos. */
 (function () {
   'use strict';
-  const formulario = document.querySelector('.cadastroProduto form[action="/produtos"]');
-  if (!formulario) {
-    return;
+  const formulario = document.querySelector('.cadastroProduto [data-formulario="produto"] form');
+  const seletor = document.getElementById('tipoCadastro');
+  const opcoes = ['produto','categoria','marca','genero'];
+  function alternar() {
+    for (const nome of opcoes) {
+      const secao = document.querySelector('[data-formulario="' + nome + '"]');
+      if (secao) secao.hidden = seletor.value !== nome;
+      if (secao) secao.querySelectorAll('input,select,textarea,button').forEach(el => el.disabled = secao.hidden);
+    }
   }
+  if (seletor) { seletor.addEventListener('change',alternar); alternar(); }
+  const tipo = document.getElementById('tipo');
+  const grupo = document.getElementById('grupoTamanhos');
+  const seletorImagens = document.getElementById('arquivosImagem');
+  const previaImagens = document.getElementById('previsualizacaoImagens');
+  if (seletorImagens && previaImagens) {
+    seletorImagens.addEventListener('change', () => {
+      previaImagens.replaceChildren();
+      const arquivos = [...seletorImagens.files];
+      if (!arquivos.length) return;
+      if (arquivos.length > 10 || arquivos.some(arquivo => arquivo.size > 8 * 1024 * 1024)) {
+        seletorImagens.setCustomValidity('Envie até 10 imagens, com no máximo 8 MB cada.');
+        seletorImagens.reportValidity();
+        seletorImagens.setCustomValidity('');
+        seletorImagens.value = '';
+        return;
+      }
+      seletorImagens.setCustomValidity('');
+      arquivos.forEach(arquivo => {
+        const item = document.createElement('figure'); item.className = 'previaImagemProduto';
+        const imagem = document.createElement('img'); imagem.src = URL.createObjectURL(arquivo); imagem.alt = '';
+        imagem.addEventListener('load', () => URL.revokeObjectURL(imagem.src), { once:true });
+        const legenda = document.createElement('figcaption'); legenda.textContent = arquivo.name;
+        item.append(imagem, legenda); previaImagens.append(item);
+      });
+    });
+  }
+  if (tipo && grupo) {
+    const tamanhos = { roupa:['PP','P','M','G','GG','XG'], calcado:Array.from({length:10},(_,i)=>String(i+35)), outro:['Único'] };
+    let selecionados = new Set(grupo.dataset.selecionados.split(',').map(t=>t.trim()).filter(Boolean));
+    function desenhar() {
+      grupo.replaceChildren();
+      for (const valor of tamanhos[tipo.value] || []) {
+        const label = document.createElement('label'); label.className='opcaoCheckbox';
+        const check=document.createElement('input'); check.type='checkbox'; check.name='tamanhos'; check.value=valor;
+        check.checked=selecionados.has(valor);
+        const span=document.createElement('span'); span.textContent=valor; label.append(check,span); grupo.append(label);
+      }
+      selecionados = new Set([...grupo.querySelectorAll('input:checked')].map(el=>el.value));
+    }
+    tipo.addEventListener('change', () => { selecionados.clear(); desenhar(); });
+    grupo.addEventListener('change',()=>{selecionados=new Set([...grupo.querySelectorAll('input:checked')].map(el=>el.value));});
+    desenhar();
+    if (formulario) formulario.addEventListener('submit', e=>{ if (!grupo.querySelector('input:checked')) { e.preventDefault(); alert('Selecione pelo menos um tamanho disponível.'); } });
+  }
+  if (!formulario) return;
 
   const alerta = document.getElementById('alertaValidacaoProduto');
   const controles = 'input:not([type="hidden"]), select, textarea';

@@ -1,3 +1,4 @@
+// Objetivo: Cria ou promove administradores pelo terminal.
 'use strict';
 
 // Comando administrativo LOCAL. Nunca há concessão de privilégio via formulário público.
@@ -5,7 +6,7 @@ const readline = require('node:readline/promises');
 const banco = require('../src/config/banco');
 const usuarios = require('../src/modelos/usuarios')(banco);
 const { gerarHash } = require('../src/seguranca/senhas');
-const { emailValido, senhaValida } = require('../src/validacao');
+const { emailValido, validarDadosUsuario } = require('../src/validacao');
 
 async function criarAdmin() {
   const entrada = readline.createInterface({ input: process.stdin, output: process.stdout });
@@ -28,12 +29,23 @@ async function criarAdmin() {
     const cpf = (await entrada.question('CPF (11 dígitos): ')).replace(/\D/g, '');
     const telefone = (await entrada.question('Telefone (10 ou 11 dígitos): ')).replace(/\D/g, '');
     console.log('A senha será visível neste terminal.');
-    const senha = await entrada.question('Senha (8 a 128 caracteres): ');
+    const senha = await entrada.question('Senha (8 a 128 caracteres, A-Z, a-z, número e especial): ');
     const confirmacaoSenha = await entrada.question('Confirme a senha: ');
-    if (nome.length < 3 || nome.length > 100 || !/^\d{11}$/.test(cpf) || !/^\d{10,11}$/.test(telefone) || !senhaValida(senha) || senha !== confirmacaoSenha) {
-      throw new Error('Nome, CPF, telefone ou senha inválidos, ou confirmação diferente.');
+    const cadastro = validarDadosUsuario({
+      nome,
+      email,
+      cpf,
+      telefone,
+      senha,
+      confirmarSenha: confirmacaoSenha
+    });
+
+    if (cadastro.erros.length > 0) {
+      throw new Error(cadastro.erros.join(' '));
     }
-    const id = await usuarios.cadastrar({ nome, email, cpf, telefone, senhaHash: await gerarHash(senha) });
+
+    const senhaHash = await gerarHash(senha);
+    const id = await usuarios.cadastrar({ ...cadastro.dados, senhaHash });
     await usuarios.promoverAdmin(id);
     console.log('Administrador criado. Acesse /login.html e entre com suas credenciais.');
   } finally {

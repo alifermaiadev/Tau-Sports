@@ -1,0 +1,39 @@
+<%- include('../partials/head', { titulo: 'Cadastrar Categoria | Taú Sports', css: ['global', 'header', 'footer', 'pedidos', 'components', 'seusdados', 'cadastrarproduto'] }) %>
+<body>
+<%- include('../partials/header') %>
+<main class="paginaUsuario">
+    <%- include('../partials/conta-menu', { ativo: 'cadastrarcategoria' }) %>
+    <section class="perfilInformacao cadastroProduto" aria-labelledby="tituloCadastro">
+        <div class="cabecalhoPerfil">
+            <span class="perfilAdmin">ADMIN</span>
+            <h1 id="tituloCadastro">Cadastrar Categoria</h1>
+            <p>Cadastre uma categoria para utilizar nos produtos da Taú Sports.</p>
+        </div>
+        <% if (sucesso) { %>
+            <div class="mensagemFormulario mensagemSucesso" role="status">Categoria <strong><%= categoriaCadastrada %></strong> cadastrada com sucesso. <a href="/cadastrarproduto.html">Cadastrar produto</a></div>
+        <% } %>
+        <% if (erros.length) { %>
+            <div class="mensagemFormulario mensagemErro" role="alert">
+                <strong>Revise os campos abaixo:</strong>
+                <ul><% erros.forEach(function (mensagem) { %><li><%= mensagem %></li><% }) %></ul>
+            </div>
+        <% } %>
+        <article class="cardFormulario">
+            <form action="/categorias" method="post" class="formUsuario">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <div class="campoFormulario campoGrande">
+                    <label for="nome">Nome da categoria *</label>
+                    <input type="text" id="nome" name="nome" value="<%= valores.nome || '' %>" minlength="3" maxlength="50" required placeholder="Ex.: Basquete">
+                    <small>O código da categoria é criado automaticamente a partir do nome.</small>
+                </div>
+                <div class="acoesFormulario campoGrande">
+                    <a href="/seusdados.html" class="cancelarCadastro">Cancelar</a>
+                    <button type="submit">Cadastrar Categoria</button>
+                </div>
+            </form>
+        </article>
+    </section>
+</main>
+<%- include('../partials/scripts', { scripts: ['core', 'conta'] }) %>
+</body>
+</html>

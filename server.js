@@ -9,9 +9,13 @@ async function iniciar() {
   // Verifica conexão e tabelas antes de aceitar requisições.
   await banco.execute('SELECT id_usuario FROM USUARIO LIMIT 1');
   await banco.execute('SELECT token_hash FROM SESSOES LIMIT 1');
-  await banco.execute('SELECT id_identidade FROM IDENTIDADES_SOCIAIS LIMIT 1');
   await banco.execute('SELECT id_produto FROM PRODUTO LIMIT 1');
-  await banco.execute('SELECT id_produto FROM PRODUTO_DETALHE LIMIT 1');
+  await banco.execute('SELECT id_produto, tipo_produto FROM PRODUTO_DETALHE LIMIT 1');
+  await banco.execute('SELECT id_categoria FROM CATEGORIA LIMIT 1');
+  for (const tabela of ['MARCA','GENERO','ENDERECO_USUARIO','CONTA_SOCIAL',
+    'ITEM_PEDIDO_VARIANTE','PEDIDO_ENDERECO','SOLICITACAO_TROCA']) {
+    await banco.query('SELECT 1 FROM `' + tabela + '` LIMIT 1');
+  }
   const servidor = app.listen(ambiente.porta, () => {
     console.log('Taú Sports rodando em http://localhost:' + ambiente.porta);
   });

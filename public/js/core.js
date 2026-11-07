@@ -127,10 +127,7 @@
   T.store.del('sessao');
 
   /* ---------- CARTÕES (guarda só bandeira + 4 últimos dígitos, NUNCA número/CVV) ---------- */
-  const CARTOES_INICIAIS = [
-    { id: 'c1', bandeira: 'visa', final: '4582', validade: '08/29', titular: 'Alifer Henrique da Silva Maia', tipo: 'crédito', padrao: true },
-    { id: 'c2', bandeira: 'mastercard', final: '9021', validade: '11/28', titular: 'Alifer Henrique da Silva Maia', tipo: 'débito', padrao: false }
-  ];
+  const CARTOES_INICIAIS = []; // Nunca simular cartões reais para um novo cliente.
   T.cartoes = {
     lista() {
       let l = T.store.get('cartoes', null);

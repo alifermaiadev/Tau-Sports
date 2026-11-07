@@ -1,0 +1,63 @@
+/* Dashboard Taú Sports — paleta da loja, componentes independentes do restante do site. */
+.paginaRelatorios{align-items:flex-start}
+.perfilInformacao.relatorios{flex:1 1 0;display:flex;flex-direction:column;gap:1.4rem;min-width:0;padding-bottom:3rem;color:#1f232b}
+.relatorios [hidden]{display:none!important}
+.dashboardTopo{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:1.5rem;width:100%}
+.dashboardEyebrow{display:inline-flex;align-items:center;gap:.55rem;font-size:.7rem;font-weight:800;letter-spacing:.13em;color:#696d73}
+.sinalOnline{display:inline-block;width:.55rem;height:.55rem;background:#f0c400;border-radius:50%;box-shadow:0 0 0 4px #fff4ac}
+.dashboardTopo h1{font-size:clamp(1.65rem,2.8vw,2.45rem);line-height:1.12;margin:.5rem 0;color:#171819;font-weight:850;letter-spacing:-.04em}
+.dashboardTopo p,.separadorRelatorios p{font-size:.92rem;color:#6b6f77;line-height:1.5;margin:.45rem 0 0}
+.dashboardAcoes{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem}.dashboardAcoes label{font-size:.77rem;font-weight:750;color:#777}
+.dashboardAcoes select,.botaoAtualizar,.fecharRelatorio{height:42px;background:#fff;border:1px solid #dfe0e4;border-radius:10px;padding:0 .85rem;color:#222;font:inherit;font-size:.85rem;font-weight:650;cursor:pointer}
+.botaoAtualizar{display:flex;align-items:center;gap:.45rem;background:#1e1e1e;color:#fff;border-color:#1e1e1e}
+.botaoAtualizar:hover{background:#343434}.dashboardAcoes select:focus-visible,.botaoAtualizar:focus-visible,.cardRelatorio:focus-visible,.fecharRelatorio:focus-visible{outline:3px solid #facf00;outline-offset:3px}
+.mensagemDashboard{font-size:.85rem;color:#666;margin:0}.mensagemDashboard.erro,#estadoRelatorio.erro{color:#b02b20}
+.metricasDashboard{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.25rem;width:100%}
+.metricaCard{background:#fff;border:1px solid #e8e9eb;border-radius:14px;padding:1.15rem 1.25rem;box-shadow:0 5px 22px rgba(26,28,33,.04);min-height:139px;min-width:0}
+.metricaLinha{display:flex;justify-content:space-between;align-items:center;gap:.8rem;font-size:.82rem;font-weight:650;color:#686b74}
+.metricaIcone{width:34px;height:34px;border-radius:10px;background:#fff7cc;color:#8c7200;display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:800;flex-shrink:0}
+.metricaCard strong{display:block;font-size:clamp(1.4rem,2.1vw,2.05rem);font-weight:850;letter-spacing:-.04em;color:#1b1e24;margin:.35rem 0 .2rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums}
+.metricaCard small{font-size:.73rem;color:#8c9098}
+.metricaCardDestaque{background:linear-gradient(135deg,#191b20 0%,#353333 100%);border-color:#202020}.metricaCardDestaque .metricaLinha,.metricaCardDestaque small{color:#dad9d4}.metricaCardDestaque strong{color:#ffe044}.metricaCardDestaque .metricaIcone{background:#5a511f;color:#ffe044}
+.dashboardDestaques{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(275px,1fr);gap:1.25rem;width:100%}
+.dashboardDestaquesSecundario{grid-template-columns:repeat(3,minmax(0,1fr))}
+.dashboardBloco{background:#fff;border:1px solid #e7e8eb;border-radius:14px;padding:1.25rem;min-width:0;box-shadow:0 5px 22px rgba(26,28,33,.035)}
+.blocoTitulo{display:flex;align-items:flex-start;justify-content:space-between;gap:.7rem;margin-bottom:1.2rem}
+.blocoTitulo h2,.separadorRelatorios h2{font-size:1.07rem;font-weight:820;letter-spacing:-.025em;margin:0;color:#25262a}
+.blocoTitulo p{font-size:.76rem;color:#838790;margin:.3rem 0 0;line-height:1.35}
+.blocoTitulo a{font-size:.75rem;font-weight:750;color:#746000;text-decoration:none;white-space:nowrap}.blocoTitulo a:hover{text-decoration:underline}
+.blocoTag{border-radius:20px;padding:.35rem .7rem;font-size:.68rem;font-weight:800;color:#836d00;background:#fff6cb}
+.graficoBarras{height:245px;display:flex;align-items:stretch;gap:clamp(3px,.7vw,12px);overflow-x:auto;padding:1rem .2rem 0}
+.colunaGrafico{flex:1 1 0;min-width:18px;max-width:90px;display:flex;flex-direction:column;justify-content:flex-end;align-items:stretch;gap:.4rem}
+.colunaGrafico .alturaGrafico{display:flex;align-items:flex-end;justify-content:center;flex:1 1 auto;border-bottom:1px solid #eaebee;background:repeating-linear-gradient(to top,transparent,transparent 23%,#f5f5f6 23.2%,transparent 23.5%)}
+.barraGrafico{display:block;width:78%;min-width:5px;max-width:45px;background:linear-gradient(0deg,#cda400,#ffe15c);border-radius:6px 6px 1px 1px;min-height:2px}
+.colunaGrafico .rotuloGrafico{text-align:center;color:#7c7f86;font-size:.62rem;white-space:nowrap;overflow:hidden;text-overflow:clip;min-height:2em}
+.graficoHorizontal{display:flex;flex-direction:column;gap:.88rem;min-height:145px}
+.linhaGrafico{display:grid;grid-template-columns:minmax(85px,1fr) 1.5fr auto;gap:.65rem;align-items:center;font-size:.76rem;color:#555c65}
+.linhaGrafico .nomeGrafico{min-width:0;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;font-weight:680}
+.trilhoGrafico{height:9px;border-radius:20px;background:#f1f2f4;overflow:hidden}.trilhoGrafico span{display:block;height:100%;border-radius:20px;background:linear-gradient(90deg,#e7b900,#ffdd30);min-width:0}
+.linhaGrafico .numeroGrafico{font-variant-numeric:tabular-nums;color:#202329;font-weight:780;text-align:right;min-width:25px}
+.listaRanking{display:flex;flex-direction:column;gap:0}
+.itemRanking{display:flex;align-items:center;gap:.65rem;padding:.75rem 0;border-bottom:1px solid #f0f1f3;font-size:.78rem;min-width:0}.itemRanking:last-child{border-bottom:0}
+.itemRanking .numeroRanking{font-size:.69rem;background:#f4f5f6;border-radius:8px;color:#686d73;width:27px;height:27px;display:grid;place-items:center;font-weight:800;flex:none}
+.itemRanking .nomeRanking{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#3e4146}.itemRanking strong{color:#24272a;white-space:nowrap;font-weight:780}
+.valorConfirmado{display:flex;gap:.65rem;align-items:center;justify-content:space-between;margin-top:1rem;padding:.75rem .8rem;background:#fff9de;border-radius:9px;color:#73601b;font-size:.74rem;font-weight:650}.valorConfirmado strong{color:#282321;font-size:.94rem}
+.pedidosRecentes{width:100%}.tabelaResponsiva{width:100%;overflow-x:auto}.tabelaResponsiva[hidden]{display:none}
+.tabelaResponsiva table{width:100%;border-collapse:collapse;min-width:570px;text-align:left;font:inherit;font-size:.78rem}
+.tabelaResponsiva th{background:#f7f7f8;color:#5c626b;font-weight:770;padding:.85rem .8rem;white-space:nowrap;border-bottom:1px solid #eee}
+.tabelaResponsiva td{padding:.84rem .8rem;color:#4d5159;border-bottom:1px solid #f1f1f2;overflow-wrap:anywhere}.tabelaResponsiva tr:last-child td{border-bottom:0}.tabelaResponsiva tbody tr:hover{background:#fffbea}
+.tabelaResponsiva .colunaValor{text-align:right;font-weight:740}.chipStatus{font-size:.71rem;font-weight:740;display:inline-block;background:#fff5d3;color:#9a751a;border-radius:20px;padding:.28rem .6rem;white-space:nowrap}.chipStatus.confirmado{background:#e8f6ea;color:#327a43}
+.avisoDashboard{font-size:.73rem;color:#777e87;line-height:1.6;margin:0}
+.separadorRelatorios{display:flex;justify-content:space-between;align-items:center;margin:.8rem 0 0}.cardsRelatorios{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));row-gap:1.3rem;column-gap:1rem;width:100%}
+.cardRelatorio{min-width:0;min-height:150px;display:flex;flex-direction:column;align-items:flex-start;gap:.8rem;padding:1rem;background:#fff;border:1px solid #e8e9eb;border-radius:13px;text-decoration:none!important;position:relative;color:#222;transition:transform .15s,border-color .15s,box-shadow .15s}
+.cardRelatorio:hover,.cardRelatorio[aria-current="true"]{transform:translateY(-2px);border-color:#e7c834;box-shadow:0 7px 20px rgba(60,51,0,.09)}
+.cardRelatorioIcone{display:grid;place-items:center;width:39px;height:39px;background:#fff1b0;border-radius:10px;color:#27241c;font-size:1.3rem;font-weight:800}
+.cardRelatorioConteudo{display:flex;flex-direction:column;gap:.3rem}.cardRelatorioConteudo strong{font-size:.92rem;font-weight:820}.cardRelatorioConteudo small{color:#7b7d85;font-size:.7rem;line-height:1.35}
+.cardRelatorioSeta{position:absolute;top:1rem;right:1rem;color:#aaa;font-size:1.1rem}.painelDetalhe{width:100%;scroll-margin-top:1rem}
+.fecharRelatorio{height:34px;font-size:.77rem;background:#f6f6f6}#estadoRelatorio{margin:.8rem 0;font-size:.85rem;color:#666}
+.vazioDashboard{display:flex;align-items:center;justify-content:center;min-height:120px;text-align:center;font-size:.81rem;color:#8a8d94;line-height:1.5}.tabelaResponsiva .registroVazio{text-align:center;color:#777}
+.controleStatusPedido{display:flex;align-items:center;gap:.4rem;min-width:230px}.seletorStatusPedido{min-width:0;max-width:190px;height:36px;padding:0 .55rem;border:1px solid #dfe0e4;border-radius:8px;background:#fff;color:#27292d;font:inherit;font-size:.75rem}.botaoSalvarStatus{height:36px;padding:0 .65rem;border:1px solid #1e1e1e;border-radius:8px;background:#1e1e1e;color:#fff;font:inherit;font-size:.72rem;font-weight:750;cursor:pointer;white-space:nowrap}.botaoSalvarStatus:hover{background:#383838}.botaoSalvarStatus:disabled{opacity:.6;cursor:wait}.seletorStatusPedido:focus-visible,.botaoSalvarStatus:focus-visible{outline:3px solid #facf00;outline-offset:2px}
+@media(max-width:1350px){.dashboardDestaquesSecundario{grid-template-columns:repeat(2,minmax(0,1fr))}.dashboardDestaquesSecundario>.dashboardBloco:last-child{grid-column:1/-1}}
+@media(max-width:1050px){.metricasDashboard{grid-template-columns:repeat(2,minmax(0,1fr))}.dashboardDestaques{grid-template-columns:1fr}.dashboardDestaquesSecundario{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){.perfilInformacao.relatorios{gap:1rem}.dashboardTopo{align-items:flex-start}.dashboardAcoes{width:100%}.dashboardAcoes select{flex:1}.dashboardAcoes label{display:none}.metricasDashboard{gap:.9rem}.metricaCard{padding:.85rem;min-height:118px}.metricaCard strong{font-size:1.25rem}.metricaCard small{font-size:.63rem}.metricaLinha{font-size:.7rem}.metricaIcone{width:25px;height:25px;font-size:.8rem}.dashboardBloco{padding:1rem}.dashboardDestaquesSecundario{grid-template-columns:1fr}.dashboardDestaquesSecundario>.dashboardBloco:last-child{grid-column:auto}.graficoBarras{height:210px}.cardsRelatorios{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:1.15rem;column-gap:.9rem}.cardRelatorio{min-height:140px;padding:.85rem}.cardRelatorioConteudo strong{font-size:.82rem}.cardRelatorioConteudo small{font-size:.65rem}}
+@media(max-width:380px){.cardsRelatorios{grid-template-columns:1fr}.cardRelatorio{min-height:100px;flex-direction:row;align-items:center}.metricaLinha{align-items:flex-start}}

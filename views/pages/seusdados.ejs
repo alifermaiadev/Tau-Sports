@@ -10,8 +10,6 @@
     <%- include('../partials/conta-menu', { ativo: 'seusdados' }) %>
 
 <section class="perfilInformacao" aria-labelledby="tituloSeusDados">
-    <% if (typeof socialErro !== 'undefined' && socialErro) { %><p class="mensagemFormulario mensagemErro" role="alert"><%= socialErro %></p><% } %>
-    <% if (typeof socialSucesso !== 'undefined' && socialSucesso) { %><p class="mensagemFormulario mensagemSucesso" role="status"><%= socialSucesso %></p><% } %>
     
 
     <article class="cardFormulario">
@@ -84,6 +82,16 @@
 
     <article class="cardFormulario">
         <div class="cardFormularioCabecalho">
+            <h2>Vincular conta social</h2>
+            <p>Você pode associar suas contas após entrar com seu e-mail e senha.</p>
+        </div>
+        <div class="acoesFormulario campoGrande">
+          <a class="cancelarCadastro" href="/auth/google">Vincular Google</a>
+          <a class="cancelarCadastro" href="/auth/facebook">Vincular Facebook</a>
+        </div>
+    </article>
+    <article class="cardFormulario">
+        <div class="cardFormularioCabecalho">
             <h2>Dados de acesso</h2>
             <p>Altere seu e-mail, senha e preferências de comunicação.</p>
         </div>
@@ -143,26 +151,6 @@
                 <button type="submit">Salvar dados de acesso</button>
             </div>
         </form>
-    </article>
-
-    <article class="cardFormulario">
-        <div class="cardFormularioCabecalho">
-            <h2>Entrar com Google ou Facebook</h2>
-            <p>Vincule um provedor para usá-lo nos próximos acessos. A vinculação exige que você já esteja conectado à sua conta Tau Sports.</p>
-        </div>
-        <div class="provedoresSociais">
-            <% const vinculados = typeof provedoresVinculados !== 'undefined' ? provedoresVinculados : []; %>
-            <% ['google', 'facebook'].forEach(function(provedor) { %>
-                <div class="provedorSocial">
-                    <span><%= provedor === 'google' ? 'Google' : 'Facebook' %></span>
-                    <% if (vinculados.includes(provedor)) { %>
-                        <strong>Vinculado</strong>
-                    <% } else { %>
-                        <a href="/auth/<%= provedor %>/vincular">Vincular conta</a>
-                    <% } %>
-                </div>
-            <% }) %>
-        </div>
     </article>
 </section>
 </main>

@@ -21,11 +21,12 @@
       T.toast('Recuperação de senha ainda não disponível. Contate o administrador.');
     });
 
+    // Links OAuth navegam para o servidor, onde state e credenciais são validados.
   }
 
   /* ================= MENU DA CONTA ================= */
   function menuConta() {
-    const rotas = { 'Pedidos': 'pedidos', 'Trocas e Devoluções': 'trocas', 'Seus Dados': 'seusdados', 'Endereços': 'endereco', 'Cartões Salvos': 'cartoessalvos', 'Cadastrar Produto': 'cadastrarproduto' };
+    const rotas = { 'Pedidos': 'pedidos', 'Trocas e Devoluções': 'trocas', 'Seus Dados': 'seusdados', 'Endereços': 'endereco', 'Cartões Salvos': 'cartoessalvos', 'Cadastrar': 'cadastrarproduto', 'Relatórios': 'relatorios' };
     $$('.perfilSelecao li').forEach(li => {
       const a = $('a', li);
       if (!a) { return; }
@@ -43,23 +44,20 @@
     if (!sec) return;
     $$('.pedido', sec).forEach(el => el.remove());
     $$('.listaVazia', sec).forEach(el => el.remove());
-    $$('.pedidosCarregando', sec).forEach(el => el.remove());
-    const carregando = document.createElement('p');
-    carregando.className = 'pedidosCarregando';
-    carregando.textContent = 'Carregando seus pedidos...';
-    sec.append(carregando);
-    let pedidos;
+    // Dados guardados por versões antigas da demonstração podem estar incompletos.
+    let pedidosSalvos;
     try {
-      const resposta = await fetch('/api/pedidos', { headers: { Accept: 'application/json' } });
-      const resultado = await resposta.json();
-      if (!resposta.ok) throw new Error(resultado.erro || 'Não foi possível carregar seus pedidos.');
-      pedidos = Array.isArray(resultado.pedidos) ? resultado.pedidos : [];
+      const resposta = await fetch('/api/pedidos');
+      if (!resposta.ok) throw new Error('Falha ao carregar os pedidos.');
+      pedidosSalvos = await resposta.json();
     } catch (erro) {
-      carregando.className = 'listaVazia';
-      carregando.textContent = erro.message || 'Não foi possível carregar seus pedidos. Atualize a página.';
+      sec.insertAdjacentHTML('beforeend', '<p class="listaVazia" role="alert">Não foi possível consultar os pedidos. Atualize a página.</p>');
       return;
     }
-    carregando.remove();
+    const pedidos = (Array.isArray(pedidosSalvos) ? pedidosSalvos : []).filter(p =>
+      p && p.id != null && Array.isArray(p.itens) && p.itens.length &&
+      p.itens.some(i => i && i.nome)
+    );
     if (!pedidos.length) {
       sec.insertAdjacentHTML('beforeend',
         '<p class="listaVazia">Você ainda não fez nenhum pedido. <a href="index.html">Ir às compras</a></p>');
@@ -70,8 +68,7 @@
       return Number.isNaN(d.getTime()) ? 'Data não disponível' : d.toLocaleDateString('pt-BR');
     };
     sec.insertAdjacentHTML('beforeend', pedidos.map(p => {
-      const itens = (Array.isArray(p.itens) ? p.itens : []).filter(i => i && i.nome);
-      if (!itens.length) return '';
+      const itens = p.itens.filter(i => i && i.nome);
       const primeiro = itens[0], resto = itens.length - 1;
       const qtd = itens.reduce((s, i) => s + (Number(i.qtd) || 0), 0);
       const detalhes = itens.map(i =>
@@ -113,21 +110,14 @@
         a.textContent = d.hidden ? 'Ver detalhes' : 'Ocultar detalhes';
       }
       if (a.dataset.acao === 'troca' && confirm('Deseja solicitar a troca/devolução deste pedido?')) {
-        a.setAttribute('aria-disabled', 'true');
         try {
-          const resposta = await fetch('/api/pedidos/' + encodeURIComponent(card.dataset.id) + '/troca', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8', Accept: 'application/json' },
-            body: new URLSearchParams({ _csrf: T.csrfToken })
+          const r=await fetch('/api/pedidos/'+encodeURIComponent(card.dataset.id)+'/troca',{
+            method:'POST',headers:{'X-CSRF-Token':T.csrfToken}
           });
-          const resultado = await resposta.json().catch(() => ({}));
-          if (!resposta.ok) throw new Error(resultado.erro || 'Não foi possível registrar a solicitação.');
-          a.textContent = 'Troca solicitada'; a.removeAttribute('data-acao');
+          const dados=await r.json();if(!r.ok)throw Error(dados.erro || 'Falha ao solicitar troca.');
+          a.textContent='Troca solicitada';a.removeAttribute('data-acao');a.setAttribute('aria-disabled','true');
           T.toast('Solicitação de troca registrada.');
-        } catch (erro) {
-          a.removeAttribute('aria-disabled');
-          T.toast(erro.message || 'Não foi possível registrar a solicitação.');
-        }
+        } catch(erro) { T.toast(erro.message); }
       }
     });
   }
@@ -198,20 +188,41 @@
     const [form1, form2] = $$('.formUsuario');
     const campos = ['cep', 'estado', 'endereco', 'numero', 'bairro', 'cidade', 'complemento'];
     const extras = ['nomeEndereco', 'referencia'];
-    const salvo = T.store.get('endereco', {});
+    let salvo = {}; let todosEnderecos = [];
+    async function carregar() {
+      try {
+        const r=await fetch('/api/enderecos'); if(!r.ok)throw Error();
+        todosEnderecos=await r.json(); salvo=todosEnderecos[0] || {};
+        T.store.set('endereco',salvo);mostrarSalvo();desenharLista();
+      }catch(e){T.toast('Não foi possível consultar os endereços.');}
+    }
+    function desenharLista(){
+      const bloco=document.getElementById('listaEnderecos');if(!bloco)return;
+      bloco.replaceChildren();
+      todosEnderecos.forEach(end=>{
+        const botao=document.createElement('button');botao.type='button';botao.className='cancelarCadastro';
+        botao.textContent=(end.padrao ? '★ Principal: ' : '')+[end.endereco,end.numero,end.cidade,end.estado].filter(Boolean).join(', ')+' — Editar';
+        botao.addEventListener('click',()=>{salvo=end;mostrarSalvo();document.getElementById('cep').focus();});bloco.append(botao);
+      });
+    }
+    const novo=document.getElementById('novoEndereco');
+    if(novo)novo.addEventListener('click',()=>{salvo={};mostrarSalvo();document.getElementById('enderecoPadrao').checked=false;document.getElementById('cep').focus();});
 
     const setUF = uf => {
       const sel = $('#estado');
       if (uf && ![...sel.options].some(o => o.value === uf)) sel.add(new Option(uf, uf));
       sel.value = uf || '';
     };
-    campos.concat(extras).forEach(c => { if (c !== 'estado' && salvo[c]) $('#' + c).value = salvo[c]; });
-    setUF(salvo.estado);
-    if (salvo.tipoEndereco) { const r = $(`input[name=tipoEndereco][value="${salvo.tipoEndereco}"]`); if (r) r.checked = true; }
-    $('#enderecoPadrao').checked = !!salvo.padrao;
+    function mostrarSalvo() {
+      campos.concat(extras).forEach(c => { if(c!=='estado') $('#' + c).value=salvo[c] || ''; });
+      setUF(salvo.estado);
+      if(salvo.tipoEndereco) { const r = $(`input[name=tipoEndereco][value="${salvo.tipoEndereco}"]`); if(r)r.checked=true; }
+      $('#enderecoPadrao').checked=!!salvo.padrao;
+    }
+    mostrarSalvo();carregar();
 
     T.aplicarMascara(cep, T.mask.cep);
-    ['cep', 'estado', 'endereco', 'numero', 'bairro', 'cidade'].forEach(c => { $('#' + c).required = true; });
+    ['cep', 'estado', 'endereco', 'numero', 'cidade'].forEach(c => { $('#' + c).required = true; });
     cep.pattern = '\\d{5}-\\d{3}'; cep.title = 'Formato: 00000-000';
 
     cep.addEventListener('input', async () => {
@@ -227,23 +238,26 @@
       $('#numero').focus();
     });
 
-    const guardar = extra => T.store.set('endereco', { ...T.store.get('endereco', {}), ...extra });
+    const guardar = async extra => {
+      const combinado = { ...salvo, ...extra };
+      const r=await fetch('/api/enderecos',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':T.csrfToken},body:JSON.stringify(combinado)});
+      const dados=await r.json(); if(!r.ok) throw Error(dados.erro || 'Não foi possível salvar o endereço.');
+      salvo=dados;T.store.set('endereco',dados);await carregar();
+    };
 
-    form1.addEventListener('submit', e => {
+    form1.addEventListener('submit', async e => {
       e.preventDefault();
       const dados = {};
       campos.forEach(c => { dados[c] = $('#' + c).value.trim(); });
-      guardar(dados);
-      T.toast('Endereço salvo.');
+      try { await guardar(dados); T.toast('Endereço salvo no sistema.'); } catch (erro) { T.toast(erro.message); }
     });
-    form2.addEventListener('submit', e => {
+    form2.addEventListener('submit', async e => {
       e.preventDefault();
       const t = $('input[name=tipoEndereco]:checked');
-      guardar({
+      try { await guardar({
         nomeEndereco: $('#nomeEndereco').value.trim(), referencia: $('#referencia').value.trim(),
         tipoEndereco: t ? t.value : '', padrao: $('#enderecoPadrao').checked
-      });
-      T.toast('Informações de entrega salvas.');
+      }); T.toast('Informações de entrega salvas no sistema.'); } catch(erro) { T.toast(erro.message); }
     });
   }
 
@@ -252,6 +266,32 @@
     const box = $('.listaCartoes');
     if (!box) return;
     const nomeBand = { visa: 'Visa', mastercard: 'Mastercard' };
+    const botaoAdicionar = $('#abrirCadastroCartao');
+    const formulario = $('#formCartao');
+    const alternarFormulario = mostrar => {
+      formulario.hidden = !mostrar;
+      botaoAdicionar.setAttribute('aria-expanded', String(mostrar));
+      if (mostrar) $('#titularTeste', formulario).focus();
+    };
+    botaoAdicionar.addEventListener('click', () => alternarFormulario(formulario.hidden));
+    $('#cancelarCartaoTeste').addEventListener('click', () => alternarFormulario(false));
+    formulario.addEventListener('submit', e => {
+      e.preventDefault();
+      if (!formulario.reportValidity()) return;
+      const dados = new FormData(formulario);
+      const titular = String(dados.get('titular') || '').trim();
+      const final = String(dados.get('final') || '').trim();
+      const validade = String(dados.get('validade') || '').trim();
+      const bandeira = String(dados.get('bandeira') || 'visa');
+      if (titular.length < 3 || !/^\d{4}$/.test(final) || !/^(0[1-9]|1[0-2])\/\d{2}$/.test(validade) || !['visa','mastercard'].includes(bandeira)) {
+        T.toast('Confira os dados fictícios do cartão.'); return;
+      }
+      const lista = T.cartoes.lista();
+      lista.push({ id: 'teste-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8), tipo: 'crédito', titular, final, validade, bandeira, padrao: !lista.some(x => x.padrao) });
+      T.cartoes.salvar(lista);
+      formulario.reset(); alternarFormulario(false); render();
+      T.toast('Cartão de teste adicionado.');
+    });
 
     const render = () => {
       const l = T.cartoes.lista();

@@ -1,0 +1,114 @@
+'use strict';
+
+const { randomUUID } = require('node:crypto');
+const fs = require('node:fs');
+const path = require('node:path');
+const CATEGORIAS = { tenis: 'Tênis', camiseta: 'Camiseta', chuteira: 'Chuteira', mochila: 'Mochila', acessorio: 'Acessório', bone: 'Boné', shorts: 'Shorts' };
+const GENEROS = { masculino: 'Masculino', feminino: 'Feminino', infantil: 'Infantil', unissex: 'Unissex' };
+const texto = valor => typeof valor === 'string' ? valor.trim() : '';
+const emailValido = email => email.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
+const senhaValida = senha => typeof senha === 'string' && senha.length >= 8 && senha.length <= 128;
+
+function validarProduto(dados, opcoes = { categorias: CATEGORIAS, generos: GENEROS, marcas: null }) {
+  const erros = [];
+  const campoTexto = (campo, rotulo, minimo, maximo) => {
+    const valor = texto(dados[campo]);
+    if (valor.length < minimo || valor.length > maximo) {
+      erros.push(`${rotulo}: informe entre ${minimo} e ${maximo} caracteres.`);
+    }
+    return valor;
+  };
+  const dinheiro = (campo, obrigatorio) => {
+    const valor = texto(dados[campo]).replace(',', '.');
+    if (!valor && !obrigatorio) {
+      return null;
+    }
+    if (!/^\d{1,8}(\.\d{1,2})?$/.test(valor) || Number(valor) <= 0 || Number(valor) > 99999999.99) {
+      erros.push(campo === 'preco' ? 'Informe um preço válido, maior que zero, com até duas casas decimais.' : 'Informe um preço anterior válido.');
+    }
+    return Number(valor);
+  };
+  const inteiro = (campo, padrao, minimo, maximo) => {
+    const valor = texto(dados[campo]) || String(padrao);
+    if (!/^\d+$/.test(valor) || Number(valor) < minimo || Number(valor) > maximo) {
+      erros.push(`${campo === 'parcelas' ? 'Parcelas' : 'Desconto PIX'}: informe um inteiro de ${minimo} a ${maximo}.`);
+    }
+    return Number(valor);
+  };
+  const lista = (campo, separador, maximo, tamanho) => {
+    const itens = [...new Set(texto(dados[campo]).split(separador).map(texto).filter(Boolean))];
+    if (itens.length > maximo || itens.some(item => item.length > tamanho)) {
+      erros.push(`O campo ${campo} excede o limite de itens ou de caracteres.`);
+    }
+    return itens;
+  };
+  const nome = campoTexto('nome', 'Nome', 3, 100);
+  const marca = campoTexto('marca', 'Marca', 2, 50);
+  const descricao = campoTexto('descricao', 'Descrição', 10, 5000);
+  const categoria = texto(dados.categoria), genero = texto(dados.genero);
+  if (!Object.hasOwn(opcoes.categorias, categoria)) {
+    erros.push('Selecione uma categoria válida.');
+  }
+  if (!Object.hasOwn(opcoes.generos, genero)) {
+    erros.push('Selecione um público válido.');
+  }
+  if (opcoes.marcas && !opcoes.marcas.includes(marca)) erros.push('Selecione uma marca cadastrada.');
+  const tipo = texto(dados.tipo);
+  if (!['roupa', 'calcado', 'outro'].includes(tipo)) erros.push('Selecione o tipo de produto.');
+  const preco = dinheiro('preco', true), precoDe = dinheiro('precoDe', false);
+  if (precoDe !== null && precoDe <= preco) {
+    erros.push('O preço anterior deve ser maior que o preço de venda.');
+  }
+  const imagens = lista('imagens', /\r?\n/, 10, 2048);
+  if (!imagens.length) {
+    erros.push('Informe pelo menos uma imagem.');
+  }
+  for (const imagem of imagens) {
+    let valida = false;
+    if (/^\/(?:imagensUCE|uploads\/produtos)\/[^?#]+$/.test(imagem)) {
+      try {
+        const uploads = imagem.startsWith('/uploads/produtos/');
+        const raiz = path.join(__dirname, uploads ? '../public/uploads/produtos' : '../public/imagensUCE');
+        const prefixo = uploads ? '/uploads/produtos/' : '/imagensUCE/';
+        const arquivo = path.resolve(raiz, decodeURIComponent(imagem.slice(prefixo.length)));
+        valida = arquivo.startsWith(raiz + path.sep) && fs.existsSync(arquivo) && fs.statSync(arquivo).isFile();
+      } catch (erro) {
+        valida = false;
+      }
+    } else {
+      try {
+        const url = new URL(imagem);
+        valida = ['http:', 'https:'].includes(url.protocol) && !url.username && !url.password;
+      } catch (erro) {
+        valida = false;
+      }
+    }
+    if (!valida) {
+      erros.push('Cada imagem deve ser uma URL HTTP/HTTPS válida ou um arquivo existente em /imagensUCE/.');
+      break;
+    }
+  }
+  const recebidos = Array.isArray(dados.tamanhos) ? dados.tamanhos : typeof dados.tamanhos === 'string' ? dados.tamanhos.split(',') : [];
+  const tamanhos = [...new Set(recebidos.map(texto).filter(Boolean))];
+  const permitidos = { roupa: ['PP', 'P', 'M', 'G', 'GG', 'XG'], calcado: Array.from({length: 10}, (_, i) => String(i + 35)), outro: ['Único'] };
+  if (tamanhos.some(t => !(permitidos[tipo] || []).includes(t))) erros.push('Selecione apenas tamanhos válidos para o tipo do produto.');
+  const cores = lista('cores', /,/, 20, 40);
+  if (tamanhos.length && tamanhos[0].length > 10) {
+    erros.push('O tamanho principal deve ter no máximo 10 caracteres.');
+  }
+  if (!tamanhos.length || !cores.length) {
+    erros.push('Informe pelo menos um tamanho e uma cor.');
+  }
+  const recebidas = Array.isArray(dados.tags) ? dados.tags : [dados.tags];
+  const tags = ['novidade', ...['oferta', 'esporte', 'streetwear'].filter(tag => recebidas.includes(tag))];
+  const descontoPix = inteiro('descontoPix', 0, 0, 99), parcelas = inteiro('parcelas', 1, 1, 10);
+  const detalhes = lista('detalhes', /\r?\n/, 20, 250);
+  const slug = nome.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 80) || 'produto';
+  return { erros, produto: {
+    tipo, id: slug + '-' + randomUUID().slice(0, 8), nome, marca, categoria, genero, preco, precoDe,
+    descontoPix, parcelas, descricao, imagens, tamanhos,
+    cores: cores.map(cor => ({ nome: cor, imagem: imagens[0] })), tags, detalhes
+  } };
+}
+
+module.exports = { texto, emailValido, senhaValida, validarProduto, CATEGORIAS, GENEROS };
